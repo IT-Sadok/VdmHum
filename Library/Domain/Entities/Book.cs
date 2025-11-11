@@ -90,4 +90,14 @@ public sealed class Book
 
         return new Book(Guid.NewGuid(), title, authors, year, status);
     }
+    
+    public static Book Rehydrate(
+        Guid id,
+        BookTitle title,
+        List<Author> authors,
+        HistoricalYear year,
+        BookStatus status)
+    {
+        return new Book(id, title, authors, year, status);
+    }
 }
