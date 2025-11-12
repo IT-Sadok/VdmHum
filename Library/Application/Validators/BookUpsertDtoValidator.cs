@@ -27,6 +27,11 @@ public class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
             {
                 a.RuleFor(x => x.Type)
                     .IsInEnum();
+                
+                a.RuleFor(x => x.Name)
+                    .NotEmpty()
+                    .MaximumLength(100)
+                    .WithMessage("Name must not exceed 100 characters.");
 
                 a.RuleFor(x => x.Name)
                     .NotEmpty()

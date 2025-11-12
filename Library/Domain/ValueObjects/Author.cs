@@ -5,8 +5,6 @@ using Exceptions.Author;
 
 public sealed record Author
 {
-    private const int MaxAuthorNameLength = 100;
-
     private Author(string? name, AuthorType type)
     {
         Name = name;
@@ -31,16 +29,11 @@ public sealed record Author
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new InvalidAuthorNameException("Author name cannot be empty");
+            throw new ArgumentException("Author name cannot be empty");
         }
 
         name = name.Trim();
-
-        if (name.Length > MaxAuthorNameLength)
-        {
-            throw new InvalidAuthorNameException($"Author name cannot be longer than {MaxAuthorNameLength} characters");
-        }
-
+        
         return name;
     }
 }
