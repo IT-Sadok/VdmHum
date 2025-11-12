@@ -12,10 +12,9 @@ public class BookConsoleInputService : IBookInputService
     {
         string title = ReadTitle();
         int year = ReadYear();
-        bool isBc = ReadIsBcFlag();
         List<AuthorDto> authors = ReadAuthors();
 
-        return new BookUpsertDto(title, authors, year, isBc, BookStatus.Available);
+        return new BookUpsertDto(title, authors, year, BookStatus.Available);
     }
 
     private static string ReadTitle()
@@ -26,32 +25,9 @@ public class BookConsoleInputService : IBookInputService
 
     private static int ReadYear()
     {
-        Console.Write($"Enter publication year ({HistoricalYear.MinYearValue}–{HistoricalYear.MaxYearValue}): ");
+        Console.Write($"Enter publication year: ");
         int.TryParse(Console.ReadLine(), out var year);
         return year;
-    }
-
-    private static bool ReadIsBcFlag()
-    {
-        while (true)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Select era: 1 = BC, 2 = AD (or just press enter for AD)");
-            Console.Write("Enter number (1/2): ");
-            var input = Console.ReadLine()?.Trim();
-
-            if (input == "1")
-            {
-                return true;
-            }
-
-            if (input == "2" || string.IsNullOrWhiteSpace(input))
-            {
-                return false;
-            }
-
-            MenuHelpers.Warn("Invalid input. Please enter 1 or 2.");
-        }
     }
 
     private static List<AuthorDto> ReadAuthors()

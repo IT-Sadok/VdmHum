@@ -24,7 +24,7 @@ public static class MenuHelpers
         foreach (var b in books)
         {
             var authors = string.Join(", ", b.Authors.Select(a => a.Name ?? "N/A"));
-            Console.WriteLine($"{b.Id} | {b.Title} | {authors} | {b.Year}{(b.IsYearBc ? " BC" : "")} | {b.Status}");
+            Console.WriteLine($"{b.Id} | {b.Title} | {authors} | {b.Year} | {b.Status}");
         }
     }
 

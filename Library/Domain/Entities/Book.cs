@@ -9,7 +9,7 @@ public sealed class Book
 {
     private readonly List<Author> _authors;
 
-    private Book(Guid id, BookTitle title, List<Author> authors, HistoricalYear year, BookStatus status)
+    private Book(Guid id, BookTitle title, List<Author> authors, DateOnly year, BookStatus status)
     {
         this.Id = id;
         this.Title = title;
@@ -24,7 +24,7 @@ public sealed class Book
 
     public IReadOnlyList<Author> Authors => this._authors;
 
-    public HistoricalYear Year { get; private set; }
+    public DateOnly Year { get; private set; }
 
     public BookStatus Status { get; private set; }
 
@@ -78,7 +78,7 @@ public sealed class Book
     public static Book Create(
         BookTitle title,
         List<Author> authors,
-        HistoricalYear year,
+        DateOnly year,
         BookStatus status = BookStatus.Available)
     {
         ArgumentNullException.ThrowIfNull(authors);
@@ -95,7 +95,7 @@ public sealed class Book
         Guid id,
         BookTitle title,
         List<Author> authors,
-        HistoricalYear year,
+        DateOnly year,
         BookStatus status)
     {
         return new Book(id, title, authors, year, status);

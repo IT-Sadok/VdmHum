@@ -14,8 +14,8 @@ public class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
             .MaximumLength(BookTitle.MaxTitleLength);
 
         RuleFor(b => b.Year)
-            .Must(HistoricalYear.IsValid)
-            .WithMessage($"Year must be between {HistoricalYear.MinYearValue} and {HistoricalYear.MaxYearValue}.");
+            .Must(year => year >= 1)
+            .WithMessage("Year must not be below 1.");
 
         RuleFor(b => b.Authors)
             .NotEmpty()

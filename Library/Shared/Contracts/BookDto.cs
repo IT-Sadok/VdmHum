@@ -7,5 +7,4 @@ public sealed record BookDto(
     string Title,
     List<AuthorDto> Authors,
     int Year,
-    bool IsYearBc,
     BookStatus Status);

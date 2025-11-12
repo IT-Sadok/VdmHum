@@ -11,8 +11,7 @@ public static class BookMapper
         book.Id,
         book.Title.Value,
         book.Authors.Select(a => new AuthorDto(a.Name ?? "N/A", a.Type)).ToList(),
-        book.Year.Value,
-        book.Year.IsBC,
+        book.Year.Year,
         book.Status);
 
     public static Book FromDto(BookDto dto)
@@ -29,10 +28,7 @@ public static class BookMapper
             }).ToList();
 
         var title = BookTitle.Create(dto.Title);
-        var year = dto.IsYearBc
-            ? HistoricalYear.BC(dto.Year)
-            : HistoricalYear.AD(dto.Year);
 
-        return Book.Rehydrate(dto.Id, title, authors, year, dto.Status);
+        return Book.Rehydrate(dto.Id, title, authors, new DateOnly(dto.Year, 1, 1) , dto.Status);
     }
 }

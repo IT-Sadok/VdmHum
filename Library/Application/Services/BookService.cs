@@ -18,7 +18,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
 
         return BookMapper.ToDto(book);
     }
-    
+
     public async Task<IEnumerable<BookDto>> SearchAsync(string query, CancellationToken ct = default)
     {
         query = query.Trim();
@@ -38,7 +38,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
 
         return all.Select(BookMapper.ToDto).ToList();
     }
-    
+
     public async Task<IEnumerable<BookDto>> GetAllAvailableAsync(CancellationToken ct = default)
     {
         var all = await repository.GetAllAsync(ct);
@@ -58,11 +58,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
 
         var bookTitle = BookTitle.Create(dto.Title);
 
-        var year = dto.IsYearBc
-            ? HistoricalYear.BC(dto.Year)
-            : HistoricalYear.AD(dto.Year);
-
-        var book = Book.Create(bookTitle, authorObjects, year);
+        var book = Book.Create(bookTitle, authorObjects, new DateOnly(dto.Year, 1, 1));
 
         await repository.AddAsync(book, ct);
     }
