@@ -25,7 +25,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
         var all = await repository.GetAllAsync(ct);
 
         var matches = all.Where(b =>
-            b.Title.Value.Contains(query, StringComparison.OrdinalIgnoreCase)
+            b.Title.Contains(query, StringComparison.OrdinalIgnoreCase)
             || b.Authors.Any(a => a.Name != null &&
                                   a.Name.Contains(query, StringComparison.OrdinalIgnoreCase)));
 
@@ -56,9 +56,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
 
         var authorObjects = dto.Authors.Select(MapDtoToValueObject).ToList();
 
-        var bookTitle = BookTitle.Create(dto.Title);
-
-        var book = Book.Create(bookTitle, authorObjects, new DateOnly(dto.Year, 1, 1));
+        var book = Book.Create(dto.Title, authorObjects, new DateOnly(dto.Year, 1, 1));
 
         await repository.AddAsync(book, ct);
     }

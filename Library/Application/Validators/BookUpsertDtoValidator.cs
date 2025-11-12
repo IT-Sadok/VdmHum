@@ -11,7 +11,8 @@ public class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
     {
         RuleFor(b => b.Title)
             .NotEmpty()
-            .MaximumLength(BookTitle.MaxTitleLength);
+            .MaximumLength(255)
+            .WithMessage("Title must not exceed 255 characters.");
 
         RuleFor(b => b.Year)
             .Must(year => year >= 1)
