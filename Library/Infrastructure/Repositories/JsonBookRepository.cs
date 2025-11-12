@@ -1,10 +1,10 @@
 namespace Infrastructure.Repositories;
 
+using Application.Interfaces;
 using Application.Mappers;
 using Domain.Entities;
 using Shared.Contracts;
 using System.Text.Json;
-using Domain.Interfaces;
 
 public class JsonBookRepository(string filePath, JsonSerializerOptions jsonOptions) : IBookRepository
 {

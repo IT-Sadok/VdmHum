@@ -1,6 +1,6 @@
-namespace Domain.Interfaces;
+namespace Application.Interfaces;
 
-using Entities;
+using Domain.Entities;
 
 public interface IBookRepository
 {

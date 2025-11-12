@@ -1,7 +1,6 @@
 namespace Infrastructure.Providers;
 
 using Application.Interfaces;
-using Domain.Interfaces;
 
 public sealed class JsonBookRepositoryProvider(IBookRepositoryFactory factory)
     : IBookRepositoryProvider
