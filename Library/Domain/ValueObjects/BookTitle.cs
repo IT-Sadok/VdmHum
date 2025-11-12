@@ -4,7 +4,7 @@ namespace Domain.ValueObjects;
 
 public sealed record BookTitle
 {
-    private const int MaxTitleLength = 255;
+    public const int MaxTitleLength = 255;
 
     public string Value { get; }
 

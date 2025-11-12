@@ -4,8 +4,8 @@ using Exceptions.HistoricalYear;
 
 public readonly struct HistoricalYear : IComparable<HistoricalYear>
 {
-    private const int MinYearValue = 1;
-    private const int MaxYearValue = 9999;
+    public const int MinYearValue = 1;
+    public const int MaxYearValue = 9999;
 
     public int Value { get; }
 
@@ -13,7 +13,7 @@ public readonly struct HistoricalYear : IComparable<HistoricalYear>
 
     private HistoricalYear(int value, bool isBC)
     {
-        if (value is < MinYearValue or > MaxYearValue)
+        if (!IsValid(value))
         {
             throw new InvalidYearException(value);
         }
@@ -37,4 +37,7 @@ public readonly struct HistoricalYear : IComparable<HistoricalYear>
             _ => this.Value.CompareTo(other.Value)
         };
     }
+
+    public static bool IsValid(int value) =>
+        value is >= MinYearValue and <= MaxYearValue;
 }
