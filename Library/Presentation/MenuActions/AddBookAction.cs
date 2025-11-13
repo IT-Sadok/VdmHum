@@ -1,10 +1,11 @@
+using Application.Contracts;
+
 namespace Presentation.MenuActions;
 
 using Application.Interfaces;
 using Helpers;
 using Interfaces;
 using FluentValidation;
-using Shared.Contracts;
 
 public class AddBookAction(
     IBookService bookService,

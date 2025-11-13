@@ -1,12 +1,12 @@
 namespace Infrastructure.Repositories;
 
+using Contracts;
+using Mappers;
 using Application.Interfaces;
-using Application.Mappers;
 using Domain.Entities;
-using Shared.Contracts;
 using System.Text.Json;
 
-public class JsonBookRepository(
+public sealed class JsonBookRepository(
     string filePath,
     IFileStorage storage,
     JsonSerializerOptions jsonOptions)
@@ -14,8 +14,9 @@ public class JsonBookRepository(
 {
     public async Task<IReadOnlyList<Book>> GetAllAsync(CancellationToken ct = default)
     {
-        var models = await storage.ReadAsync<List<BookModel>>(filePath, jsonOptions, ct) ?? [];
-        return models.Select(BookMapper.FromModel).ToList();
+        var persisted = await storage.ReadAsync<List<BookStorageModel>>(filePath, jsonOptions, ct) ?? [];
+
+        return persisted.Select(BookStorageMapper.FromStorageModel).ToList();
     }
 
     public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct = default)
@@ -47,9 +48,9 @@ public class JsonBookRepository(
         await SaveAsync(books, ct);
     }
 
-    private async Task SaveAsync(List<Book> books, CancellationToken ct = default)
+    private async Task SaveAsync(List<Book> books, CancellationToken ct)
     {
-        var bookModels = books.Select(BookMapper.ToModel).ToList();
-        await storage.WriteAsync(filePath, bookModels, jsonOptions, ct);
+        var persistenceModels = books.Select(BookStorageMapper.ToStorageModel).ToList();
+        await storage.WriteAsync(filePath, persistenceModels, jsonOptions, ct);
     }
 }

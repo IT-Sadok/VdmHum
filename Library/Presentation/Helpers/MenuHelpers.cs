@@ -1,7 +1,7 @@
 namespace Presentation.Helpers;
 
+using Application.Contracts;
 using FluentValidation.Results;
-using Shared.Contracts;
 
 public static class MenuHelpers
 {
@@ -19,7 +19,7 @@ public static class MenuHelpers
         return null;
     }
 
-    public static void PrintBooks(IEnumerable<BookModel> books)
+    public static void PrintBooks(IEnumerable<BookResponseModel> books)
     {
         foreach (var b in books)
         {

@@ -1,6 +1,6 @@
+using Application.Contracts;
 using Domain.Enums;
 using FluentValidation;
-using Shared.Contracts;
 
 namespace Application.Validators;
 

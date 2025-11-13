@@ -1,4 +1,4 @@
-using Shared.Contracts;
+using Application.Contracts;
 
 namespace Presentation.Interfaces;
 

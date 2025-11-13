@@ -1,10 +1,9 @@
 namespace Presentation.Services;
 
+using Application.Contracts;
 using Domain.Enums;
-using Domain.ValueObjects;
 using Helpers;
 using Interfaces;
-using Shared.Contracts;
 
 public class BookConsoleInputService : IBookInputService
 {
@@ -12,9 +11,9 @@ public class BookConsoleInputService : IBookInputService
     {
         string title = ReadTitle();
         int year = ReadYear();
-        List<AuthorModel> authors = ReadAuthors();
+        List<AuthorUpsertModel> authors = ReadAuthors();
 
-        return new BookUpsertModel(title, authors, year, BookStatus.Available);
+        return new BookUpsertModel(title, authors, year);
     }
 
     private static string ReadTitle()
@@ -30,9 +29,9 @@ public class BookConsoleInputService : IBookInputService
         return year;
     }
 
-    private static List<AuthorModel> ReadAuthors()
+    private static List<AuthorUpsertModel> ReadAuthors()
     {
-        var authors = new List<AuthorModel>();
+        var authors = new List<AuthorUpsertModel>();
         Console.WriteLine("Now let's add authors (leave blank to finish):");
 
         while (true)
@@ -50,7 +49,7 @@ public class BookConsoleInputService : IBookInputService
         return authors;
     }
 
-    private static AuthorModel? ReadAuthor()
+    private static AuthorUpsertModel? ReadAuthor()
     {
         while (true)
         {
@@ -83,14 +82,14 @@ public class BookConsoleInputService : IBookInputService
 
             if (authorType is not (AuthorType.Known or AuthorType.Pseudonym))
             {
-                return new AuthorModel(name, authorType);
+                return new AuthorUpsertModel(name, authorType);
             }
 
             Console.Write("Enter author name: ");
             name = Console.ReadLine()?.Trim();
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return new AuthorModel(name, authorType);
+                return new AuthorUpsertModel(name, authorType);
             }
 
             MenuHelpers.Warn("Name cannot be empty for this author type.");
