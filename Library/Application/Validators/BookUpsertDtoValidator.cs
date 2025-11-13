@@ -1,11 +1,10 @@
 using Domain.Enums;
-using Domain.ValueObjects;
 using FluentValidation;
 using Shared.Contracts;
 
 namespace Application.Validators;
 
-public class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
+public sealed class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
 {
     public BookUpsertDtoValidator()
     {
@@ -27,10 +26,11 @@ public class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
             {
                 a.RuleFor(x => x.Type)
                     .IsInEnum();
-                
+
                 a.RuleFor(x => x.Name)
                     .NotEmpty()
                     .MaximumLength(100)
+                    .When(x => x.Type is AuthorType.Known or AuthorType.Pseudonym)
                     .WithMessage("Name must not exceed 100 characters.");
 
                 a.RuleFor(x => x.Name)
