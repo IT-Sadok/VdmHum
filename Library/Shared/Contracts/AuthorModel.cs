@@ -2,6 +2,6 @@ namespace Shared.Contracts;
 
 using Domain.Enums;
 
-public sealed record AuthorDto(
+public sealed record AuthorModel(
     string? Name,
     AuthorType Type);

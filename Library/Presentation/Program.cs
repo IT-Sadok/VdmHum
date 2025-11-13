@@ -39,7 +39,7 @@ builder.Services.AddScoped<IBookService>(sp =>
     return new BookService(provider.GetRepository());
 });
 
-builder.Services.AddValidatorsFromAssemblyContaining<BookUpsertDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BookUpsertModelValidator>();
 
 builder.Services
     .AddScoped<Menu>()

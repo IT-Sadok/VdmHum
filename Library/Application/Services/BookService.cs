@@ -10,15 +10,15 @@ using Shared.Contracts;
 
 public sealed class BookService(IBookRepository repository) : IBookService
 {
-    public async Task<BookDto> GetBookByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<BookModel> GetBookByIdAsync(Guid id, CancellationToken ct = default)
     {
         var book = await repository.GetByIdAsync(id, ct)
                    ?? throw new BookNotFoundException(id);
 
-        return BookMapper.ToDto(book);
+        return BookMapper.ToModel(book);
     }
 
-    public async Task<IEnumerable<BookDto>> SearchAsync(string query, CancellationToken ct = default)
+    public async Task<IEnumerable<BookModel>> SearchAsync(string query, CancellationToken ct = default)
     {
         query = query.Trim();
         var all = await repository.GetAllAsync(ct);
@@ -28,34 +28,34 @@ public sealed class BookService(IBookRepository repository) : IBookService
             || b.Authors.Any(a => a.Name != null &&
                                   a.Name.Contains(query, StringComparison.OrdinalIgnoreCase)));
 
-        return matches.Select(BookMapper.ToDto).ToList();
+        return matches.Select(BookMapper.ToModel).ToList();
     }
 
-    public async Task<IEnumerable<BookDto>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<BookModel>> GetAllAsync(CancellationToken ct = default)
     {
         var all = await repository.GetAllAsync(ct);
 
-        return all.Select(BookMapper.ToDto).ToList();
+        return all.Select(BookMapper.ToModel).ToList();
     }
 
-    public async Task<IEnumerable<BookDto>> GetAllAvailableAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<BookModel>> GetAllAvailableAsync(CancellationToken ct = default)
     {
         var all = await repository.GetAllAsync(ct);
         var available = all.Where(b => b.Status == BookStatus.Available);
 
-        return available.Select(BookMapper.ToDto).ToList();
+        return available.Select(BookMapper.ToModel).ToList();
     }
 
-    public async Task AddBookAsync(BookUpsertDto dto, CancellationToken ct = default)
+    public async Task AddBookAsync(BookUpsertModel model, CancellationToken ct = default)
     {
-        if (dto.Authors is null || dto.Authors.Count == 0)
+        if (model.Authors is null || model.Authors.Count == 0)
         {
             throw new InvalidOperationException("Authors cannot be empty.");
         }
 
-        var authorObjects = dto.Authors.Select(MapDtoToValueObject).ToHashSet();
+        var authorObjects = model.Authors.Select(MapModelToValueObject).ToHashSet();
 
-        var book = Book.Create(dto.Title, authorObjects, new DateOnly(dto.Year, 1, 1));
+        var book = Book.Create(model.Title, authorObjects, new DateOnly(model.Year, 1, 1));
 
         await repository.AddAsync(book, ct);
     }
@@ -91,14 +91,14 @@ public sealed class BookService(IBookRepository repository) : IBookService
         await repository.UpdateAsync(book, ct);
     }
 
-    private static Author MapDtoToValueObject(AuthorDto dto) =>
-        dto.Type switch
+    private static Author MapModelToValueObject(AuthorModel model) =>
+        model.Type switch
         {
-            AuthorType.Known => Author.Known(dto.Name!),
-            AuthorType.Pseudonym => Author.Pseudonym(dto.Name!),
+            AuthorType.Known => Author.Known(model.Name!),
+            AuthorType.Pseudonym => Author.Pseudonym(model.Name!),
             AuthorType.Anonymous => Author.Anonymous(),
             AuthorType.Folk => Author.Folk(),
             AuthorType.Unknown => Author.Unknown(),
-            _ => throw new InvalidOperationException($"Invalid author type: {dto.Type}")
+            _ => throw new InvalidOperationException($"Invalid author type: {model.Type}")
         };
 }

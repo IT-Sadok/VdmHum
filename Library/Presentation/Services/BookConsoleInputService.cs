@@ -8,13 +8,13 @@ using Shared.Contracts;
 
 public class BookConsoleInputService : IBookInputService
 {
-    public BookUpsertDto ReadBookFromConsole()
+    public BookUpsertModel ReadBookFromConsole()
     {
         string title = ReadTitle();
         int year = ReadYear();
-        List<AuthorDto> authors = ReadAuthors();
+        List<AuthorModel> authors = ReadAuthors();
 
-        return new BookUpsertDto(title, authors, year, BookStatus.Available);
+        return new BookUpsertModel(title, authors, year, BookStatus.Available);
     }
 
     private static string ReadTitle()
@@ -30,9 +30,9 @@ public class BookConsoleInputService : IBookInputService
         return year;
     }
 
-    private static List<AuthorDto> ReadAuthors()
+    private static List<AuthorModel> ReadAuthors()
     {
-        var authors = new List<AuthorDto>();
+        var authors = new List<AuthorModel>();
         Console.WriteLine("Now let's add authors (leave blank to finish):");
 
         while (true)
@@ -50,7 +50,7 @@ public class BookConsoleInputService : IBookInputService
         return authors;
     }
 
-    private static AuthorDto? ReadAuthor()
+    private static AuthorModel? ReadAuthor()
     {
         while (true)
         {
@@ -83,14 +83,14 @@ public class BookConsoleInputService : IBookInputService
 
             if (authorType is not (AuthorType.Known or AuthorType.Pseudonym))
             {
-                return new AuthorDto(name, authorType);
+                return new AuthorModel(name, authorType);
             }
 
             Console.Write("Enter author name: ");
             name = Console.ReadLine()?.Trim();
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return new AuthorDto(name, authorType);
+                return new AuthorModel(name, authorType);
             }
 
             MenuHelpers.Warn("Name cannot be empty for this author type.");

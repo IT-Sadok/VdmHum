@@ -8,7 +8,7 @@ using Shared.Contracts;
 
 public class AddBookAction(
     IBookService bookService,
-    IValidator<BookUpsertDto> validator,
+    IValidator<BookUpsertModel> validator,
     IBookInputService bookInput)
     : IMenuAction
 {
@@ -17,16 +17,16 @@ public class AddBookAction(
 
     public async Task ExecuteAsync()
     {
-        var dto = bookInput.ReadBookFromConsole();
+        var model = bookInput.ReadBookFromConsole();
 
-        var result = await validator.ValidateAsync(dto);
+        var result = await validator.ValidateAsync(model);
         if (!result.IsValid)
         {
             MenuHelpers.PrintValidationErrors(result);
             return;
         }
 
-        await bookService.AddBookAsync(dto);
+        await bookService.AddBookAsync(model);
 
         MenuHelpers.Success("Book added successfully.");
     }

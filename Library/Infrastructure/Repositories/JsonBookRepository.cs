@@ -14,8 +14,8 @@ public class JsonBookRepository(
 {
     public async Task<IReadOnlyList<Book>> GetAllAsync(CancellationToken ct = default)
     {
-        var models = await storage.ReadAsync<List<BookDto>>(filePath, jsonOptions, ct) ?? [];
-        return models.Select(BookMapper.FromDto).ToList();
+        var models = await storage.ReadAsync<List<BookModel>>(filePath, jsonOptions, ct) ?? [];
+        return models.Select(BookMapper.FromModel).ToList();
     }
 
     public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct = default)
@@ -49,7 +49,7 @@ public class JsonBookRepository(
 
     private async Task SaveAsync(List<Book> books, CancellationToken ct = default)
     {
-        var dtoList = books.Select(BookMapper.ToDto).ToList();
-        await storage.WriteAsync(filePath, dtoList, jsonOptions, ct);
+        var bookModels = books.Select(BookMapper.ToModel).ToList();
+        await storage.WriteAsync(filePath, bookModels, jsonOptions, ct);
     }
 }

@@ -4,9 +4,9 @@ using Shared.Contracts;
 
 namespace Application.Validators;
 
-public sealed class BookUpsertDtoValidator : AbstractValidator<BookUpsertDto>
+public sealed class BookUpsertModelValidator : AbstractValidator<BookUpsertModel>
 {
-    public BookUpsertDtoValidator()
+    public BookUpsertModelValidator()
     {
         RuleFor(b => b.Title)
             .NotEmpty()

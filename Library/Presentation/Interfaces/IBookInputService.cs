@@ -4,5 +4,5 @@ namespace Presentation.Interfaces;
 
 public interface IBookInputService
 {
-    BookUpsertDto ReadBookFromConsole();
+    BookUpsertModel ReadBookFromConsole();
 }

@@ -8,16 +8,16 @@ using Shared.Contracts;
 
 public static class BookMapper
 {
-    public static BookDto ToDto(Book book) => new(
+    public static BookModel ToModel(Book book) => new(
         book.Id,
         book.Title,
-        book.Authors.Select(a => new AuthorDto(a.Name, a.Type)).ToList(),
+        book.Authors.Select(a => new AuthorModel(a.Name, a.Type)).ToList(),
         book.Year.Year,
         book.Status);
 
-    public static Book FromDto(BookDto dto)
+    public static Book FromModel(BookModel model)
     {
-        var authors = dto.Authors.Select(a =>
+        var authors = model.Authors.Select(a =>
             a.Type switch
             {
                 AuthorType.Known => Author.Known(a.Name!),
@@ -29,10 +29,10 @@ public static class BookMapper
             }).ToHashSet();
 
         return Book.Rehydrate(
-            dto.Id, 
-            dto.Title, 
+            model.Id, 
+            model.Title, 
             authors, 
-            new DateOnly(dto.Year, 1, 1) , 
-            dto.Status);
+            new DateOnly(model.Year, 1, 1) , 
+            model.Status);
     }
 }

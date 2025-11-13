@@ -2,8 +2,9 @@ namespace Shared.Contracts;
 
 using Domain.Enums;
 
-public sealed record BookUpsertDto(
+public sealed record BookModel(
+    Guid Id,
     string Title,
-    List<AuthorDto> Authors,
+    List<AuthorModel> Authors,
     int Year,
     BookStatus Status);

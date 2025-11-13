@@ -19,7 +19,7 @@ public static class MenuHelpers
         return null;
     }
 
-    public static void PrintBooks(IEnumerable<BookDto> books)
+    public static void PrintBooks(IEnumerable<BookModel> books)
     {
         foreach (var b in books)
         {
