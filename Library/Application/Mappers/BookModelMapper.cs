@@ -16,7 +16,13 @@ public static class BookModelMapper
         book.Year.Year,
         book.Status);
 
-    public static HashSet<Author> ToDomainAuthors(IEnumerable<AuthorUpsertModel> models) =>
+    public static Book ToDomain(BookUpsertModel model) =>
+        Book.Create(
+            model.Title,
+            ToDomainAuthors(model.Authors),
+            new DateOnly(model.Year, 1, 1));
+
+    private static HashSet<Author> ToDomainAuthors(IEnumerable<AuthorUpsertModel> models) =>
         models.Select(m => m.Type switch
         {
             AuthorType.Known => Author.Known(m.Name!),
@@ -26,10 +32,4 @@ public static class BookModelMapper
             AuthorType.Unknown => Author.Unknown(),
             _ => throw new InvalidOperationException($"Invalid author type: {m.Type}")
         }).ToHashSet();
-
-    public static Book ToDomain(BookUpsertModel model) =>
-        Book.Create(
-            model.Title,
-            ToDomainAuthors(model.Authors),
-            new DateOnly(model.Year, 1, 1));
 }
