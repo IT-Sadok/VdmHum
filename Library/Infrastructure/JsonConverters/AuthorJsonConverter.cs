@@ -7,22 +7,19 @@ using Domain.ValueObjects;
 
 public sealed class AuthorJsonConverter : JsonConverter<Author>
 {
-    public override Author? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Author Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        var model = JsonSerializer.Deserialize<AuthorSurrogate>(ref reader, options);
-        if (model is null)
-        {
-            return null;
-        }
+        var model = JsonSerializer.Deserialize<AuthorSurrogate>(ref reader, options)
+                    ?? throw new JsonException("Unable to deserialize Author.");
 
         return model.Type switch
         {
-            AuthorType.Known => Author.Known(model.Name ?? "N/A"),
-            AuthorType.Pseudonym => Author.Pseudonym(model.Name ?? "N/A"),
+            AuthorType.Known => Author.Known(model.Name!),
+            AuthorType.Pseudonym => Author.Pseudonym(model.Name!),
             AuthorType.Anonymous => Author.Anonymous(),
             AuthorType.Folk => Author.Folk(),
             AuthorType.Unknown => Author.Unknown(),
-            _ => throw new InvalidOperationException($"Invalid author type: {model.Type}")
+            _ => throw new JsonException($"Invalid author type: {model.Type}")
         };
     }
 
@@ -30,7 +27,7 @@ public sealed class AuthorJsonConverter : JsonConverter<Author>
     {
         var model = new AuthorSurrogate
         {
-            Name = string.IsNullOrWhiteSpace(value.Name) ? "N/A" : value.Name,
+            Name = value.Name,
             Type = value.Type
         };
 
