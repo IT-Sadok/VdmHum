@@ -5,6 +5,7 @@ using Application.Services;
 using Application.Validators;
 using FluentValidation;
 using Infrastructure.Factories;
+using Infrastructure.FileStorage;
 using Infrastructure.JsonConverters;
 using Infrastructure.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ var jsonOptions = new JsonSerializerOptions
 
 builder.Services
     .AddSingleton(jsonOptions)
+    .AddSingleton<IFileStorage, JsonFileStorage>()
     .AddSingleton<IBookRepositoryFactory, JsonBookRepositoryFactory>()
     .AddSingleton<IBookRepositoryProvider, JsonBookRepositoryProvider>();
 
