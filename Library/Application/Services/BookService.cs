@@ -4,7 +4,6 @@ using Interfaces;
 using Mappers;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Exceptions.Author;
 using Domain.Exceptions.Book;
 using Domain.ValueObjects;
 using Shared.Contracts;
@@ -51,7 +50,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
     {
         if (dto.Authors is null || dto.Authors.Count == 0)
         {
-            throw new EmptyAuthorsListException();
+            throw new InvalidOperationException("Authors cannot be empty.");
         }
 
         var authorObjects = dto.Authors.Select(MapDtoToValueObject).ToHashSet();
@@ -100,6 +99,6 @@ public sealed class BookService(IBookRepository repository) : IBookService
             AuthorType.Anonymous => Author.Anonymous(),
             AuthorType.Folk => Author.Folk(),
             AuthorType.Unknown => Author.Unknown(),
-            _ => throw new InvalidAuthorTypeException(dto.Type.ToString())
+            _ => throw new InvalidOperationException($"Invalid author type: {dto.Type}")
         };
 }

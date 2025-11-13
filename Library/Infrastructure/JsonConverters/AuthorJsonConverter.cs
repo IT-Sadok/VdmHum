@@ -3,7 +3,6 @@ namespace Infrastructure.JsonConverters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Domain.Enums;
-using Domain.Exceptions.Author;
 using Domain.ValueObjects;
 
 public sealed class AuthorJsonConverter : JsonConverter<Author>
@@ -23,7 +22,7 @@ public sealed class AuthorJsonConverter : JsonConverter<Author>
             AuthorType.Anonymous => Author.Anonymous(),
             AuthorType.Folk => Author.Folk(),
             AuthorType.Unknown => Author.Unknown(),
-            _ => throw new InvalidAuthorTypeException(model.Type.ToString())
+            _ => throw new InvalidOperationException($"Invalid author type: {model.Type}")
         };
     }
 

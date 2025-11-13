@@ -1,7 +1,6 @@
 namespace Domain.ValueObjects;
 
 using Enums;
-using Exceptions.Author;
 
 public sealed record Author
 {

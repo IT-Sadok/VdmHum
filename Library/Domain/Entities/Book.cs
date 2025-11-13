@@ -1,8 +1,6 @@
 namespace Domain.Entities;
 
 using Enums;
-using Exceptions.Author;
-using Exceptions.Book;
 using ValueObjects;
 
 public sealed class Book
@@ -31,23 +29,28 @@ public sealed class Book
     public void AddAuthor(Author author)
     {
         ArgumentNullException.ThrowIfNull(author);
-        
+
         if (!_authors.Add(author))
         {
-            throw new AuthorAlreadyExistsException(this.Id, author);
+            throw new InvalidOperationException(
+                $"Author {author.Name} {author.Type} already added to book {Id}");
         }
     }
 
     public void RemoveAuthor(Author author)
     {
-        if (!_authors.Remove(author))
+        ArgumentNullException.ThrowIfNull(author);
+
+        if (_authors.Count == 1 && _authors.Contains(author))
         {
-            throw new AuthorNotFoundException(this.Id, author);
+            throw new InvalidOperationException(
+                $"Cannot remove the last author ({author.Name} {author.Type}) from book {Id}");
         }
 
-        if (_authors.Count == 0)
+        if (!_authors.Remove(author))
         {
-            throw new BookWithoutAuthorsException(this.Id);
+            throw new InvalidOperationException(
+                $"Author {author.Name} {author.Type} not found in book {Id}");
         }
     }
 
@@ -57,7 +60,7 @@ public sealed class Book
     {
         if (Status == BookStatus.Borrowed)
         {
-            throw new BookAlreadyBorrowedException(this.Id);
+            throw new InvalidOperationException($"Book {Id} is already borrowed");
         }
 
         Status = BookStatus.Borrowed;
@@ -67,7 +70,7 @@ public sealed class Book
     {
         if (Status == BookStatus.Available)
         {
-            throw new BookNotBorrowedException(this.Id);
+            throw new InvalidOperationException($"Book '{Id}' is not borrowed.");
         }
 
         Status = BookStatus.Available;
@@ -83,12 +86,12 @@ public sealed class Book
 
         if (authors.Count == 0)
         {
-            throw new EmptyAuthorsListException();
+            throw new InvalidOperationException("Authors cannot be empty");
         }
 
         return new Book(Guid.NewGuid(), title, authors, year, status);
     }
-    
+
     public static Book Rehydrate(
         Guid id,
         string title,
