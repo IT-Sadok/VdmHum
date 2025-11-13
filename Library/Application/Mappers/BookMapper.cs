@@ -25,7 +25,7 @@ public static class BookMapper
                 AuthorType.Folk => Author.Folk(),
                 AuthorType.Unknown => Author.Unknown(),
                 _ => throw new ArgumentOutOfRangeException()
-            }).ToList();
+            }).ToHashSet();
 
         return Book.Rehydrate(dto.Id, dto.Title, authors, new DateOnly(dto.Year, 1, 1) , dto.Status);
     }

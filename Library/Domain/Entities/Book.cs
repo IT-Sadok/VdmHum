@@ -7,9 +7,9 @@ using ValueObjects;
 
 public sealed class Book
 {
-    private readonly List<Author> _authors;
+    private readonly HashSet<Author> _authors;
 
-    private Book(Guid id, string title, List<Author> authors, DateOnly year, BookStatus status)
+    private Book(Guid id, string title, HashSet<Author> authors, DateOnly year, BookStatus status)
     {
         this.Id = id;
         this.Title = title;
@@ -22,7 +22,7 @@ public sealed class Book
 
     public string Title { get; private set; }
 
-    public IReadOnlyList<Author> Authors => this._authors;
+    public IEnumerable<Author> Authors => this._authors;
 
     public DateOnly Year { get; private set; }
 
@@ -31,13 +31,11 @@ public sealed class Book
     public void AddAuthor(Author author)
     {
         ArgumentNullException.ThrowIfNull(author);
-
-        if (_authors.Any(a => a.Equals(author)))
+        
+        if (!_authors.Add(author))
         {
             throw new AuthorAlreadyExistsException(this.Id, author);
         }
-
-        _authors.Add(author);
     }
 
     public void RemoveAuthor(Author author)
@@ -77,7 +75,7 @@ public sealed class Book
 
     public static Book Create(
         string title,
-        List<Author> authors,
+        HashSet<Author> authors,
         DateOnly year,
         BookStatus status = BookStatus.Available)
     {
@@ -94,7 +92,7 @@ public sealed class Book
     public static Book Rehydrate(
         Guid id,
         string title,
-        List<Author> authors,
+        HashSet<Author> authors,
         DateOnly year,
         BookStatus status)
     {

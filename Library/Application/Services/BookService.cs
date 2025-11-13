@@ -54,7 +54,7 @@ public sealed class BookService(IBookRepository repository) : IBookService
             throw new EmptyAuthorsListException();
         }
 
-        var authorObjects = dto.Authors.Select(MapDtoToValueObject).ToList();
+        var authorObjects = dto.Authors.Select(MapDtoToValueObject).ToHashSet();
 
         var book = Book.Create(dto.Title, authorObjects, new DateOnly(dto.Year, 1, 1));
 
