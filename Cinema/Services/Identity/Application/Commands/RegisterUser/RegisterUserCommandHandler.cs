@@ -3,6 +3,7 @@ namespace Application.Commands.RegisterUser;
 using Microsoft.Extensions.Options;
 using Domain;
 using Domain.Abstractions;
+using Domain.Constants;
 using Options;
 using Abstractions.Providers;
 using Abstractions.Messaging;
@@ -11,10 +12,12 @@ using Contracts;
 public sealed class RegisterUserCommandHandler(
     IIdentityService identityService,
     ITokenProvider tokenProvider,
-    IOptions<AuthOptions> authOptions,
+    IOptions<JwtOptions> jwtOptions,
     IDateTimeProvider dateTimeProvider)
     : ICommandHandler<RegisterUserCommand, AuthResponseModel>
 {
+    private readonly JwtOptions _options = jwtOptions.Value;
+
     public async Task<Result<AuthResponseModel>> Handle(RegisterUserCommand command, CancellationToken ct)
     {
         var existing = await identityService.FindByEmailAsync(command.Email, ct);
@@ -32,10 +35,12 @@ public sealed class RegisterUserCommandHandler(
             command.LastName,
             ct);
 
+        await identityService.AddToRoleAsync(user, RoleNames.User, ct);
+
         var accessToken = tokenProvider.CreateAccessToken(user);
         var refreshToken = tokenProvider.CreateRefreshToken(user);
 
-        var refreshLifetime = TimeSpan.FromDays(authOptions.Value.RefreshTokenLifetimeDays);
+        var refreshLifetime = TimeSpan.FromDays(this._options.RefreshTokenLifetimeDays);
         var expiresAtUtc = dateTimeProvider.UtcNow.Add(refreshLifetime);
 
         await identityService.StoreRefreshTokenAsync(

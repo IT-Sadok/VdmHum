@@ -11,7 +11,7 @@ using Contracts;
 public sealed class LoginUserCommandHandler(
     IIdentityService identityService,
     ITokenProvider tokenProvider,
-    IOptions<AuthOptions> authOptions,
+    IOptions<JwtOptions> authOptions,
     IDateTimeProvider dateTimeProvider)
     : ICommandHandler<LoginUserCommand, AuthResponseModel>
 {

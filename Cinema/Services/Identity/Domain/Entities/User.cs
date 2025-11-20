@@ -35,6 +35,29 @@ public sealed class User
         return new User(Guid.CreateVersion7(), email, phoneNumber, firstName, lastName);
     }
 
+    public static User FromIdentity(
+        Guid id,
+        string email,
+        string? phoneNumber,
+        string? firstName,
+        string? lastName,
+        IEnumerable<string>? roles = null)
+    {
+        var user = new User(id, email, phoneNumber ?? string.Empty, firstName, lastName);
+
+        if (roles is null)
+        {
+            return user;
+        }
+
+        foreach (var role in roles)
+        {
+            user.AddRole(role);
+        }
+
+        return user;
+    }
+
     public void ChangeProfile(
         string? firstName,
         string? lastName,
