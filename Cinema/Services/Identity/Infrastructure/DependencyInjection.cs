@@ -24,6 +24,7 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddIdentityInternal()
             .AddAuthOptions(configuration)
+            .AddAdminUserOptions(configuration)
             .AddAuthenticationInternal(configuration)
             .AddAuthorizationInternal()
             .AddInfrastructureServices();
@@ -55,6 +56,15 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+
+        return services;
+    }
+
+    private static IServiceCollection AddAdminUserOptions(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<AdminUserOptions>(configuration.GetSection("AdminUser"));
 
         return services;
     }

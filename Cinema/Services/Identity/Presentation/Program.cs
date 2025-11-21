@@ -21,6 +21,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    await app.SeedAdminAsync();
+
     app.UseSwagger();
     app.UseSwaggerUI();
 
