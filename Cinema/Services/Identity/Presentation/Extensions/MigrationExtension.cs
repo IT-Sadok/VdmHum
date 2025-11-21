@@ -1,7 +1,7 @@
-using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-
 namespace Presentation.Extensions;
+
+using global::Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 public static class MigrationExtensions
 {

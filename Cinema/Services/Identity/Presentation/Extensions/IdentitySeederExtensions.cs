@@ -1,10 +1,10 @@
+namespace Presentation.Extensions;
+
 using Application.Options;
 using Domain.Constants;
-using Infrastructure.Identity;
+using global::Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-
-namespace Presentation.Extensions;
 
 public static class IdentitySeederExtensions
 {
