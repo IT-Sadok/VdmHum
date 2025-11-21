@@ -2,15 +2,15 @@ namespace Infrastructure.Identity;
 
 public sealed class RefreshToken
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
-    public Guid UserId { get; set; }
+    public Guid UserId { get; init; }
 
-    public string TokenHash { get; set; } = null!;
+    public string TokenHash { get; init; } = null!;
 
-    public DateTimeOffset ExpiresAtUtc { get; set; }
+    public DateTimeOffset ExpiresAtUtc { get; init; }
 
-    public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset CreatedAtUtc { get; init; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? RevokedAtUtc { get; set; }
 

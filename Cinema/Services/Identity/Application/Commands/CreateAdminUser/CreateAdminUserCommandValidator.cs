@@ -1,6 +1,5 @@
 namespace Application.Commands.CreateAdminUser;
 
-using RegisterUser;
 using FluentValidation;
 
 public class CreateAdminUserCommandValidator : AbstractValidator<CreateAdminUserCommand>
@@ -14,5 +13,14 @@ public class CreateAdminUserCommandValidator : AbstractValidator<CreateAdminUser
         this.RuleFor(u => u.Password)
             .NotEmpty()
             .MinimumLength(8);
+
+        this.RuleFor(u => u.PhoneNumber)
+            .MaximumLength(15);
+
+        this.RuleFor(u => u.FirstName)
+            .MaximumLength(100);
+
+        this.RuleFor(u => u.LastName)
+            .MaximumLength(100);
     }
 }
