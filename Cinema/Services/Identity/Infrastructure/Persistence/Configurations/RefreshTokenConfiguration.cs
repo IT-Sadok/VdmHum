@@ -31,8 +31,5 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
 
         builder.Property(x => x.CreatedAtUtc)
             .IsRequired();
-
-        builder.Property(x => x.RevokedAtUtc)
-            .IsRequired();
     }
 }

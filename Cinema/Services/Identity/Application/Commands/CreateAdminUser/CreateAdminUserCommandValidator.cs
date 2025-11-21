@@ -3,7 +3,7 @@ namespace Application.Commands.CreateAdminUser;
 using RegisterUser;
 using FluentValidation;
 
-public class CreateAdminUserCommandValidator : AbstractValidator<RegisterUserCommand>
+public class CreateAdminUserCommandValidator : AbstractValidator<CreateAdminUserCommand>
 {
     public CreateAdminUserCommandValidator()
     {

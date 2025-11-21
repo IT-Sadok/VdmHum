@@ -20,7 +20,7 @@ public class RefreshTokenCommandHandler(
             return Result.Failure<AuthResponseModel>(UserErrors.InvalidRefreshToken);
         }
 
-        var newAccessToken = tokenProvider.CreateRefreshToken(user);
+        var newAccessToken = tokenProvider.CreateAccessToken(user);
 
         return new AuthResponseModel(user.Id, newAccessToken, command.RefreshToken);
     }
