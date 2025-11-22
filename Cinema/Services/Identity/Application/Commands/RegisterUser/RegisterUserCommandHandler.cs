@@ -11,6 +11,7 @@ using Contracts;
 
 public sealed class RegisterUserCommandHandler(
     IIdentityService identityService,
+    ICurrentUserService currentUserService,
     ITokenProvider tokenProvider,
     IOptions<JwtOptions> jwtOptions,
     IDateTimeProvider dateTimeProvider,
@@ -21,6 +22,11 @@ public sealed class RegisterUserCommandHandler(
 
     public async Task<Result<AuthResponseModel>> Handle(RegisterUserCommand command, CancellationToken ct)
     {
+        if (currentUserService.IsAuthenticated)
+        {
+            return Result.Failure<AuthResponseModel>(UserErrors.AlreadyAuthenticated);
+        }
+
         var existing = await identityService.FindByEmailAsync(command.Email, ct);
 
         if (existing is not null)

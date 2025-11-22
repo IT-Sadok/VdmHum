@@ -10,6 +10,7 @@ using Contracts;
 
 public sealed class LoginUserCommandHandler(
     IIdentityService identityService,
+    ICurrentUserService currentUserService,
     ITokenProvider tokenProvider,
     IOptions<JwtOptions> authOptions,
     IDateTimeProvider dateTimeProvider)
@@ -17,6 +18,11 @@ public sealed class LoginUserCommandHandler(
 {
     public async Task<Result<AuthResponseModel>> Handle(LoginUserCommand command, CancellationToken ct)
     {
+        if (currentUserService.IsAuthenticated)
+        {
+            return Result.Failure<AuthResponseModel>(UserErrors.AlreadyAuthenticated);
+        }
+
         var user = await identityService.FindByEmailAsync(command.Email, ct);
 
         if (user is null)

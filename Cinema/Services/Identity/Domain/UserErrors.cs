@@ -16,6 +16,10 @@ public static class UserErrors
         "Users.EmailNotUnique",
         "The provided email is not unique");
 
+    public static readonly Error AlreadyAuthenticated = Error.Conflict(
+        code: "User.AlreadyAuthenticated",
+        description: "The user is already authenticated.");
+
     public static readonly Error InvalidRefreshToken = Error.NotFound(
         "Users.InvalidRefreshToken",
         "The refresh token is not found.");
