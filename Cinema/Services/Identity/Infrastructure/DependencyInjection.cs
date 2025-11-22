@@ -129,6 +129,7 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITokenProvider, TokenProvider>();
+        services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
         return services;
     }

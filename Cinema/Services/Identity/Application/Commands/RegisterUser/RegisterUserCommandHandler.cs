@@ -13,7 +13,8 @@ public sealed class RegisterUserCommandHandler(
     IIdentityService identityService,
     ITokenProvider tokenProvider,
     IOptions<JwtOptions> jwtOptions,
-    IDateTimeProvider dateTimeProvider)
+    IDateTimeProvider dateTimeProvider,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<RegisterUserCommand, AuthResponseModel>
 {
     private readonly JwtOptions _options = jwtOptions.Value;
@@ -27,28 +28,33 @@ public sealed class RegisterUserCommandHandler(
             return Result.Failure<AuthResponseModel>(UserErrors.EmailNotUnique);
         }
 
-        var user = await identityService.RegisterAsync(
-            command.Email,
-            command.Password,
-            command.PhoneNumber,
-            command.FirstName,
-            command.LastName,
+        return await unitOfWork.ExecuteInTransactionAsync(
+            async innerCt =>
+            {
+                var user = await identityService.RegisterAsync(
+                    command.Email,
+                    command.Password,
+                    command.PhoneNumber,
+                    command.FirstName,
+                    command.LastName,
+                    innerCt);
+
+                await identityService.AddToRoleAsync(user, RoleNames.User, innerCt);
+
+                var accessToken = tokenProvider.CreateAccessToken(user);
+                var refreshToken = tokenProvider.CreateRefreshToken(user);
+
+                var refreshLifetime = TimeSpan.FromDays(this._options.RefreshTokenLifetimeDays);
+                var expiresAtUtc = dateTimeProvider.UtcNow.Add(refreshLifetime);
+
+                await identityService.StoreRefreshTokenAsync(
+                    user.Id,
+                    refreshToken,
+                    expiresAtUtc,
+                    innerCt);
+
+                return new AuthResponseModel(user.Id, accessToken, refreshToken);
+            },
             ct);
-
-        await identityService.AddToRoleAsync(user, RoleNames.User, ct);
-
-        var accessToken = tokenProvider.CreateAccessToken(user);
-        var refreshToken = tokenProvider.CreateRefreshToken(user);
-
-        var refreshLifetime = TimeSpan.FromDays(this._options.RefreshTokenLifetimeDays);
-        var expiresAtUtc = dateTimeProvider.UtcNow.Add(refreshLifetime);
-
-        await identityService.StoreRefreshTokenAsync(
-            user.Id,
-            refreshToken,
-            expiresAtUtc,
-            ct);
-
-        return new AuthResponseModel(user.Id, accessToken, refreshToken);
     }
 }

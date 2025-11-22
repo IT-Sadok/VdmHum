@@ -7,7 +7,8 @@ using Abstractions.Providers;
 using Abstractions.Messaging;
 
 public class CreateAdminUserCommandHandler(
-    IIdentityService identityService)
+    IIdentityService identityService,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<CreateAdminUserCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateAdminUserCommand command, CancellationToken ct)
@@ -19,16 +20,21 @@ public class CreateAdminUserCommandHandler(
             return Result.Failure<Guid>(UserErrors.EmailNotUnique);
         }
 
-        var user = await identityService.RegisterAsync(
-            command.Email,
-            command.Password,
-            command.PhoneNumber,
-            command.FirstName,
-            command.LastName,
+        return await unitOfWork.ExecuteInTransactionAsync(
+            async innerCt =>
+            {
+                var user = await identityService.RegisterAsync(
+                    command.Email,
+                    command.Password,
+                    command.PhoneNumber,
+                    command.FirstName,
+                    command.LastName,
+                    innerCt);
+
+                await identityService.AddToRoleAsync(user, RoleNames.Admin, innerCt);
+
+                return user.Id;
+            },
             ct);
-
-        await identityService.AddToRoleAsync(user, RoleNames.Admin, ct);
-
-        return user.Id;
     }
 }
