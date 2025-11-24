@@ -11,7 +11,7 @@ public class RefreshTokenCommandHandler(
     ITokenProvider tokenProvider)
     : ICommandHandler<RefreshTokenCommand, AuthResponseModel>
 {
-    public async Task<Result<AuthResponseModel>> Handle(RefreshTokenCommand command, CancellationToken ct)
+    public async Task<Result<AuthResponseModel>> HandleAsync(RefreshTokenCommand command, CancellationToken ct)
     {
         var user = await identityService.GetUserByRefreshTokenAsync(command.RefreshToken, ct);
 

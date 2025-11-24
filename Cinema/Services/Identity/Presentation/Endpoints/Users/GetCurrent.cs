@@ -16,7 +16,7 @@ internal sealed class GetCurrent : IEndpoint
             {
                 var query = new GetCurrentUserQuery();
 
-                var result = await handler.Handle(query, ct);
+                var result = await handler.HandleAsync(query, ct);
 
                 return result.Match(Results.Ok, CustomResults.Problem);
             })

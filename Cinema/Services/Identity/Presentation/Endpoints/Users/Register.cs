@@ -35,7 +35,7 @@ internal sealed class Register : IEndpoint
                     registerRequest.FirstName,
                     registerRequest.LastName);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
                     auth =>

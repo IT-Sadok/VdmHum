@@ -12,7 +12,7 @@ public class GetCurrentUserHandler(
 )
     : IQueryHandler<GetCurrentUserQuery, UserResponseModel>
 {
-    public async Task<Result<UserResponseModel>> Handle(GetCurrentUserQuery query, CancellationToken ct)
+    public async Task<Result<UserResponseModel>> HandleAsync(GetCurrentUserQuery query, CancellationToken ct)
     {
         if (!currentUserService.IsAuthenticated || currentUserService.UserId is null)
         {

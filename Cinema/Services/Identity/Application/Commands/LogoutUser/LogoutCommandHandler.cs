@@ -10,7 +10,7 @@ public class LogoutCommandHandler(
     ICurrentUserService currentUserService)
     : ICommandHandler<LogoutUserCommand, Result>
 {
-    public async Task<Result<Result>> Handle(LogoutUserCommand command, CancellationToken ct)
+    public async Task<Result<Result>> HandleAsync(LogoutUserCommand command, CancellationToken ct)
     {
         if (!currentUserService.IsAuthenticated || currentUserService.UserId is null)
         {

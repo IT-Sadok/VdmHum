@@ -27,7 +27,7 @@ internal sealed class Logout : IEndpoint
 
                 var command = new LogoutUserCommand(refreshToken);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
                     onSuccess: () =>

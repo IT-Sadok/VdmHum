@@ -10,7 +10,7 @@ public class UpdateProfileCommandHandler(
     ICurrentUserService currentUserService)
     : ICommandHandler<UpdateProfileCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(UpdateProfileCommand command, CancellationToken ct)
+    public async Task<Result<Guid>> HandleAsync(UpdateProfileCommand command, CancellationToken ct)
     {
         if (!currentUserService.IsAuthenticated || currentUserService.UserId is null)
         {

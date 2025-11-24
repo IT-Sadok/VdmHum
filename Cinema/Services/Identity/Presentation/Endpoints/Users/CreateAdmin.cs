@@ -28,7 +28,7 @@ internal sealed class CreateAdmin : IEndpoint
                     createAdminRequest.FirstName,
                     createAdminRequest.LastName);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
                     id => Results.Created($"/admin/users/{id}", new { Id = id }),

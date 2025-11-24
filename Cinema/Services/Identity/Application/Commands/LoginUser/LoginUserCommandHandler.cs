@@ -16,7 +16,7 @@ public sealed class LoginUserCommandHandler(
     IDateTimeProvider dateTimeProvider)
     : ICommandHandler<LoginUserCommand, AuthResponseModel>
 {
-    public async Task<Result<AuthResponseModel>> Handle(LoginUserCommand command, CancellationToken ct)
+    public async Task<Result<AuthResponseModel>> HandleAsync(LoginUserCommand command, CancellationToken ct)
     {
         if (currentUserService.IsAuthenticated)
         {

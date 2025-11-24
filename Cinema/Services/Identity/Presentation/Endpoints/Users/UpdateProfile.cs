@@ -24,7 +24,7 @@ internal sealed class UpdateProfile : IEndpoint
                     updateProfileRequest.FirstName,
                     updateProfileRequest.LastName);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(Results.NoContent, CustomResults.Problem);
             })

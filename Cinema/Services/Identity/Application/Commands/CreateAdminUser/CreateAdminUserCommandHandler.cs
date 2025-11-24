@@ -11,7 +11,7 @@ public class CreateAdminUserCommandHandler(
     IUnitOfWork unitOfWork)
     : ICommandHandler<CreateAdminUserCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(CreateAdminUserCommand command, CancellationToken ct)
+    public async Task<Result<Guid>> HandleAsync(CreateAdminUserCommand command, CancellationToken ct)
     {
         var existing = await identityService.FindByEmailAsync(command.Email, ct);
 

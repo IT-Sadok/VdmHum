@@ -28,7 +28,7 @@ internal sealed class Refresh : IEndpoint
 
                 var command = new RefreshTokenCommand(refreshToken);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
                     onSuccess: auth =>

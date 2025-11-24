@@ -25,7 +25,7 @@ internal sealed class Login : IEndpoint
             {
                 var command = new LoginUserCommand(loginRequest.Email, loginRequest.Password);
 
-                var result = await handler.Handle(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
                     auth =>

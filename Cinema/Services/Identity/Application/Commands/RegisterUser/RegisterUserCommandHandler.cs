@@ -20,7 +20,7 @@ public sealed class RegisterUserCommandHandler(
 {
     private readonly JwtOptions _options = jwtOptions.Value;
 
-    public async Task<Result<AuthResponseModel>> Handle(RegisterUserCommand command, CancellationToken ct)
+    public async Task<Result<AuthResponseModel>> HandleAsync(RegisterUserCommand command, CancellationToken ct)
     {
         if (currentUserService.IsAuthenticated)
         {

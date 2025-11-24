@@ -5,5 +5,5 @@ using Domain.Abstractions;
 public interface IQueryHandler<in TQuery, TResponse>
     where TQuery : IQuery<TResponse>
 {
-    Task<Result<TResponse>> Handle(TQuery query, CancellationToken ct);
+    Task<Result<TResponse>> HandleAsync(TQuery query, CancellationToken ct);
 }
