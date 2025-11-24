@@ -7,23 +7,23 @@ using Abstractions.Messaging;
 
 public class UpdateProfileCommandHandler(
     IIdentityService identityService,
-    ICurrentUserService currentUserService)
+    IUserContext userContext)
     : ICommandHandler<UpdateProfileCommand, Guid>
 {
     public async Task<Result<Guid>> HandleAsync(UpdateProfileCommand command, CancellationToken ct)
     {
-        if (!currentUserService.IsAuthenticated || currentUserService.UserId is null)
+        if (!userContext.IsAuthenticated || userContext.UserId is null)
         {
             return Result.Failure<Guid>(UserErrors.Unauthorized);
         }
 
         await identityService.UpdateProfileAsync(
-            currentUserService.UserId.Value,
+            userContext.UserId.Value,
             command.PhoneNumber,
             command.FirstName,
             command.LastName,
             ct);
 
-        return currentUserService.UserId.Value;
+        return userContext.UserId.Value;
     }
 }

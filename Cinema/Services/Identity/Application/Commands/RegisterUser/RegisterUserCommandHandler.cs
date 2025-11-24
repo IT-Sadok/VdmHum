@@ -11,7 +11,7 @@ using Contracts;
 
 public sealed class RegisterUserCommandHandler(
     IIdentityService identityService,
-    ICurrentUserService currentUserService,
+    IUserContext userContext,
     ITokenProvider tokenProvider,
     IOptions<JwtOptions> jwtOptions,
     IDateTimeProvider dateTimeProvider,
@@ -22,7 +22,7 @@ public sealed class RegisterUserCommandHandler(
 
     public async Task<Result<AuthResponseModel>> HandleAsync(RegisterUserCommand command, CancellationToken ct)
     {
-        if (currentUserService.IsAuthenticated)
+        if (userContext.IsAuthenticated)
         {
             return Result.Failure<AuthResponseModel>(UserErrors.AlreadyAuthenticated);
         }

@@ -7,12 +7,12 @@ using Domain.Abstractions;
 
 public class LogoutCommandHandler(
     IIdentityService identityService,
-    ICurrentUserService currentUserService)
+    IUserContext userContext)
     : ICommandHandler<LogoutUserCommand, Result>
 {
     public async Task<Result<Result>> HandleAsync(LogoutUserCommand command, CancellationToken ct)
     {
-        if (!currentUserService.IsAuthenticated || currentUserService.UserId is null)
+        if (!userContext.IsAuthenticated || userContext.UserId is null)
         {
             return Result.Failure(UserErrors.Unauthorized);
         }

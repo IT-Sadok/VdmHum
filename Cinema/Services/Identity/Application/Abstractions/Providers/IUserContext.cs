@@ -1,6 +1,6 @@
 namespace Application.Abstractions.Providers;
 
-public interface ICurrentUserService
+public interface IUserContext
 {
     Guid? UserId { get; }
 

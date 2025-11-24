@@ -13,7 +13,7 @@ builder.Services.AddApplication()
     .AddPresentation();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 

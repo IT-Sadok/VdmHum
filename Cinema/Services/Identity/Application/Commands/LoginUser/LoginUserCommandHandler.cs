@@ -10,7 +10,7 @@ using Contracts;
 
 public sealed class LoginUserCommandHandler(
     IIdentityService identityService,
-    ICurrentUserService currentUserService,
+    IUserContext userContext,
     ITokenProvider tokenProvider,
     IOptions<JwtOptions> authOptions,
     IDateTimeProvider dateTimeProvider)
@@ -18,7 +18,7 @@ public sealed class LoginUserCommandHandler(
 {
     public async Task<Result<AuthResponseModel>> HandleAsync(LoginUserCommand command, CancellationToken ct)
     {
-        if (currentUserService.IsAuthenticated)
+        if (userContext.IsAuthenticated)
         {
             return Result.Failure<AuthResponseModel>(UserErrors.AlreadyAuthenticated);
         }

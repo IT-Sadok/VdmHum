@@ -3,8 +3,8 @@ namespace Presentation.Services;
 using System.Security.Claims;
 using Application.Abstractions.Providers;
 
-public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    : ICurrentUserService
+public sealed class UserContext(IHttpContextAccessor httpContextAccessor)
+    : IUserContext
 {
     public Guid? UserId
     {
