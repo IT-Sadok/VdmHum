@@ -1,5 +1,6 @@
 namespace Presentation.Infrastructure;
 
+using Constants;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+            Type = ErrorTypesDocumentation.Type500InternalSeverError,
             Title = "Server failure",
         };
 

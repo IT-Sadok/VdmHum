@@ -1,5 +1,6 @@
 namespace Presentation.Infrastructure;
 
+using Constants;
 using Domain;
 using Domain.Abstractions;
 
@@ -42,11 +43,11 @@ public static class CustomResults
         static string GetType(ErrorType errorType) =>
             errorType switch
             {
-                ErrorType.Validation => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                ErrorType.Problem => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                ErrorType.NotFound => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                ErrorType.Conflict => "https://tools.ietf.org/html/rfc7231#section-6.5.8",
-                _ => "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+                ErrorType.Validation => ErrorTypesDocumentation.Type400Validation,
+                ErrorType.Problem => ErrorTypesDocumentation.Type400Problem,
+                ErrorType.NotFound => ErrorTypesDocumentation.Type404NotFound,
+                ErrorType.Conflict => ErrorTypesDocumentation.Type409Conflict,
+                _ => ErrorTypesDocumentation.Type500InternalSeverError
             };
 
         static int GetStatusCode(ErrorType errorType) =>
