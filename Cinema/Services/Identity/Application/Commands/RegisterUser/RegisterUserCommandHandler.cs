@@ -47,7 +47,7 @@ public sealed class RegisterUserCommandHandler(
         await identityService.AddToRoleAsync(user, RoleNames.User, ct);
 
         var accessToken = tokenProvider.CreateAccessToken(user);
-        var refreshToken = tokenProvider.CreateRefreshToken(user);
+        var refreshToken = tokenProvider.CreateRefreshToken();
 
         var refreshLifetime = TimeSpan.FromDays(this._options.RefreshTokenLifetimeDays);
         var expiresAtUtc = dateTimeProvider.UtcNow.Add(refreshLifetime);

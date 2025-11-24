@@ -6,5 +6,5 @@ public interface ITokenProvider
 {
     string CreateAccessToken(User user);
 
-    string CreateRefreshToken(User user);
+    string CreateRefreshToken();
 }

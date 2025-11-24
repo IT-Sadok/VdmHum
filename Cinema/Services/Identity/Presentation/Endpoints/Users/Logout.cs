@@ -33,7 +33,7 @@ internal sealed class Logout : IEndpoint
                 return result.Match(
                     onSuccess: () =>
                     {
-                        AuthCookieHelper.ClearAuthCookies(httpContext.Response, jwtOptions.Value);
+                        RefreshTokenCookieHelper.ClearRefreshToken(httpContext.Response, jwtOptions.Value);
                         return Results.NoContent();
                     },
                     onFailure: CustomResults.Problem);

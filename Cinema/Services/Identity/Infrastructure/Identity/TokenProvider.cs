@@ -1,7 +1,7 @@
 namespace Infrastructure.Identity;
 
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,33 +19,39 @@ public sealed class TokenProvider(
 
     public string CreateAccessToken(User user)
     {
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._options.SigningKey));
+        var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.Email),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email),
         };
 
-        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._options.SigningKey));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        claims.AddRange(user.Roles.Select(role => new Claim("role", role)));
 
         var now = dateTimeProvider.UtcNow;
 
-        var token = new JwtSecurityToken(
-            issuer: this._options.Issuer,
-            audience: this._options.Audience,
-            claims: claims,
-            notBefore: now,
-            expires: now.AddMinutes(this._options.AccessTokenLifetimeMinutes),
-            signingCredentials: creds);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = now.AddMinutes(this._options.AccessTokenLifetimeMinutes),
+            SigningCredentials = credentials,
+            Issuer = this._options.Issuer,
+            Audience = this._options.Audience,
+            NotBefore = now,
+        };
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var handler = new JsonWebTokenHandler();
+
+        var token = handler.CreateToken(tokenDescriptor);
+
+        return token;
     }
 
-    public string CreateRefreshToken(User user)
+    public string CreateRefreshToken()
     {
-        var bytes = RandomNumberGenerator.GetBytes(64);
+        var bytes = RandomNumberGenerator.GetBytes(32);
         return Convert.ToBase64String(bytes);
     }
 }

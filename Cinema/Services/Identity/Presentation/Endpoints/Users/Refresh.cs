@@ -34,8 +34,8 @@ internal sealed class Refresh : IEndpoint
                 return result.Match(
                     onSuccess: auth =>
                     {
-                        AuthCookieHelper.SetAuthCookies(httpContext.Response, auth, jwtOptions.Value);
-                        return Results.Ok(new AuthResponse(auth.UserId));
+                        RefreshTokenCookieHelper.SetRefreshToken(httpContext.Response, auth, jwtOptions.Value);
+                        return Results.Ok(new AuthResponse(auth.AccessToken));
                     },
                     onFailure: CustomResults.Problem);
             })

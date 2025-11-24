@@ -41,8 +41,8 @@ internal sealed class Register : IEndpoint
                 return result.Match(
                     auth =>
                     {
-                        AuthCookieHelper.SetAuthCookies(httpContext.Response, auth, jwtOptions.Value);
-                        return Results.Ok(new AuthResponse(auth.UserId));
+                        RefreshTokenCookieHelper.SetRefreshToken(httpContext.Response, auth, jwtOptions.Value);
+                        return Results.Ok(new AuthResponse(auth.AccessToken));
                     },
                     CustomResults.Problem);
             })

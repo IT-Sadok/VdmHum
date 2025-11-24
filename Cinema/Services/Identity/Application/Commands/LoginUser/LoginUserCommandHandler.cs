@@ -38,7 +38,7 @@ public sealed class LoginUserCommandHandler(
         }
 
         var accessToken = tokenProvider.CreateAccessToken(user);
-        var refreshToken = tokenProvider.CreateRefreshToken(user);
+        var refreshToken = tokenProvider.CreateRefreshToken();
 
         var refreshLifetime = TimeSpan.FromDays(authOptions.Value.RefreshTokenLifetimeDays);
         var expiresAtUtc = dateTimeProvider.UtcNow.Add(refreshLifetime);
