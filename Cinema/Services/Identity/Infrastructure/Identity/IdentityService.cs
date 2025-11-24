@@ -147,7 +147,7 @@ public sealed class IdentityService(
             ExpiresAtUtc = new DateTimeOffset(expiresAtUtc, TimeSpan.Zero),
         };
 
-        dbContext.Set<RefreshToken>().Add(entity);
+        dbContext.Add(entity);
         await dbContext.SaveChangesAsync(ct);
     }
 
@@ -183,22 +183,21 @@ public sealed class IdentityService(
         return MapToDomainUser(appUser, roles);
     }
 
-    public async Task RevokeRefreshTokenAsync(
+    public async Task<bool> TryRevokeRefreshTokenAsync(
         string refreshToken,
         CancellationToken ct = default)
     {
-        var tokenHash = ComputeHash(refreshToken);
+        var hash = ComputeHash(refreshToken);
 
-        var token = await dbContext.Set<RefreshToken>()
-            .FirstOrDefaultAsync(x => x.TokenHash == tokenHash, ct);
+        var affected = await dbContext.Set<RefreshToken>()
+            .Where(t => t.TokenHash == hash
+                        && t.RevokedAtUtc == null
+                        && t.ExpiresAtUtc > DateTimeOffset.UtcNow)
+            .ExecuteUpdateAsync(
+                setters => setters
+                    .SetProperty(t => t.RevokedAtUtc, DateTimeOffset.UtcNow), ct);
 
-        if (token is null)
-        {
-            return;
-        }
-
-        token.RevokedAtUtc = DateTimeOffset.UtcNow;
-        await dbContext.SaveChangesAsync(ct);
+        return affected == 1;
     }
 
     private static string ComputeHash(string value)

@@ -17,7 +17,10 @@ public class LogoutCommandHandler(
             return Result.Failure(UserErrors.Unauthorized);
         }
 
-        await identityService.RevokeRefreshTokenAsync(command.RefreshToken, ct);
+        if (!await identityService.TryRevokeRefreshTokenAsync(command.RefreshToken, ct))
+        {
+            return Result.Failure(UserErrors.InvalidRefreshToken);
+        }
 
         return Result.Success();
     }

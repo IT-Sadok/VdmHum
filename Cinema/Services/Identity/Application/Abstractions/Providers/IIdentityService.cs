@@ -37,5 +37,5 @@ public interface IIdentityService
 
     Task<User?> GetUserByRefreshTokenAsync(string refreshToken, CancellationToken ct = default);
 
-    Task RevokeRefreshTokenAsync(string refreshToken, CancellationToken ct = default);
+    Task<bool> TryRevokeRefreshTokenAsync(string refreshToken, CancellationToken ct = default);
 }
