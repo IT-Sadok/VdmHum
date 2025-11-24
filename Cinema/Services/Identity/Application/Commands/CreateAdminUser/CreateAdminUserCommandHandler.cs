@@ -23,21 +23,20 @@ public class CreateAdminUserCommandHandler(
             return Result.Failure<CreateAdminResponseModel>(UserErrors.EmailNotUnique);
         }
 
-        return await unitOfWork.ExecuteInTransactionAsync(
-            async innerCt =>
-            {
-                var user = await identityService.RegisterAsync(
-                    command.Email,
-                    command.Password,
-                    command.PhoneNumber,
-                    command.FirstName,
-                    command.LastName,
-                    innerCt);
+        await using var transaction = await unitOfWork.BeginTransactionAsync(ct);
 
-                await identityService.AddToRoleAsync(user, RoleNames.Admin, innerCt);
-
-                return new CreateAdminResponseModel(user.Id);
-            },
+        var user = await identityService.RegisterAsync(
+            command.Email,
+            command.Password,
+            command.PhoneNumber,
+            command.FirstName,
+            command.LastName,
             ct);
+
+        await identityService.AddToRoleAsync(user, RoleNames.Admin, ct);
+
+        await transaction.CommitAsync(ct);
+
+        return new CreateAdminResponseModel(user.Id);
     }
 }

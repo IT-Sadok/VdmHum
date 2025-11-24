@@ -1,28 +1,27 @@
 namespace Infrastructure.Providers;
 
+using Microsoft.EntityFrameworkCore.Storage;
 using Application.Abstractions.Providers;
 using Persistence;
 
 public sealed class EfUnitOfWork(ApplicationDbContext dbContext) : IUnitOfWork
 {
-    public async Task<T> ExecuteInTransactionAsync<T>(
-        Func<CancellationToken, Task<T>> action,
-        CancellationToken ct = default)
+    public async Task<IUnitOfWorkTransaction> BeginTransactionAsync(CancellationToken ct = default)
     {
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(ct);
+        var tx = await dbContext.Database.BeginTransactionAsync(ct);
+        return new EfUnitOfWorkTransaction(tx);
+    }
 
-        try
-        {
-            var result = await action(ct);
+    private sealed class EfUnitOfWorkTransaction(IDbContextTransaction transaction)
+        : IUnitOfWorkTransaction
+    {
+        public Task CommitAsync(CancellationToken ct = default) =>
+            transaction.CommitAsync(ct);
 
-            await transaction.CommitAsync(ct);
+        public Task RollbackAsync(CancellationToken ct = default) =>
+            transaction.RollbackAsync(ct);
 
-            return result;
-        }
-        catch
-        {
-            await transaction.RollbackAsync(ct);
-            throw;
-        }
+        public ValueTask DisposeAsync() =>
+            transaction.DisposeAsync();
     }
 }
