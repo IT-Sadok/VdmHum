@@ -1,5 +1,6 @@
 namespace Application.Commands.CreateAdminUser;
 
+using Contracts;
 using Abstractions.Messaging;
 
 public record CreateAdminUserCommand(
@@ -8,4 +9,4 @@ public record CreateAdminUserCommand(
     string? PhoneNumber,
     string? FirstName,
     string? LastName
-) : ICommand<Guid>;
+) : ICommand<CreateAdminResponseModel>;

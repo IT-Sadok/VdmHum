@@ -1,5 +1,6 @@
 namespace Application.Commands.CreateAdminUser;
 
+using Contracts;
 using Domain;
 using Domain.Abstractions;
 using Domain.Constants;
@@ -9,15 +10,17 @@ using Abstractions.Messaging;
 public class CreateAdminUserCommandHandler(
     IIdentityService identityService,
     IUnitOfWork unitOfWork)
-    : ICommandHandler<CreateAdminUserCommand, Guid>
+    : ICommandHandler<CreateAdminUserCommand, CreateAdminResponseModel>
 {
-    public async Task<Result<Guid>> HandleAsync(CreateAdminUserCommand command, CancellationToken ct)
+    public async Task<Result<CreateAdminResponseModel>> HandleAsync(
+        CreateAdminUserCommand command,
+        CancellationToken ct)
     {
         var existing = await identityService.FindByEmailAsync(command.Email, ct);
 
         if (existing is not null)
         {
-            return Result.Failure<Guid>(UserErrors.EmailNotUnique);
+            return Result.Failure<CreateAdminResponseModel>(UserErrors.EmailNotUnique);
         }
 
         return await unitOfWork.ExecuteInTransactionAsync(
@@ -33,7 +36,7 @@ public class CreateAdminUserCommandHandler(
 
                 await identityService.AddToRoleAsync(user, RoleNames.Admin, innerCt);
 
-                return user.Id;
+                return new CreateAdminResponseModel(user.Id);
             },
             ct);
     }
