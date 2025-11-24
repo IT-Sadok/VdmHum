@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Abstractions.Messaging;
 using Application.Commands.CreateAdminUser;
 using Extensions;
@@ -16,7 +17,7 @@ internal sealed class CreateAdmin : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("admin/users", async (
+        app.MapPost(UsersRoutes.CreateAdmin, async (
                 CreateAdminRequest createAdminRequest,
                 ICommandHandler<CreateAdminUserCommand, Guid> handler,
                 CancellationToken ct) =>
@@ -31,7 +32,7 @@ internal sealed class CreateAdmin : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    id => Results.Created($"/admin/users/{id}", new { Id = id }),
+                    id => Results.Created($"{UsersRoutes.CreateAdmin}/{id}", new { Id = id }),
                     CustomResults.Problem);
             })
             .RequireAuthorization("AdminPolicy")

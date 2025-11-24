@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Abstractions.Messaging;
 using Application.Contracts;
 using Application.Queries.GetCurrentUser;
@@ -10,7 +11,7 @@ internal sealed class GetCurrent : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("users/me", async (
+        app.MapGet(UsersRoutes.GetCurrent, async (
                 IQueryHandler<GetCurrentUserQuery, UserResponseModel> handler,
                 CancellationToken ct) =>
             {

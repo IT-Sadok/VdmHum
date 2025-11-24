@@ -1,5 +1,6 @@
 ﻿namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Options;
 using Microsoft.Extensions.Options;
 using Contracts.Auth;
@@ -21,7 +22,7 @@ internal sealed class Register : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("auth/register", async (
+        app.MapPost(UsersRoutes.Register, async (
                 RegisterRequest registerRequest,
                 IOptions<JwtOptions> jwtOptions,
                 HttpContext httpContext,

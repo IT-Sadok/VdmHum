@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Options;
 using Microsoft.Extensions.Options;
 using Helpers;
@@ -13,7 +14,7 @@ internal sealed class Logout : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("auth/logout", async (
+        app.MapPost(UsersRoutes.Logout, async (
                 HttpContext httpContext,
                 IOptions<JwtOptions> jwtOptions,
                 ICommandHandler<LogoutUserCommand, Result> handler,

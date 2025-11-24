@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Contracts.Auth;
 using Helpers;
 using Application.Options;
@@ -16,7 +17,7 @@ internal sealed class Login : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("auth/login", async (
+        app.MapPost(UsersRoutes.Login, async (
                 LoginRequest loginRequest,
                 HttpContext httpContext,
                 IOptions<JwtOptions> jwtOptions,

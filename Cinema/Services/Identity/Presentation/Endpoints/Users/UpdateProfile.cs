@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Abstractions.Messaging;
 using Application.Commands.UpdateProfile;
 using Extensions;
@@ -14,7 +15,7 @@ internal sealed class UpdateProfile : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("users/me", async (
+        app.MapPut(UsersRoutes.UpdateProfile, async (
                 UpdateProfileRequest updateProfileRequest,
                 ICommandHandler<UpdateProfileCommand, Guid> handler,
                 CancellationToken ct) =>

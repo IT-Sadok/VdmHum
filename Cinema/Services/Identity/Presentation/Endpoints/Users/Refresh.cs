@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Routes;
 using Application.Options;
 using Microsoft.Extensions.Options;
 using Contracts.Auth;
@@ -14,7 +15,7 @@ internal sealed class Refresh : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("auth/refresh", async (
+        app.MapPost(UsersRoutes.Refresh, async (
                 IOptions<JwtOptions> jwtOptions,
                 HttpContext httpContext,
                 ICommandHandler<RefreshTokenCommand, AuthResponseModel> handler,
