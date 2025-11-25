@@ -6,7 +6,9 @@ public sealed class JwtOptions
 
     public string Audience { get; init; } = null!;
 
-    public string SigningKey { get; init; } = null!;
+    public string SigningCertificatePath { get; init; } = null!;
+
+    public string? SigningCertificatePassword { get; set; }
 
     public string AccessTokenName { get; init; } = "access_token";
 

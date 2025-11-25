@@ -2,7 +2,7 @@ namespace Infrastructure;
 
 using Domain.Constants;
 using Microsoft.Extensions.Options;
-using System.Text;
+using System.Security.Cryptography.X509Certificates;
 using Application.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,7 +25,7 @@ public static class DependencyInjection
             .AddIdentityInternal()
             .AddAuthOptions(configuration)
             .AddAdminUserOptions(configuration)
-            .AddAuthenticationInternal(configuration)
+            .AddAuthenticationInternal()
             .AddAuthorizationInternal()
             .AddInfrastructureServices();
 
@@ -70,9 +70,16 @@ public static class DependencyInjection
     }
 
     private static IServiceCollection AddAuthenticationInternal(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
+        services.AddSingleton<X509Certificate2>(sp =>
+        {
+            var jwtOptions = sp.GetRequiredService<IOptions<JwtOptions>>().Value;
+            return X509CertificateLoader.LoadPkcs12FromFile(
+                jwtOptions.SigningCertificatePath,
+                jwtOptions.SigningCertificatePassword);
+        });
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,10 +87,8 @@ public static class DependencyInjection
             })
             .AddJwtBearer();
 
-        services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
-
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-            .Configure<IOptions<JwtOptions>>((options, jwtOptionsAccessor) =>
+            .Configure<IOptions<JwtOptions>, X509Certificate2>((options, jwtOptionsAccessor, cert) =>
             {
                 var jwt = jwtOptionsAccessor.Value;
 
@@ -94,7 +99,11 @@ public static class DependencyInjection
                 {
                     ValidIssuer = jwt.Issuer,
                     ValidAudience = jwt.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SigningKey)),
+                    IssuerSigningKey = new X509SecurityKey(cert),
+
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ClockSkew = TimeSpan.Zero,
                 };
 

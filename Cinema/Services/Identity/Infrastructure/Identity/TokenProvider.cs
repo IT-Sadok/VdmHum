@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
+using System.Security.Cryptography.X509Certificates;
 using Application.Options;
 using Application.Abstractions.Providers;
 using Domain.Entities;
@@ -12,15 +12,16 @@ using Microsoft.Extensions.Options;
 
 public sealed class TokenProvider(
     IOptions<JwtOptions> options,
-    IDateTimeProvider dateTimeProvider)
+    IDateTimeProvider dateTimeProvider,
+    X509Certificate2 signingCertificate)
     : ITokenProvider
 {
     private readonly JwtOptions _options = options.Value;
 
     public string CreateAccessToken(User user)
     {
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._options.SigningKey));
-        var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+        var secretKey = new X509SecurityKey(signingCertificate);
+        var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.RsaSha256);
 
         var claims = new List<Claim>
         {
