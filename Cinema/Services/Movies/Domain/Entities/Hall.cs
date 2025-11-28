@@ -55,4 +55,14 @@ public sealed class Hall
 
         this.Name = name.Trim();
     }
+
+    public void UpdateNumberOfSeats(int numberOfSeats)
+    {
+        if (numberOfSeats <= 0)
+        {
+            throw new ArgumentException("Number of seats is required.", nameof(numberOfSeats));
+        }
+
+        this.NumberOfSeats = numberOfSeats;
+    }
 }
