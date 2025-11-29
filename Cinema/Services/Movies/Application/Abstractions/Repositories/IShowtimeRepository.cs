@@ -5,7 +5,7 @@ using Domain.Entities;
 
 public interface IShowtimeRepository
 {
-    Task<Showtime?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<Showtime?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     void Add(Showtime showtime, CancellationToken ct);
 

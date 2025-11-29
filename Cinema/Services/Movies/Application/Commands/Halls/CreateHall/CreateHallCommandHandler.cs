@@ -17,7 +17,7 @@ public sealed class CreateHallCommandHandler(
         CreateHallCommand command,
         CancellationToken ct)
     {
-        var cinema = await cinemaRepository.GetByIdAsync(command.CinemaId, ct);
+        var cinema = await cinemaRepository.GetByIdAsync(command.CinemaId, true, ct);
 
         if (cinema is null)
         {

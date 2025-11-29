@@ -14,7 +14,7 @@ public sealed class DeleteHallCommandHandler(
         DeleteHallCommand command,
         CancellationToken ct)
     {
-        var hall = await hallRepository.GetByIdAsync(command.Id, ct);
+        var hall = await hallRepository.GetByIdAsync(command.Id, false, ct);
 
         if (hall is null)
         {

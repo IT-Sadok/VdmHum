@@ -5,7 +5,7 @@ using Domain.Entities;
 
 public interface IMovieRepository
 {
-    Task<Movie?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<Movie?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     void Add(Movie movie, CancellationToken ct);
 

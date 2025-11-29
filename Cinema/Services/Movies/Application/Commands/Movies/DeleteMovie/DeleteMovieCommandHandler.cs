@@ -14,7 +14,7 @@ public sealed class DeleteMovieCommandHandler(
         DeleteMovieCommand command,
         CancellationToken ct)
     {
-        var movie = await movieRepository.GetByIdAsync(command.Id, ct);
+        var movie = await movieRepository.GetByIdAsync(command.Id, false, ct);
 
         if (movie is null)
         {

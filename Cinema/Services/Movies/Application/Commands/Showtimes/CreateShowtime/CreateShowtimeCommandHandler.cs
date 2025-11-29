@@ -19,19 +19,19 @@ public sealed class CreateShowtimeCommandHandler(
         CreateShowtimeCommand command,
         CancellationToken ct)
     {
-        var movie = await movieRepository.GetByIdAsync(command.MovieId, ct);
+        var movie = await movieRepository.GetByIdAsync(command.MovieId, true, ct);
         if (movie is null)
         {
             return Result.Failure<ShowtimeResponseModel>(ShowtimeErrors.MovieNotFound(command.MovieId));
         }
 
-        var cinema = await cinemaRepository.GetByIdAsync(command.CinemaId, ct);
+        var cinema = await cinemaRepository.GetByIdAsync(command.CinemaId, true, ct);
         if (cinema is null)
         {
             return Result.Failure<ShowtimeResponseModel>(ShowtimeErrors.CinemaNotFound(command.CinemaId));
         }
 
-        var hall = await hallRepository.GetByIdAsync(command.HallId, ct);
+        var hall = await hallRepository.GetByIdAsync(command.HallId, true, ct);
         if (hall is null)
         {
             return Result.Failure<ShowtimeResponseModel>(ShowtimeErrors.HallNotFound(command.HallId));

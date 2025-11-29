@@ -16,7 +16,7 @@ public sealed class UpdateShowtimeCommandHandler(
         UpdateShowtimeCommand command,
         CancellationToken ct)
     {
-        var showtime = await showtimeRepository.GetByIdAsync(command.Id, ct);
+        var showtime = await showtimeRepository.GetByIdAsync(command.Id, false, ct);
 
         if (showtime is null)
         {

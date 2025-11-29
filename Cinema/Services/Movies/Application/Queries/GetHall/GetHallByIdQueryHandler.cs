@@ -14,7 +14,7 @@ public sealed class GetHallByIdQueryHandler(
         GetHallByIdQuery query,
         CancellationToken ct)
     {
-        var hall = await hallRepository.GetByIdAsync(query.Id, ct);
+        var hall = await hallRepository.GetByIdAsync(query.Id, true, ct);
 
         if (hall is null)
         {

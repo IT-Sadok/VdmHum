@@ -15,7 +15,7 @@ public sealed class UpdateMovieCommandHandler(
         UpdateMovieCommand command,
         CancellationToken ct)
     {
-        var movie = await movieRepository.GetByIdAsync(command.Id, ct);
+        var movie = await movieRepository.GetByIdAsync(command.Id, false, ct);
 
         if (movie is null)
         {

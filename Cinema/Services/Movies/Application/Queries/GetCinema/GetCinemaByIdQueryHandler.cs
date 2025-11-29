@@ -14,7 +14,7 @@ public sealed class GetCinemaByIdQueryHandler(
         GetCinemaByIdQuery query,
         CancellationToken ct)
     {
-        var cinema = await cinemaRepository.GetByIdAsync(query.Id, ct);
+        var cinema = await cinemaRepository.GetByIdAsync(query.Id, true, ct);
 
         if (cinema is null)
         {

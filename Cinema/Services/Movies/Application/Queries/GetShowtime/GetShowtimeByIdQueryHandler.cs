@@ -14,7 +14,7 @@ public sealed class GetShowtimeByIdQueryHandler(
         GetShowtimeByIdQuery query,
         CancellationToken ct)
     {
-        var showtime = await showtimeRepository.GetByIdAsync(query.Id, ct);
+        var showtime = await showtimeRepository.GetByIdAsync(query.Id, true, ct);
 
         if (showtime is null)
         {

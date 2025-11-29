@@ -14,7 +14,7 @@ public sealed class DeleteShowtimeCommandHandler(
         DeleteShowtimeCommand command,
         CancellationToken ct)
     {
-        var showtime = await showtimeRepository.GetByIdAsync(command.Id, ct);
+        var showtime = await showtimeRepository.GetByIdAsync(command.Id, false, ct);
 
         if (showtime is null)
         {

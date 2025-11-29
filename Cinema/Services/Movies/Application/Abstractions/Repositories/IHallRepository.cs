@@ -4,7 +4,7 @@ using Domain.Entities;
 
 public interface IHallRepository
 {
-    Task<Hall?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<Hall?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     void Add(Hall hall, CancellationToken ct);
 

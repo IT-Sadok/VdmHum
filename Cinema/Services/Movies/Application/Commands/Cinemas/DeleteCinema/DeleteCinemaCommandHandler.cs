@@ -14,7 +14,7 @@ public sealed class DeleteCinemaCommandHandler(
         DeleteCinemaCommand command,
         CancellationToken ct)
     {
-        var cinema = await cinemaRepository.GetByIdAsync(command.Id, ct);
+        var cinema = await cinemaRepository.GetByIdAsync(command.Id, false, ct);
 
         if (cinema is null)
         {

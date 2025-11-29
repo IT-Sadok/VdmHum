@@ -5,7 +5,7 @@ using Domain.Entities;
 
 public interface ICinemaRepository
 {
-    Task<Cinema?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<Cinema?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     void Add(Cinema cinema, CancellationToken ct);
 
