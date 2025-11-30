@@ -8,6 +8,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 {
     public DbSet<Movie> Movies => this.Set<Movie>();
 
+    public DbSet<MovieGenre> MovieGenres => this.Set<MovieGenre>();
+
     public DbSet<Cinema> Cinemas => this.Set<Cinema>();
 
     public DbSet<Hall> Halls => this.Set<Hall>();

@@ -59,7 +59,7 @@ public sealed class MovieRepository(ApplicationDbContext dbContext) : IMovieRepo
         if (filter.Genres is { Count: > 0 })
         {
             var genres = filter.Genres;
-            query = query.Where(m => m.Genres.Any(g => genres.Contains(g)));
+            query = query.Where(m => m.MovieGenres.Any(mg => genres.Contains(mg.Genre)));
         }
 
         if (filter.MinDurationMinutes.HasValue)

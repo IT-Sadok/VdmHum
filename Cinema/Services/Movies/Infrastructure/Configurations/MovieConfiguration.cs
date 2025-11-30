@@ -3,6 +3,7 @@ namespace Infrastructure.Configurations;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -25,18 +26,6 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(m => m.Description)
             .HasMaxLength(4000);
 
-        var genresConverter = new ValueConverter<HashSet<Genres>, string>(
-            v => string.Join(',', v.Select(g => ((int)g).ToString())),
-            v => v.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(s => (Genres)int.Parse(s))
-                .ToHashSet());
-
-        builder.Property<HashSet<Genres>>("_genres")
-            .HasConversion(genresConverter);
-
-        builder.Navigation(m => m.Genres)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
-
         builder.Property(m => m.DurationMinutes);
 
         builder.Property(m => m.AgeRating)
@@ -58,5 +47,10 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
         builder.Property(m => m.PosterUrl)
             .HasMaxLength(2048);
+
+        builder.HasMany(m => m.MovieGenres)
+            .WithOne(mg => mg.Movie)
+            .HasForeignKey(mg => mg.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

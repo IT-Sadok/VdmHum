@@ -46,7 +46,7 @@ public sealed class GetMoviesQueryHandler(
             movie.Id,
             movie.Title,
             movie.Description,
-            movie.Genres.ToArray(),
+            movie.MovieGenres.Select(mg => mg.Genre).ToArray(),
             movie.DurationMinutes,
             movie.AgeRating,
             movie.Status,

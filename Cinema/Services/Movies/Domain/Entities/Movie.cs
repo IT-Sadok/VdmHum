@@ -4,13 +4,12 @@ using Enums;
 
 public sealed class Movie
 {
-    private readonly HashSet<Genres> _genres;
+    private readonly HashSet<MovieGenre> _movieGenres = [];
 
     private Movie(
         Guid id,
         string title,
         string? description,
-        HashSet<Genres> genres,
         int? durationMinutes,
         AgeRating? ageRating,
         Status status,
@@ -20,7 +19,6 @@ public sealed class Movie
         this.Id = id;
         this.Title = title;
         this.Description = description;
-        this._genres = genres;
         this.DurationMinutes = durationMinutes;
         this.AgeRating = ageRating;
         this.Status = status;
@@ -34,7 +32,7 @@ public sealed class Movie
 
     public string? Description { get; private set; }
 
-    public IReadOnlyCollection<Genres> Genres => this._genres;
+    public IReadOnlyCollection<MovieGenre> MovieGenres => this._movieGenres;
 
     public int? DurationMinutes { get; private set; }
 
@@ -76,20 +74,20 @@ public sealed class Movie
                 nameof(posterUrl));
         }
 
-        var genresSet = genres is null
-            ? new HashSet<Genres>()
-            : new HashSet<Genres>(genres);
-
         var movie = new Movie(
             id: Guid.CreateVersion7(),
             title: title.Trim(),
             description: string.IsNullOrWhiteSpace(description) ? null : description.Trim(),
-            genres: genresSet,
             durationMinutes: durationMinutes,
             ageRating: ageRating,
             status: status,
             releaseDate: releaseDate,
             posterUrl: string.IsNullOrWhiteSpace(posterUrl) ? null : posterUrl.Trim());
+
+        if (genres is not null)
+        {
+            movie.SetGenres(genres);
+        }
 
         return movie;
     }
@@ -138,6 +136,8 @@ public sealed class Movie
 
     public void UpdateAgeRating(AgeRating ageRating) => this.AgeRating = ageRating;
 
+    public void UpdateStatus(Status status) => this.Status = status;
+
     public void UpdateReleaseDate(DateOnly releaseDate)
     {
         if (releaseDate == default)
@@ -152,25 +152,30 @@ public sealed class Movie
     {
         ArgumentNullException.ThrowIfNull(genres);
 
-        this._genres.Clear();
+        this._movieGenres.Clear();
 
-        foreach (var genre in genres)
+        foreach (var genre in genres.Distinct())
         {
-            this._genres.Add(genre);
+            this._movieGenres.Add(MovieGenre.Create(this, genre));
         }
     }
 
-    public void AddGenre(Genres genre) => this._genres.Add(genre);
-
-    public void RemoveGenre(Genres genre) => this._genres.Remove(genre);
-
-    public void ChangeStatus(Status newStatus)
+    public void AddGenre(Genres genre)
     {
-        if (this.Status == newStatus)
+        if (this._movieGenres.Any(mg => mg.Genre == genre))
         {
             return;
         }
 
-        this.Status = newStatus;
+        this._movieGenres.Add(MovieGenre.Create(this, genre));
+    }
+
+    public void RemoveGenre(Genres genre)
+    {
+        var existing = this._movieGenres.FirstOrDefault(mg => mg.Genre == genre);
+        if (existing is not null)
+        {
+            this._movieGenres.Remove(existing);
+        }
     }
 }

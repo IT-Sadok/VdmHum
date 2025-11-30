@@ -33,7 +33,7 @@ public sealed class UpdateMovieCommandHandler(
         }
 
         movie.UpdateTitle(command.Title);
-        movie.ChangeStatus(command.Status);
+        movie.UpdateStatus(command.Status);
         movie.UpdateDescription(command.Description);
         movie.UpdateDuration(command.DurationMinutes);
         movie.UpdatePosterUrl(command.PosterUrl);
@@ -59,7 +59,7 @@ public sealed class UpdateMovieCommandHandler(
             movie.Id,
             movie.Title,
             movie.Description,
-            movie.Genres.ToArray(),
+            movie.MovieGenres.Select(mg => mg.Genre).ToArray(),
             movie.DurationMinutes,
             movie.AgeRating,
             movie.Status,

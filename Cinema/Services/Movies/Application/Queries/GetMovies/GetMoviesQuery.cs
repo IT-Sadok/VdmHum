@@ -5,7 +5,7 @@ using Contracts.Movies;
 using Domain.Enums;
 
 public sealed record GetMoviesQuery(
-    IReadOnlyCollection<Genres>? Genres,
+    Genres[]? Genres,
     int? MinDurationMinutes,
     int? MaxDurationMinutes,
     AgeRating? MinAgeRating,
