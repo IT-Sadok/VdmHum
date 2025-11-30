@@ -42,7 +42,7 @@ internal sealed class UpdateMovie : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    Results.Ok<MovieResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .RequireAuthorization("AdminPolicy")

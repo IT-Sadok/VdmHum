@@ -21,7 +21,7 @@ internal sealed class GetShowtimeById : IEndpoint
                 var result = await handler.HandleAsync(query, ct);
 
                 return result.Match(
-                    Results.Ok<ShowtimeResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .AllowAnonymous()

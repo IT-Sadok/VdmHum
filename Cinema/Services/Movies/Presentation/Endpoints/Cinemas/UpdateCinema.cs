@@ -35,7 +35,7 @@ internal sealed class UpdateCinema : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    Results.Ok<CinemaResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .RequireAuthorization("AdminPolicy")

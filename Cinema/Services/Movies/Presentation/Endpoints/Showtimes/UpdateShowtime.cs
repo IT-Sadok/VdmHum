@@ -40,7 +40,7 @@ internal sealed class UpdateShowtime : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    Results.Ok<ShowtimeResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .RequireAuthorization("AdminPolicy")

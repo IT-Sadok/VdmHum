@@ -21,7 +21,7 @@ internal sealed class GetCinemaById : IEndpoint
                 var result = await handler.HandleAsync(query, ct);
 
                 return result.Match(
-                    Results.Ok<CinemaResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .AllowAnonymous()

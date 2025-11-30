@@ -21,7 +21,7 @@ internal sealed class GetHallById : IEndpoint
                 var result = await handler.HandleAsync(query, ct);
 
                 return result.Match(
-                    Results.Ok<HallResponseModel>,
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .AllowAnonymous()

@@ -27,7 +27,7 @@ internal sealed class UpdateHall : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    hall => Results.Ok<HallResponseModel>(hall),
+                    Results.Ok,
                     CustomResults.Problem);
             })
             .RequireAuthorization("AdminPolicy")

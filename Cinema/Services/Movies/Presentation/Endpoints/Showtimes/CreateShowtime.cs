@@ -44,7 +44,7 @@ internal sealed class CreateShowtime : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    showtime => Results.Created<ShowtimeResponseModel>(
+                    showtime => Results.Created(
                         ShowtimesRoutes.GetById.Replace("{id:guid}", showtime.Id.ToString()),
                         showtime),
                     CustomResults.Problem);

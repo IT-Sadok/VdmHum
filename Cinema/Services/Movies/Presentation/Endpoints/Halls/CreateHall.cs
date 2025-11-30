@@ -29,7 +29,7 @@ internal sealed class CreateHall : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    hall => Results.Created<HallResponseModel>(
+                    hall => Results.Created(
                         HallsRoutes.GetById.Replace("{id:guid}", hall.Id.ToString()),
                         hall),
                     CustomResults.Problem);

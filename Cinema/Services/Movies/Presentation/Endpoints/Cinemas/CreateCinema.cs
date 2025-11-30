@@ -33,7 +33,7 @@ internal sealed class CreateCinema : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    cinema => Results.Created<CinemaResponseModel>(
+                    cinema => Results.Created(
                         CinemasRoutes.GetById.Replace("{id:guid}", cinema.Id.ToString()),
                         cinema),
                     CustomResults.Problem);

@@ -40,7 +40,7 @@ internal sealed class CreateMovie : IEndpoint
                 var result = await handler.HandleAsync(command, ct);
 
                 return result.Match(
-                    movie => Results.Created<MovieResponseModel>(
+                    movie => Results.Created(
                         MoviesRoutes.GetById.Replace("{id:guid}", movie.Id.ToString()),
                         movie),
                     CustomResults.Problem);
