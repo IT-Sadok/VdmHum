@@ -6,7 +6,7 @@ public sealed class DeleteCinemaCommandValidator : AbstractValidator<DeleteCinem
 {
     public DeleteCinemaCommandValidator()
     {
-        this.RuleFor(c => c.Id)
+        RuleFor(c => c.Id)
             .NotEmpty();
     }
 }

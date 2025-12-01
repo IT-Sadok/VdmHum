@@ -6,7 +6,7 @@ public sealed class GetShowtimeByIdQueryValidator : AbstractValidator<GetShowtim
 {
     public GetShowtimeByIdQueryValidator()
     {
-        this.RuleFor(q => q.Id)
+        RuleFor(q => q.Id)
             .NotEmpty();
     }
 }

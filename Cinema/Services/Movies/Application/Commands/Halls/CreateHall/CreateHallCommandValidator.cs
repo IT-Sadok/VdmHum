@@ -6,14 +6,14 @@ public sealed class CreateHallCommandValidator : AbstractValidator<CreateHallCom
 {
     public CreateHallCommandValidator()
     {
-        this.RuleFor(c => c.CinemaId)
+        RuleFor(c => c.CinemaId)
             .NotEmpty();
 
-        this.RuleFor(c => c.Name)
+        RuleFor(c => c.Name)
             .NotEmpty()
             .MaximumLength(200);
 
-        this.RuleFor(c => c.NumberOfSeats)
+        RuleFor(c => c.NumberOfSeats)
             .GreaterThan(0);
     }
 }

@@ -6,19 +6,19 @@ public sealed class CreateCinemaCommandValidator : AbstractValidator<CreateCinem
 {
     public CreateCinemaCommandValidator()
     {
-        this.RuleFor(c => c.Name)
+        RuleFor(c => c.Name)
             .NotEmpty()
             .MaximumLength(200);
 
-        this.RuleFor(c => c.City)
+        RuleFor(c => c.City)
             .NotEmpty()
             .MaximumLength(200);
 
-        this.RuleFor(c => c.Address)
+        RuleFor(c => c.Address)
             .NotEmpty()
             .MaximumLength(500);
 
-        this.RuleFor(c => c)
+        RuleFor(c => c)
             .Must(c =>
                 (!c.Latitude.HasValue && !c.Longitude.HasValue) ||
                 (c.Latitude.HasValue && c.Longitude.HasValue))

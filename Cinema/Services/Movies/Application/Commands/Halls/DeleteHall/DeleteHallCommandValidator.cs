@@ -6,7 +6,7 @@ public sealed class DeleteHallCommandValidator : AbstractValidator<DeleteHallCom
 {
     public DeleteHallCommandValidator()
     {
-        this.RuleFor(c => c.Id)
+        RuleFor(c => c.Id)
             .NotEmpty();
     }
 }

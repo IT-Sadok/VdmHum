@@ -6,7 +6,7 @@ public sealed class DeleteShowtimeCommandValidator : AbstractValidator<DeleteSho
 {
     public DeleteShowtimeCommandValidator()
     {
-        this.RuleFor(c => c.Id)
+        RuleFor(c => c.Id)
             .NotEmpty();
     }
 }

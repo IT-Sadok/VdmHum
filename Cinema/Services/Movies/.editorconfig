@@ -86,3 +86,6 @@ dotnet_diagnostic.SA1633.severity = none
 
 [**/Migrations/*.cs]
 dotnet_analyzer_diagnostic.severity = none
+
+[*Validator.cs]
+dotnet_diagnostic.SA1101.severity = none 

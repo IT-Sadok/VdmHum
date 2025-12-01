@@ -6,14 +6,14 @@ public sealed class UpdateHallCommandValidator : AbstractValidator<UpdateHallCom
 {
     public UpdateHallCommandValidator()
     {
-        this.RuleFor(c => c.Id)
+        RuleFor(c => c.Id)
             .NotEmpty();
 
-        this.RuleFor(c => c.Name)
+        RuleFor(c => c.Name)
             .NotEmpty()
             .MaximumLength(200);
 
-        this.RuleFor(c => c.NumberOfSeats)
+        RuleFor(c => c.NumberOfSeats)
             .NotEmpty()
             .GreaterThan(0);
     }

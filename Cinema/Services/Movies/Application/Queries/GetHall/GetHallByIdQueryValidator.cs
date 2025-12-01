@@ -6,7 +6,7 @@ public sealed class GetHallByIdQueryValidator : AbstractValidator<GetHallByIdQue
 {
     public GetHallByIdQueryValidator()
     {
-        this.RuleFor(q => q.Id)
+        RuleFor(q => q.Id)
             .NotEmpty();
     }
 }

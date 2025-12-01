@@ -6,7 +6,7 @@ public sealed class GetCinemaByIdQueryValidator : AbstractValidator<GetCinemaByI
 {
     public GetCinemaByIdQueryValidator()
     {
-        this.RuleFor(q => q.Id)
+        RuleFor(q => q.Id)
             .NotEmpty();
     }
 }

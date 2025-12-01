@@ -6,20 +6,20 @@ public sealed class CreateMovieCommandValidator : AbstractValidator<CreateMovieC
 {
     public CreateMovieCommandValidator()
     {
-        this.RuleFor(c => c.Title)
+        RuleFor(c => c.Title)
             .NotEmpty()
             .MaximumLength(200);
 
-        this.RuleFor(c => c.DurationMinutes)
+        RuleFor(c => c.DurationMinutes)
             .GreaterThan(0)
             .When(c => c.DurationMinutes.HasValue);
 
-        this.RuleFor(c => c.PosterUrl)
+        RuleFor(c => c.PosterUrl)
             .Must(url => Uri.IsWellFormedUriString(url!, UriKind.Absolute))
             .When(c => !string.IsNullOrWhiteSpace(c.PosterUrl))
             .WithMessage("Poster URL must be a valid absolute URL.");
 
-        this.RuleFor(c => c.ReleaseDate)
+        RuleFor(c => c.ReleaseDate)
             .NotEqual(default(DateOnly))
             .When(c => c.ReleaseDate.HasValue);
     }
