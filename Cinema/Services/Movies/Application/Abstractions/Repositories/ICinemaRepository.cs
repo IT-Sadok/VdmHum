@@ -11,7 +11,7 @@ public interface ICinemaRepository
 
     void Remove(Cinema cinema);
 
-    Task<bool> IsNameUniqueInCityAsync(
+    Task<bool> IsNameUniquePerCityAsync(
         string name,
         string city,
         Guid? excludeCinemaId,

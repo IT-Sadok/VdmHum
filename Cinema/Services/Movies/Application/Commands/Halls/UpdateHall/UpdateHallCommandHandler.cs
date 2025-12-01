@@ -22,7 +22,7 @@ public sealed class UpdateHallCommandHandler(
             return Result.Failure<HallResponseModel>(HallErrors.NotFound(command.Id));
         }
 
-        var isNameUnique = await hallRepository.IsNameUniqueWithinCinemaAsync(
+        var isNameUnique = await hallRepository.IsNameUniquePerCinemaAsync(
             hall.CinemaId,
             command.Name,
             hall.Id,

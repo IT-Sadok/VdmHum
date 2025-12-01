@@ -10,7 +10,7 @@ public interface IHallRepository
 
     void Remove(Hall hall);
 
-    Task<bool> IsNameUniqueWithinCinemaAsync(
+    Task<bool> IsNameUniquePerCinemaAsync(
         Guid cinemaId,
         string name,
         Guid? excludeHallId,

@@ -31,7 +31,7 @@ public sealed class CinemaRepository(ApplicationDbContext dbContext) : ICinemaRe
     public void Remove(Cinema cinema) =>
         dbContext.Cinemas.Remove(cinema);
 
-    public async Task<bool> IsNameUniqueInCityAsync(
+    public async Task<bool> IsNameUniquePerCityAsync(
         string name,
         string city,
         Guid? excludeCinemaId,

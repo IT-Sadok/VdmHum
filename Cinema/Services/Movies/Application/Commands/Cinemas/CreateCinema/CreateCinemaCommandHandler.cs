@@ -16,7 +16,7 @@ public sealed class CreateCinemaCommandHandler(
         CreateCinemaCommand command,
         CancellationToken ct)
     {
-        var isNameUnique = await cinemaRepository.IsNameUniqueInCityAsync(
+        var isNameUnique = await cinemaRepository.IsNameUniquePerCityAsync(
             command.Name,
             command.City,
             excludeCinemaId: null,

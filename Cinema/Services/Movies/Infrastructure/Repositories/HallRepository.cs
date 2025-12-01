@@ -28,7 +28,7 @@ public sealed class HallRepository(ApplicationDbContext dbContext) : IHallReposi
     public void Remove(Hall hall) =>
         dbContext.Halls.Remove(hall);
 
-    public async Task<bool> IsNameUniqueWithinCinemaAsync(
+    public async Task<bool> IsNameUniquePerCinemaAsync(
         Guid cinemaId,
         string name,
         Guid? excludeHallId,

@@ -22,7 +22,7 @@ public sealed class UpdateCinemaCommandHandler(
             return Result.Failure<CinemaResponseModel>(CinemaErrors.NotFound(command.Id));
         }
 
-        var isNameUnique = await cinemaRepository.IsNameUniqueInCityAsync(
+        var isNameUnique = await cinemaRepository.IsNameUniquePerCityAsync(
             command.Name,
             command.City,
             excludeCinemaId: command.Id,

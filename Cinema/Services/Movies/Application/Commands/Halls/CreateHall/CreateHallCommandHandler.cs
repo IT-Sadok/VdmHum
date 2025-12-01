@@ -24,7 +24,7 @@ public sealed class CreateHallCommandHandler(
             return Result.Failure<HallResponseModel>(HallErrors.CinemaNotFound(command.CinemaId));
         }
 
-        var isNameUnique = await hallRepository.IsNameUniqueWithinCinemaAsync(
+        var isNameUnique = await hallRepository.IsNameUniquePerCinemaAsync(
             command.CinemaId,
             command.Name,
             excludeHallId: null,
