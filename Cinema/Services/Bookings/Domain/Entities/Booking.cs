@@ -50,7 +50,7 @@ public sealed class Booking
 
     public string? PaymentId { get; private set; }
 
-    public string? CancellationReason { get; private set; }
+    public BookingCancellationReason? CancellationReason { get; private set; }
 
     public IReadOnlyCollection<int> Seats => this._seats;
 
@@ -172,17 +172,12 @@ public sealed class Booking
         this.UpdatedAtUtc = now;
     }
 
-    public void Cancel(string reason)
+    public void Cancel(BookingCancellationReason reason)
     {
         if (this.Status != BookingStatus.PendingPayment)
         {
             throw new InvalidOperationException(
                 $"Only bookings in {BookingStatus.PendingPayment} status can be cancelled directly.");
-        }
-
-        if (string.IsNullOrWhiteSpace(reason))
-        {
-            throw new ArgumentException("Cancellation reason is required.", nameof(reason));
         }
 
         this.Status = BookingStatus.Cancelled;
@@ -198,7 +193,7 @@ public sealed class Booking
         }
 
         this.Status = BookingStatus.Expired;
-        this.CancellationReason ??= "Reservation expired.";
+        this.CancellationReason ??= BookingCancellationReason.PaymentExpired;
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
@@ -242,7 +237,7 @@ public sealed class Booking
         this._refunds.Add(refund);
 
         this.Status = BookingStatus.RefundPending;
-        this.CancellationReason = reason;
+        this.CancellationReason = BookingCancellationReason.UserCancelled;
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
