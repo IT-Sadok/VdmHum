@@ -215,7 +215,7 @@ public sealed class Booking
             throw new InvalidOperationException("Refund amount cannot exceed total booking price.");
         }
 
-        if (!string.Equals(amount.Currency, this.TotalPrice.Currency, StringComparison.OrdinalIgnoreCase))
+        if (amount.Currency != this.TotalPrice.Currency)
         {
             throw new InvalidOperationException("Refund currency does not match booking currency.");
         }

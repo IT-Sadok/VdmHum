@@ -1,24 +1,16 @@
 namespace Domain.ValueObjects;
 
-public sealed record Money(decimal Amount, string Currency)
+using Enums;
+
+public sealed record Money(decimal Amount, Currency Currency)
 {
-    public static Money From(decimal amount, string currency)
+    public static Money From(decimal amount, Currency currency)
     {
         if (amount <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be positive.");
         }
 
-        if (string.IsNullOrWhiteSpace(currency))
-        {
-            throw new ArgumentException("Currency is required.", nameof(currency));
-        }
-
-        if (currency.Length != 3)
-        {
-            throw new ArgumentException("Currency must have exactly three characters.", nameof(currency));
-        }
-
-        return new Money(amount, currency.ToUpperInvariant());
+        return new Money(amount, currency);
     }
 }
