@@ -2,10 +2,10 @@
 
 public class Result
 {
-    protected Result(bool isSuccess, Error error)
+    protected Result(bool isSuccess, Error? error)
     {
-        if ((isSuccess && error != Error.None)
-            || (!isSuccess && error == Error.None))
+        if ((isSuccess && error is not null)
+            || (!isSuccess && error is null))
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -18,25 +18,25 @@ public class Result
 
     public bool IsFailure => !this.IsSuccess;
 
-    public Error Error { get; }
+    public Error? Error { get; }
 
-    public static Result Success() => new(true, Error.None);
+    public static Result Success() => new(true, null);
 
-    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
+    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, null);
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error? error) => new(false, error);
 
-    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
+    public static Result<TValue> Failure<TValue>(Error? error) => new(default, false, error);
 
     public static Result<TValue> Create<TValue>(TValue? value) =>
-        value is not null ? Success<TValue>(value) : Failure<TValue>(Error.None);
+        value is not null ? Success<TValue>(value) : Failure<TValue>(Error.NullValue);
 }
 
 public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    protected internal Result(TValue? value, bool isSuccess, Error error)
+    protected internal Result(TValue? value, bool isSuccess, Error? error)
         : base(isSuccess, error)
     {
         this._value = value;
