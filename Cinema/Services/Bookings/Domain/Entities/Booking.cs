@@ -246,7 +246,7 @@ public sealed class Booking
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public void MarkRefundSucceeded()
+    public void MarkLastRefundSucceeded()
     {
         if (this.Status != BookingStatus.RefundPending)
         {
@@ -255,6 +255,16 @@ public sealed class Booking
         }
 
         var now = DateTime.UtcNow;
+
+        var refund = this._refunds
+            .LastOrDefault(r => r.Status is RefundStatus.Requested or RefundStatus.InProgress);
+
+        if (refund is null)
+        {
+            throw new InvalidOperationException("No active refund found for this booking.");
+        }
+
+        refund.MarkSucceeded(now);
 
         this.Status = BookingStatus.Refunded;
         this.UpdatedAtUtc = now;
@@ -265,7 +275,7 @@ public sealed class Booking
         }
     }
 
-    public void MarkRefundFailed(string failureReason)
+    public void MarkLastRefundFailed(string failureReason)
     {
         if (this.Status != BookingStatus.RefundPending)
         {
