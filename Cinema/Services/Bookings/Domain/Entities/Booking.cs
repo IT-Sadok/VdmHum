@@ -199,10 +199,10 @@ public sealed class Booking
 
     public void RequestRefund(Money amount, string reason)
     {
-        if (this.Status != BookingStatus.Confirmed)
+        if (this.Status != BookingStatus.Confirmed || this.Status != BookingStatus.Cancelled)
         {
             throw new InvalidOperationException(
-                $"Refund can only be requested when booking is {BookingStatus.Confirmed}.");
+                $"Refund can only be requested when booking is {BookingStatus.Confirmed} or {BookingStatus.Cancelled}.");
         }
 
         if (amount.Amount > this.TotalPrice.Amount)
