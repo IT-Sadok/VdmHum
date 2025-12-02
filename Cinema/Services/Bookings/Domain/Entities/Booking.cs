@@ -5,7 +5,7 @@ using ValueObjects;
 
 public sealed class Booking
 {
-    private readonly List<int> _seats;
+    private readonly HashSet<int> _seats;
 
     private readonly List<Ticket> _tickets;
 
@@ -15,7 +15,7 @@ public sealed class Booking
         Guid id,
         Guid userId,
         ShowtimeSnapshot showtime,
-        IEnumerable<int> seats,
+        HashSet<int> seats,
         Money totalPrice,
         DateTime createdAtUtc,
         DateTime reservationExpiresAtUtc)
@@ -23,7 +23,7 @@ public sealed class Booking
         this.Id = id;
         this.UserId = userId;
         this.Showtime = showtime;
-        this._seats = seats.Distinct().ToList();
+        this._seats = seats;
         this.TotalPrice = totalPrice;
         this.CreatedAtUtc = createdAtUtc;
         this.ReservationExpiresAtUtc = reservationExpiresAtUtc;
@@ -52,7 +52,7 @@ public sealed class Booking
 
     public string? CancellationReason { get; private set; }
 
-    public IReadOnlyCollection<int> Seats => this._seats.AsReadOnly();
+    public IReadOnlyCollection<int> Seats => this._seats;
 
     public IReadOnlyCollection<Ticket> Tickets => this._tickets.AsReadOnly();
 
@@ -76,9 +76,9 @@ public sealed class Booking
 
         ArgumentNullException.ThrowIfNull(totalPrice);
 
-        var seatsList = seats.Distinct().ToList();
+        var seatsSet = new HashSet<int>(seats);
 
-        if (seatsList.Count == 0)
+        if (seatsSet.Count == 0)
         {
             throw new ArgumentException("At least one seat must be selected.", nameof(seats));
         }
@@ -96,7 +96,7 @@ public sealed class Booking
             id: Guid.NewGuid(),
             userId: userId,
             showtime: showtime,
-            seats: seatsList,
+            seats: seatsSet,
             totalPrice: totalPrice,
             createdAtUtc: now,
             reservationExpiresAtUtc: reservationExpiresAtUtc);
