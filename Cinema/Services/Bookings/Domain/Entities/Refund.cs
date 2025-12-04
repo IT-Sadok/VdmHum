@@ -5,6 +5,10 @@ using ValueObjects;
 
 public sealed class Refund
 {
+    private Refund()
+    {
+    }
+
     private Refund(
         Guid id,
         Guid bookingId,
@@ -24,7 +28,7 @@ public sealed class Refund
 
     public Guid BookingId { get; private set; }
 
-    public Money Amount { get; private set; }
+    public Money Amount { get; private set; } = null!;
 
     public RefundStatus Status { get; private set; }
 
@@ -49,7 +53,7 @@ public sealed class Refund
         var now = DateTime.UtcNow;
 
         return new Refund(
-            id: Guid.NewGuid(),
+            id: Guid.CreateVersion7(),
             bookingId: bookingId,
             amount: amount,
             paymentId: paymentId,

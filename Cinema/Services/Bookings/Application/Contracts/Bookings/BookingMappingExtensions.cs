@@ -35,7 +35,7 @@ public static class BookingMappingExtensions
             Currency: booking.TotalPrice.Currency,
             CreatedAtUtc: booking.CreatedAtUtc,
             ReservationExpiresAtUtc: booking.ReservationExpiresAtUtc,
-            Seats: booking.Seats.ToArray(),
+            Seats: booking.Seats.Select(s => s.SeatNumber).ToArray(),
             Tickets: tickets);
     }
 }

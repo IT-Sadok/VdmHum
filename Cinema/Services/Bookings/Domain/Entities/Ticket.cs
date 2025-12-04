@@ -4,6 +4,10 @@ using Enums;
 
 public sealed class Ticket
 {
+    private Ticket()
+    {
+    }
+
     private Ticket(
         Guid id,
         Guid bookingId,
@@ -27,7 +31,7 @@ public sealed class Ticket
 
     public int SeatNumber { get; private set; }
 
-    public string TicketNumber { get; private set; }
+    public string TicketNumber { get; private set; } = null!;
 
     public string? QrCode { get; private set; }
 
@@ -61,7 +65,7 @@ public sealed class Ticket
         var now = DateTime.UtcNow;
 
         return new Ticket(
-            id: Guid.NewGuid(),
+            id: Guid.CreateVersion7(),
             bookingId: bookingId,
             seatNumber: seatNumber,
             ticketNumber: ticketNumber,
