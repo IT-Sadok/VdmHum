@@ -6,7 +6,7 @@ public static class BookingErrors
 {
     public static readonly Error ShowtimeNotFound = Error.NotFound(
         code: "Booking.ShowtimeNotFound",
-        description: "Showtime was not found.");
+        description: ValidationMessages.NotFound);
 
     public static readonly Error SeatsUnavailable = Error.Conflict(
         code: "Booking.SeatsUnavailable",
@@ -14,5 +14,5 @@ public static class BookingErrors
 
     public static readonly Error NotFound = Error.NotFound(
         code: "Booking.NotFound",
-        description: "Booking was not found.");
+        description: ValidationMessages.NotFound);
 }
