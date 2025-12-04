@@ -8,16 +8,16 @@ using FluentValidation.Results;
 
 internal static class ValidationDecorator
 {
-    private static async Task<ValidationFailure[]> ValidateAsync<TCommand>(
+    private static async Task<ICollection<ValidationFailure>> ValidateAsync<TCommand>(
         TCommand command,
         IEnumerable<IValidator<TCommand>> validators)
     {
         var context = new ValidationContext<TCommand>(command);
 
-        ValidationResult[] validationResults = await Task.WhenAll(
+        var validationResults = await Task.WhenAll(
             validators.Select(validator => validator.ValidateAsync(context)));
 
-        ValidationFailure[] validationFailures = validationResults
+        var validationFailures = validationResults
             .Where(validationResult => !validationResult.IsValid)
             .SelectMany(validationResult => validationResult.Errors)
             .ToArray();
@@ -25,7 +25,7 @@ internal static class ValidationDecorator
         return validationFailures;
     }
 
-    private static ValidationError CreateValidationError(ValidationFailure[] validationFailures) =>
+    private static ValidationError CreateValidationError(ICollection<ValidationFailure> validationFailures) =>
         new(validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray());
 
     internal sealed class CommandHandler<TCommand, TResponse>(
@@ -38,7 +38,7 @@ internal static class ValidationDecorator
         {
             var validationFailures = await ValidateAsync(command, validators);
 
-            if (validationFailures.Length == 0)
+            if (validationFailures.Count == 0)
             {
                 return await innerHandler.HandleAsync(command, ct);
             }
@@ -57,7 +57,7 @@ internal static class ValidationDecorator
         {
             var validationFailures = await ValidateAsync(command, validators);
 
-            if (validationFailures.Length == 0)
+            if (validationFailures.Count == 0)
             {
                 return await innerHandler.HandleAsync(command, ct);
             }
