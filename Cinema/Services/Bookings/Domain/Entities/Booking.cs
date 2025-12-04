@@ -104,60 +104,55 @@ public sealed class Booking
         return booking;
     }
 
-    public void MarkPaymentPending(string paymentId)
+    public void ConfirmPayment(string paymentId, DateTime paidAtUtc)
     {
         if (string.IsNullOrWhiteSpace(paymentId))
         {
             throw new ArgumentException("PaymentId is required.", nameof(paymentId));
         }
 
-        if (this.Status != BookingStatus.PendingPayment)
-        {
-            throw new InvalidOperationException(
-                $"Cannot mark payment pending when booking status is {this.Status}.");
-        }
-
-        if (this.PaymentId == paymentId)
+        // Idempotency: if this booking is already confirmed with the same paymentId,
+        // we simply return without doing anything.
+        if (this.Status == BookingStatus.Confirmed && this.PaymentId == paymentId)
         {
             return;
         }
 
+        // If the booking is already confirmed with a different paymentId,
+        // this indicates a data inconsistency or fraud.
+        if (this.Status == BookingStatus.Confirmed && this.PaymentId != paymentId)
+        {
+            throw new InvalidOperationException("Booking is already confirmed with a different payment.");
+        }
+
+        // Only bookings waiting for payment can be confirmed.
+        if (this.Status != BookingStatus.PendingPayment)
+        {
+            throw new InvalidOperationException(
+                $"Cannot confirm payment when booking status is {this.Status}.");
+        }
+
+        // Business rule: payment must be completed within the reservation window.
+        // If provider reports paidAtUtc after ReservationExpiresAtUtc, this is a late payment.
+        // We don't handle the late-payment case here; the caller should call HandleLatePayment instead.
+        if (paidAtUtc > this.ReservationExpiresAtUtc)
+        {
+            throw new InvalidOperationException("Payment was completed after reservation expired.");
+        }
+
+        // If a PaymentId is already set and it's different from the given one,
+        // we again detect conflicting payment information.
         if (this.PaymentId is not null && this.PaymentId != paymentId)
         {
             throw new InvalidOperationException("Booking already has a different payment associated.");
         }
 
-        this.PaymentId = paymentId;
-        this.UpdatedAtUtc = DateTime.UtcNow;
-    }
+        // Set PaymentId if it was not set before (for first-time confirmation).
+        this.PaymentId ??= paymentId;
 
-    public void ConfirmPayment()
-    {
-        if (this.Status != BookingStatus.PendingPayment)
-        {
-            throw new InvalidOperationException($"Cannot confirm payment when booking status is {this.Status}.");
-        }
-
-        var now = DateTime.UtcNow;
-
-        if (now > this.ReservationExpiresAtUtc)
-        {
-            this.Expire();
-            throw new InvalidOperationException("Reservation has already expired.");
-        }
-
-        if (this.PaymentId is null)
-        {
-            throw new InvalidOperationException("PaymentId must be set before confirming payment.");
-        }
-
+        // Issue tickets for all reserved seats.
         foreach (var seat in this._seats)
         {
-            if (this._tickets.Any(t => t.SeatNumber == seat))
-            {
-                continue;
-            }
-
             var ticketNumber = $"{this.Id:N}-{seat}";
             var ticket = Ticket.Create(
                 bookingId: this.Id,
@@ -168,12 +163,46 @@ public sealed class Booking
             this._tickets.Add(ticket);
         }
 
+        // Once tickets are created, booking is considered fully confirmed.
         this.Status = BookingStatus.Confirmed;
-        this.UpdatedAtUtc = now;
+        this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public void Cancel(BookingCancellationReason reason)
+    public void ProcessLatePayment()
     {
+        // If booking is already confirmed or in any refund process,
+        // receiving a "late" payment event doesn't make sense and should be treated as an error.
+        if (this.Status is BookingStatus.Confirmed or BookingStatus.RefundPending or BookingStatus.Refunded)
+        {
+            throw new InvalidOperationException(
+                $"Late payment received but booking is already {this.Status}.");
+        }
+
+        // We do not allow multiple active refunds for the same booking.
+        var activeRefundExists = this._refunds.Any(r =>
+            r.Status is RefundStatus.Requested);
+
+        if (activeRefundExists)
+        {
+            throw new InvalidOperationException("There is already an active refund for this booking.");
+        }
+
+        var refund = Refund.Create(
+            bookingId: this.Id,
+            amount: this.TotalPrice,
+            paymentId: this.PaymentId);
+
+        this._refunds.Add(refund);
+
+        this.Status = BookingStatus.RefundPending;
+        this.CancellationReason = BookingCancellationReason.PaymentExpired;
+        this.UpdatedAtUtc = DateTime.UtcNow;
+    }
+
+    public void CancelPendingPayment()
+    {
+        // We only allow direct cancellation while the booking is still waiting for payment.
+        // Cancel after confirmation is handled via the refund flow, not this method.
         if (this.Status != BookingStatus.PendingPayment)
         {
             throw new InvalidOperationException(
@@ -181,12 +210,14 @@ public sealed class Booking
         }
 
         this.Status = BookingStatus.Cancelled;
-        this.CancellationReason = reason;
+        this.CancellationReason = BookingCancellationReason.PaymentCanceled;
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public void Expire()
+    public void ExpireReservation()
     {
+        // Expiration is meaningful only for bookings that are still pending payment.
+        // If status is already something else, we silently do nothing (idempotent behavior).
         if (this.Status != BookingStatus.PendingPayment)
         {
             return;
@@ -197,31 +228,61 @@ public sealed class Booking
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public void RequestRefund(Money amount, string reason)
+    public Refund? CancelBySystem(BookingCancellationReason reason)
     {
-        if (this.Status != BookingStatus.Confirmed || this.Status != BookingStatus.Cancelled)
+        // If booking is already fully closed, just return (idempotent behavior).
+        if (this.Status is BookingStatus.Cancelled
+            or BookingStatus.Expired
+            or BookingStatus.Refunded)
+        {
+            return null;
+        }
+
+        // CASE 1: Booking not paid yet – simple cancellation, no refund.
+        if (this.Status == BookingStatus.PendingPayment)
+        {
+            this.Status = BookingStatus.Cancelled;
+            this.CancellationReason = reason;
+            this.UpdatedAtUtc = DateTime.UtcNow;
+
+            // No refund created because nothing was successfully charged.
+            return null;
+        }
+
+        // CASE 2: Booking was paid and confirmed – tickets exist and must be invalidated.
+        if (this.Status == BookingStatus.Confirmed)
+        {
+            // Invalidate all tickets for safety: user must not be able to use them.
+            foreach (var ticket in this._tickets)
+            {
+                ticket.Cancel();
+            }
+
+            this.CancellationReason = reason;
+
+            // This reuses common refund rules (currency/amount checks, active refund, etc.)
+            var createdRefund = this.RequestRefund();
+
+            return createdRefund;
+        }
+
+        // Any other state – treat as unsupported for system cancel for now.
+        throw new InvalidOperationException(
+            $"System cancellation is not supported when booking status is {this.Status}.");
+    }
+
+    public Refund RequestRefund()
+    {
+        // Refunds are only allowed for bookings that were successfully confirmed (tickets issued).
+        if (this.Status != BookingStatus.Confirmed)
         {
             throw new InvalidOperationException(
-                $"Refund can only be requested when booking is {BookingStatus.Confirmed} or {BookingStatus.Cancelled}.");
+                $"Refund can only be requested when booking is {BookingStatus.Confirmed}.");
         }
 
-        if (amount.Amount > this.TotalPrice.Amount)
-        {
-            throw new InvalidOperationException("Refund amount cannot exceed total booking price.");
-        }
-
-        if (amount.Currency != this.TotalPrice.Currency)
-        {
-            throw new InvalidOperationException("Refund currency does not match booking currency.");
-        }
-
-        if (string.IsNullOrWhiteSpace(reason))
-        {
-            throw new ArgumentException("Refund reason is required.", nameof(reason));
-        }
-
+        // We do not allow multiple active refunds for the same booking.
         var activeRefundExists = this._refunds.Any(r =>
-            r.Status is RefundStatus.Requested or RefundStatus.InProgress);
+            r.Status is RefundStatus.Requested);
 
         if (activeRefundExists)
         {
@@ -230,47 +291,63 @@ public sealed class Booking
 
         var refund = Refund.Create(
             bookingId: this.Id,
-            amount: amount,
-            reason: reason,
+            amount: this.TotalPrice,
             paymentId: this.PaymentId);
 
         this._refunds.Add(refund);
 
+        // All tickets are marked as cancelled so that they cannot be used for entry.
+        foreach (var ticket in this._tickets)
+        {
+            ticket.Cancel();
+        }
+
         this.Status = BookingStatus.RefundPending;
-        this.CancellationReason = BookingCancellationReason.UserCancelled;
+        this.CancellationReason = BookingCancellationReason.UserRefunded;
         this.UpdatedAtUtc = DateTime.UtcNow;
+
+        return refund;
     }
 
-    public void MarkLastRefundSucceeded()
+    public void CompleteRefund(Guid refundId)
     {
+        // We can only complete a refund when the booking is in RefundPending state.
         if (this.Status != BookingStatus.RefundPending)
         {
             throw new InvalidOperationException(
                 $"Refund can only be completed when booking is {BookingStatus.RefundPending}.");
         }
 
-        var now = DateTime.UtcNow;
-
-        var refund = this._refunds
-            .LastOrDefault(r => r.Status is RefundStatus.Requested or RefundStatus.InProgress);
+        var refund = this._refunds.SingleOrDefault(r => r.Id == refundId);
 
         if (refund is null)
         {
-            throw new InvalidOperationException("No active refund found for this booking.");
+            throw new InvalidOperationException("Refund not found for this booking.");
         }
+
+        // Only refunds that are still in progress/requested can transition to Succeeded.
+        if (refund.Status is not RefundStatus.Requested)
+        {
+            throw new InvalidOperationException(
+                $"Refund must be in {RefundStatus.Requested} state to be completed.");
+        }
+
+        var now = DateTime.UtcNow;
 
         refund.MarkSucceeded(now);
 
+        // Once refund is successful, booking moves to Refunded state.
         this.Status = BookingStatus.Refunded;
         this.UpdatedAtUtc = now;
 
+        // All tickets are marked as refunded so that they cannot be used for entry.
         foreach (var ticket in this._tickets)
         {
             ticket.MarkRefunded(now);
         }
     }
 
-    public void MarkLastRefundFailed(string failureReason)
+    public void FailRefund(Guid refundId, string failureReason)
     {
         if (this.Status != BookingStatus.RefundPending)
         {
@@ -283,19 +360,24 @@ public sealed class Booking
             throw new ArgumentException("Failure reason is required.", nameof(failureReason));
         }
 
-        var refund = this._refunds
-            .LastOrDefault(r => r.Status is RefundStatus.Requested or RefundStatus.InProgress);
+        var refund = this._refunds.SingleOrDefault(r => r.Id == refundId);
 
         if (refund is null)
         {
-            throw new InvalidOperationException("No active refund found for this booking.");
+            throw new InvalidOperationException("Refund not found for this booking.");
+        }
+
+        if (refund.Status is not RefundStatus.Requested)
+        {
+            throw new InvalidOperationException(
+                $"Refund must be in {RefundStatus.Requested} state to be marked as failed.");
         }
 
         var now = DateTime.UtcNow;
 
         refund.MarkFailed(failureReason, now);
 
-        this.Status = BookingStatus.Confirmed;
+        this.Status = BookingStatus.RefundPending;
         this.UpdatedAtUtc = now;
     }
 }
