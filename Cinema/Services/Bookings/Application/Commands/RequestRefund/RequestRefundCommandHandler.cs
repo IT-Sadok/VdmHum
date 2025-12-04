@@ -1,6 +1,6 @@
 namespace Application.Commands.RequestRefund;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Abstractions.Repositories;
 using Contracts.Bookings;
 using Domain.Abstractions;

@@ -1,6 +1,6 @@
 namespace Application.Commands.RequestRefund;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Contracts.Bookings;
 
 public sealed record RequestRefundCommand(Guid BookingId)

@@ -1,6 +1,6 @@
 namespace Application.Commands.CancelPendingBooking;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Contracts.Bookings;
 
 public sealed record CancelPendingBookingCommand(

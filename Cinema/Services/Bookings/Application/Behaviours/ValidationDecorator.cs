@@ -1,6 +1,6 @@
 ﻿namespace Application.Behaviours;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Domain.Errors;
 using Domain.Abstractions;
 using FluentValidation;

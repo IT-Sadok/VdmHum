@@ -1,6 +1,6 @@
 namespace Application.Commands.CreateBooking;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Abstractions.Repositories;
 using Abstractions.Services;
 using Contracts.Bookings;

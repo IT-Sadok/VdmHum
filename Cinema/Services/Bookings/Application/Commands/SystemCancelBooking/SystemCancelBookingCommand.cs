@@ -1,6 +1,6 @@
 namespace Application.Commands.SystemCancelBooking;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Domain.Enums;
 
 public sealed record SystemCancelBookingCommand(

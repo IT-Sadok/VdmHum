@@ -1,6 +1,6 @@
 namespace Application.Commands.FailRefund;
 
-using Abstractions.Messaging;
+using Abstractions;
 
 public sealed record FailRefundCommand(
     Guid BookingId,

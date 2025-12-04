@@ -1,6 +1,6 @@
 namespace Application.Commands.CompleteRefund;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Abstractions.Repositories;
 using Domain.Abstractions;
 using Domain.Errors;

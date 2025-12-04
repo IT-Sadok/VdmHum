@@ -1,7 +1,7 @@
 ﻿namespace Application;
 
+using Abstractions;
 using Behaviours;
-using Abstractions.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

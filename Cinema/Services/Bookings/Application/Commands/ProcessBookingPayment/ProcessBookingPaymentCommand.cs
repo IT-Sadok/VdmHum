@@ -1,6 +1,6 @@
 namespace Application.Commands.ProcessBookingPayment;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Contracts.Bookings;
 
 public sealed record ProcessBookingPaymentCommand(

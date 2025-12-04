@@ -1,6 +1,6 @@
 namespace Application.Queries.GetBookings;
 
-using Abstractions.Messaging;
+using Abstractions;
 using Abstractions.Repositories;
 using Contracts;
 using Contracts.Bookings;
