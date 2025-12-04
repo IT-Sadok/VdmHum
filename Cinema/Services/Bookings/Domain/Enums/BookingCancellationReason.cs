@@ -2,9 +2,10 @@ namespace Domain.Enums;
 
 public enum BookingCancellationReason
 {
-    UserCancelled = 0,
-    PaymentFailed = 1,
-    PaymentExpired = 2,
-    ShowtimeCancelled = 3,
-    AdminCancelled = 4,
+    UserRefunded = 0,
+    PaymentCanceled = 1,
+    PaymentFailed = 2,
+    PaymentExpired = 3,
+    ShowtimeCancelled = 4,
+    AdminCancelled = 5,
 }

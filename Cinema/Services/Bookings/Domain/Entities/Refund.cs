@@ -9,14 +9,12 @@ public sealed class Refund
         Guid id,
         Guid bookingId,
         Money amount,
-        string reason,
         string? paymentId,
         DateTime requestedAtUtc)
     {
         this.Id = id;
         this.BookingId = bookingId;
         this.Amount = amount;
-        this.Reason = reason;
         this.PaymentId = paymentId;
         this.RequestedAtUtc = requestedAtUtc;
         this.Status = RefundStatus.Requested;
@@ -27,8 +25,6 @@ public sealed class Refund
     public Guid BookingId { get; private set; }
 
     public Money Amount { get; private set; }
-
-    public string Reason { get; private set; }
 
     public RefundStatus Status { get; private set; }
 
@@ -43,17 +39,11 @@ public sealed class Refund
     public static Refund Create(
         Guid bookingId,
         Money amount,
-        string reason,
         string? paymentId)
     {
         if (bookingId == Guid.Empty)
         {
             throw new ArgumentException("BookingId cannot be empty.", nameof(bookingId));
-        }
-
-        if (string.IsNullOrWhiteSpace(reason))
-        {
-            throw new ArgumentException("Refund reason is required.", nameof(reason));
         }
 
         var now = DateTime.UtcNow;
@@ -62,20 +52,8 @@ public sealed class Refund
             id: Guid.NewGuid(),
             bookingId: bookingId,
             amount: amount,
-            reason: reason,
             paymentId: paymentId,
             requestedAtUtc: now);
-    }
-
-    public void MarkInProgress()
-    {
-        if (this.Status != RefundStatus.Requested)
-        {
-            throw new InvalidOperationException(
-                $"Only refunds in {RefundStatus.Requested} state can be moved to InProgress.");
-        }
-
-        this.Status = RefundStatus.InProgress;
     }
 
     public void MarkSucceeded(DateTime? processedAtUtc = null)
