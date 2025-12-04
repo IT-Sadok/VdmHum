@@ -6,9 +6,6 @@ public sealed class CreateBookingCommandValidator : AbstractValidator<CreateBook
 {
     public CreateBookingCommandValidator()
     {
-        RuleFor(c => c.UserId)
-            .NotEmpty();
-
         RuleFor(c => c.ShowtimeId)
             .NotEmpty();
 

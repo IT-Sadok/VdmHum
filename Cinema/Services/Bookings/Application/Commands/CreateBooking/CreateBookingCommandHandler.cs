@@ -15,6 +15,7 @@ public sealed class CreateBookingCommandHandler(
     IBookingRepository bookingRepository,
     IShowtimeReadService showtimeReadService,
     IOptions<BookingOptions> bookingOptions,
+    IUserContextService userContextService,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CreateBookingCommand, BookingResponseModel>
 {
@@ -22,6 +23,11 @@ public sealed class CreateBookingCommandHandler(
         CreateBookingCommand command,
         CancellationToken ct)
     {
+        if (!userContextService.IsAuthenticated || userContextService.UserId is null)
+        {
+            return Result.Failure<BookingResponseModel>(CommonErrors.Unauthorized);
+        }
+
         var showtimeSnapshot = await showtimeReadService
             .GetShowtimeSnapshotAsync(command.ShowtimeId, ct);
 
@@ -46,7 +52,7 @@ public sealed class CreateBookingCommandHandler(
         var reservationExpiresAt = now.AddMinutes(bookingOptions.Value.ReservationDuration);
 
         var booking = Booking.Create(
-            userId: command.UserId,
+            userId: userContextService.UserId.Value,
             showtime: showtimeSnapshot,
             seats: seats,
             totalPrice: totalPrice,
