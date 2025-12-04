@@ -1,5 +1,6 @@
 namespace Application.Abstractions.Repositories;
 
+using Contracts;
 using Contracts.Bookings;
 using Domain.Entities;
 
@@ -8,9 +9,7 @@ public interface IBookingRepository
     Task<Booking?> GetByIdAsync(Guid id, CancellationToken ct);
 
     Task<(IReadOnlyList<Booking> Items, int TotalCount)> GetPagedAsync(
-        BookingFilter filter,
-        int page,
-        int pageSize,
+        PagedQuery<BookingFilter> filter,
         CancellationToken ct);
 
     void Add(Booking booking);

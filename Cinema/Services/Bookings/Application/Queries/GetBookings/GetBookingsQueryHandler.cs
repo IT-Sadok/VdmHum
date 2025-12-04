@@ -2,33 +2,35 @@ namespace Application.Queries.GetBookings;
 
 using Abstractions.Messaging;
 using Abstractions.Repositories;
+using Contracts;
 using Contracts.Bookings;
 using Domain.Abstractions;
 using Domain.Entities;
 
 public sealed class GetBookingsQueryHandler(
     IBookingRepository bookingRepository)
-    : IQueryHandler<GetBookingsQuery, PagedBookingsResponseModel>
+    : IQueryHandler<GetBookingsQuery, PagedResponse<BookingResponseModel>>
 {
-    public async Task<Result<PagedBookingsResponseModel>> HandleAsync(
+    public async Task<Result<PagedResponse<BookingResponseModel>>> HandleAsync(
         GetBookingsQuery query,
         CancellationToken ct)
     {
-        var bookingFilter = new BookingFilter(
-            UserId: query.UserId,
-            Status: query.Status);
+        var bookingFilter = new PagedQuery<BookingFilter>(
+            new BookingFilter(
+                UserId: query.UserId,
+                Status: query.Status),
+            Page: query.Page,
+            PageSize: query.PageSize);
 
         var (bookings, totalCount) = await bookingRepository.GetPagedAsync(
             bookingFilter,
-            query.Page,
-            query.PageSize,
             ct);
 
         var responseItems = bookings
             .Select(MapToResponse)
             .ToArray();
 
-        var response = new PagedBookingsResponseModel(
+        var response = new PagedResponse<BookingResponseModel>(
             Page: query.Page,
             PageSize: query.PageSize,
             TotalCount: totalCount,
