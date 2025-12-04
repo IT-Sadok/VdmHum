@@ -6,7 +6,7 @@ using Domain.Entities;
 
 public interface IBookingRepository
 {
-    Task<Booking?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<Booking?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     Task<(IReadOnlyList<Booking> Items, int TotalCount)> GetPagedAsync(
         PagedQuery<BookingFilter> filter,
