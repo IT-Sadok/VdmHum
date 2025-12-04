@@ -61,31 +61,6 @@ public sealed class CreateBookingCommandHandler(
         bookingRepository.Add(booking);
         await unitOfWork.SaveChangesAsync(ct);
 
-        var response = MapToResponse(booking);
-
-        return response;
-    }
-
-    private static BookingResponseModel MapToResponse(Booking booking)
-    {
-        var showtime = booking.Showtime;
-
-        var emptyTickets = Array.Empty<TicketResponseModel>();
-
-        return new BookingResponseModel(
-            Id: booking.Id,
-            UserId: booking.UserId,
-            ShowtimeId: showtime.ShowtimeId,
-            MovieTitle: showtime.MovieTitle,
-            CinemaName: showtime.CinemaName,
-            HallName: showtime.HallName,
-            ShowtimeStartTimeUtc: showtime.StartTimeUtc,
-            Status: booking.Status,
-            TotalPrice: booking.TotalPrice.Amount,
-            Currency: booking.TotalPrice.Currency,
-            CreatedAtUtc: booking.CreatedAtUtc,
-            ReservationExpiresAtUtc: booking.ReservationExpiresAtUtc,
-            Seats: booking.Seats.ToArray(),
-            Tickets: emptyTickets);
+        return booking.ToResponse(includeTickets: false);
     }
 }
