@@ -2,9 +2,7 @@ namespace Infrastructure.Configurations;
 
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
 {
@@ -86,24 +84,6 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
                     .HasColumnName("ShowtimeStartTimeUtc")
                     .IsRequired();
             });
-
-        var seatsConverter = new ValueConverter<HashSet<int>, string>(
-            v => string.Join(',', v.OrderBy(x => x)),
-            v => string.IsNullOrWhiteSpace(v)
-                ? new HashSet<int>()
-                : v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(int.Parse)
-                    .ToHashSet());
-
-        var seatsComparer = new ValueComparer<HashSet<int>>(
-            (c1, c2) => c1 != null && c2 != null && c1.SetEquals(c2),
-            c => c.Aggregate(0, HashCode.Combine),
-            c => new HashSet<int>(c));
-
-        builder.Property<HashSet<int>>("_seats")
-            .HasColumnName("Seats")
-            .HasConversion(seatsConverter)
-            .Metadata.SetValueComparer(seatsComparer);
 
         builder.HasMany(b => b.Seats)
             .WithOne()
