@@ -14,7 +14,7 @@ public sealed class SystemCancelBookingCommandHandler(
         SystemCancelBookingCommand command,
         CancellationToken ct)
     {
-        var booking = await bookingRepository.GetByIdAsync(command.BookingId, ct);
+        var booking = await bookingRepository.GetByIdAsync(command.BookingId, asNoTracking: false, ct);
 
         if (booking is null)
         {

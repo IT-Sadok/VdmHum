@@ -1,8 +1,8 @@
 namespace Application.Abstractions.Services;
 
+using Contracts;
+
 public interface IUserContextService
 {
-    Guid? UserId { get; }
-
-    bool IsAuthenticated { get; }
+    UserContextModel Get();
 }

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "Showtime.Grpc";
+
+import "google/protobuf/timestamp.proto";
+
+service ShowtimeService {
+  rpc GetShowtime (GetShowtimeRequest) returns (GetShowtimeResponse);
+}
+
+message GetShowtimeRequest {
+  string showtimeId = 1;
+}
+
+message GetShowtimeResponse {
+  bool found = 1;
+  ShowtimeModel showtime = 2;
+}
+
+message ShowtimeModel {
+  string id = 1;
+  string movieId = 2;
+  string cinemaId = 3;
+  string hallId = 4;
+  string movieTitle = 5;
+  string cinemaName = 6;
+  string hallName = 7;
+  google.protobuf.Timestamp startTimeUtc = 8;
+}

@@ -5,17 +5,21 @@ using ValueObjects;
 
 public sealed class Booking
 {
-    private readonly HashSet<int> _seats;
+    private readonly List<BookingSeat> _seats = null!;
 
-    private readonly List<Ticket> _tickets;
+    private readonly List<Ticket> _tickets = null!;
 
-    private readonly List<Refund> _refunds;
+    private readonly List<Refund> _refunds = null!;
+
+    private Booking()
+    {
+    }
 
     private Booking(
         Guid id,
         Guid userId,
         ShowtimeSnapshot showtime,
-        HashSet<int> seats,
+        List<BookingSeat> seats,
         Money totalPrice,
         DateTime createdAtUtc,
         DateTime reservationExpiresAtUtc)
@@ -36,11 +40,11 @@ public sealed class Booking
 
     public Guid UserId { get; private set; }
 
-    public ShowtimeSnapshot Showtime { get; private set; }
+    public ShowtimeSnapshot Showtime { get; private set; } = null!;
 
     public BookingStatus Status { get; private set; }
 
-    public Money TotalPrice { get; private set; }
+    public Money TotalPrice { get; private set; } = null!;
 
     public DateTime CreatedAtUtc { get; private set; }
 
@@ -52,7 +56,7 @@ public sealed class Booking
 
     public BookingCancellationReason? CancellationReason { get; private set; }
 
-    public IReadOnlyCollection<int> Seats => this._seats;
+    public IReadOnlyCollection<BookingSeat> Seats => this._seats.AsReadOnly();
 
     public IReadOnlyCollection<Ticket> Tickets => this._tickets.AsReadOnly();
 
@@ -92,11 +96,20 @@ public sealed class Booking
                 nameof(reservationExpiresAtUtc));
         }
 
+        var bookingId = Guid.CreateVersion7();
+
+        var bookingSeats = seatsSet
+            .Select(seatNumber => BookingSeat.Create(
+                bookingId: bookingId,
+                showtimeId: showtime.ShowtimeId,
+                seatNumber: seatNumber))
+            .ToList();
+
         var booking = new Booking(
-            id: Guid.NewGuid(),
+            id: bookingId,
             userId: userId,
             showtime: showtime,
-            seats: seatsSet,
+            seats: bookingSeats,
             totalPrice: totalPrice,
             createdAtUtc: now,
             reservationExpiresAtUtc: reservationExpiresAtUtc);
@@ -151,12 +164,12 @@ public sealed class Booking
         this.PaymentId ??= paymentId;
 
         // Issue tickets for all reserved seats.
-        foreach (var seat in this._seats)
+        foreach (var seatNumber in this._seats.Select(s => s.SeatNumber))
         {
-            var ticketNumber = $"{this.Id:N}-{seat}";
+            var ticketNumber = $"{this.Id:N}-{seatNumber}";
             var ticket = Ticket.Create(
                 bookingId: this.Id,
-                seatNumber: seat,
+                seatNumber: seatNumber,
                 ticketNumber: ticketNumber,
                 qrCode: null);
 

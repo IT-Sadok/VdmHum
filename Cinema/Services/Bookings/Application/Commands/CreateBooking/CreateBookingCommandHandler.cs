@@ -23,7 +23,9 @@ public sealed class CreateBookingCommandHandler(
         CreateBookingCommand command,
         CancellationToken ct)
     {
-        if (!userContextService.IsAuthenticated || userContextService.UserId is null)
+        var userContext = userContextService.Get();
+
+        if (!userContext.IsAuthenticated || userContext.UserId is null)
         {
             return Result.Failure<BookingResponseModel>(CommonErrors.Unauthorized);
         }
@@ -52,7 +54,7 @@ public sealed class CreateBookingCommandHandler(
         var reservationExpiresAt = now.AddMinutes(bookingOptions.Value.ReservationDuration);
 
         var booking = Booking.Create(
-            userId: userContextService.UserId.Value,
+            userId: userContext.UserId.Value,
             showtime: showtimeSnapshot,
             seats: seats,
             totalPrice: totalPrice,
