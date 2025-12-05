@@ -2,22 +2,21 @@ namespace Infrastructure.Services;
 
 using System.Security.Claims;
 using Application.Abstractions.Services;
+using Application.Contracts;
 using Microsoft.AspNetCore.Http;
 
 public class UserContextService(IHttpContextAccessor httpContextAccessor)
     : IUserContextService
 {
-    public Guid? UserId
+    public UserContextModel Get()
     {
-        get
-        {
-            var userId = httpContextAccessor.HttpContext?.User
-                .FindFirstValue(ClaimTypes.NameIdentifier);
+        var httpUser = httpContextAccessor.HttpContext?.User;
 
-            return Guid.TryParse(userId, out var id) ? id : null;
-        }
+        var idStr = httpUser?.FindFirstValue(ClaimTypes.NameIdentifier);
+        Guid? userId = Guid.TryParse(idStr, out var id) ? id : null;
+
+        bool isAuthenticated = httpUser?.Identity?.IsAuthenticated ?? false;
+
+        return new UserContextModel(userId, isAuthenticated);
     }
-
-    public bool IsAuthenticated =>
-        httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false;
 }
