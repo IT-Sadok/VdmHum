@@ -1,0 +1,92 @@
+namespace Infrastructure.Repositories;
+
+using Application.Abstractions.Repositories;
+using Application.Contracts;
+using Application.Contracts.Bookings;
+using Database;
+using Domain.Entities;
+using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+
+public class BookingRepository(ApplicationDbContext dbContext) : IBookingRepository
+{
+    public async Task<Booking?> GetByIdAsync(
+        Guid id,
+        bool asNoTracking,
+        CancellationToken ct)
+    {
+        IQueryable<Booking> query = dbContext
+            .Bookings
+            .Include(b => b.Tickets);
+
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query.FirstOrDefaultAsync(c => c.Id == id, ct);
+    }
+
+    public async Task<(IReadOnlyList<Booking> Items, int TotalCount)> GetPagedAsync(
+        PagedQuery<BookingFilter> filter,
+        CancellationToken ct)
+    {
+        var query = dbContext.Bookings.AsQueryable();
+
+        if (filter.Filter.UserId is not null)
+        {
+            query = query.Where(b => b.UserId == filter.Filter.UserId);
+        }
+
+        if (filter.Filter.Status is not null)
+        {
+            query = query.Where(b => b.Status == filter.Filter.Status);
+        }
+
+        var totalCount = await query.CountAsync(ct);
+
+        var skip = (filter.Page - 1) * filter.PageSize;
+
+        var items = await query
+            .OrderBy(c => c.Id)
+            .Skip(skip)
+            .Take(filter.PageSize)
+            .ToListAsync(ct);
+
+        return (items, totalCount);
+    }
+
+    public void Add(Booking booking) =>
+        dbContext.Bookings.Add(booking);
+
+    public async Task<bool> AreSeatsAvailableAsync(
+        Guid showtimeId,
+        IReadOnlyCollection<int> seats,
+        CancellationToken ct)
+    {
+        if (seats is null || seats.Count == 0)
+        {
+            throw new ArgumentException("At least one seat must be provided.", nameof(seats));
+        }
+
+        var requestedSeats = seats.ToHashSet();
+        var now = DateTime.UtcNow;
+
+        var hasConflict =
+            await (from seat in dbContext.BookingSeats.AsNoTracking()
+                    join booking in dbContext.Bookings.AsNoTracking()
+                        on seat.BookingId equals booking.Id
+                    where seat.ShowtimeId == showtimeId
+                          && requestedSeats.Contains(seat.SeatNumber)
+                          && (
+                              (booking.Status == BookingStatus.PendingPayment &&
+                               booking.ReservationExpiresAtUtc > now)
+                              || booking.Status == BookingStatus.Confirmed
+                              || booking.Status == BookingStatus.RefundPending
+                          )
+                    select seat)
+                .AnyAsync(ct);
+
+        return !hasConflict;
+    }
+}
