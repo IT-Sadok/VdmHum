@@ -72,21 +72,29 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
         var requestedSeats = seats.ToHashSet();
         var now = DateTime.UtcNow;
 
-        var hasConflict =
-            await (from seat in dbContext.BookingSeats.AsNoTracking()
-                    join booking in dbContext.Bookings.AsNoTracking()
-                        on seat.BookingId equals booking.Id
-                    where seat.ShowtimeId == showtimeId
-                          && requestedSeats.Contains(seat.SeatNumber)
-                          && (
-                              (booking.Status == BookingStatus.PendingPayment &&
-                               booking.ReservationExpiresAtUtc > now)
-                              || booking.Status == BookingStatus.Confirmed
-                              || booking.Status == BookingStatus.RefundPending
-                          )
-                    select seat)
-                .AnyAsync(ct);
+        var hasConflict = await this.BuildConflictingSeatsQuery(showtimeId, requestedSeats, now)
+            .AnyAsync(ct);
 
         return !hasConflict;
+    }
+
+    private IQueryable<BookingSeat> BuildConflictingSeatsQuery(
+        Guid showtimeId,
+        HashSet<int> requestedSeats,
+        DateTime now)
+    {
+        return
+            from seat in dbContext.BookingSeats.AsNoTracking()
+            join booking in dbContext.Bookings.AsNoTracking()
+                on seat.BookingId equals booking.Id
+            where seat.ShowtimeId == showtimeId
+                  && requestedSeats.Contains(seat.SeatNumber)
+                  && (
+                      (booking.Status == BookingStatus.PendingPayment &&
+                       booking.ReservationExpiresAtUtc > now)
+                      || booking.Status == BookingStatus.Confirmed
+                      || booking.Status == BookingStatus.RefundPending
+                  )
+            select seat;
     }
 }
