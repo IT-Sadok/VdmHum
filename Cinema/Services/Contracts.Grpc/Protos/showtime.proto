@@ -9,21 +9,21 @@ service ShowtimeService {
 }
 
 message GetShowtimeRequest {
-  string showtime_id = 1;
+  string showtimeId = 1;
 }
 
 message GetShowtimeResponse {
   bool found = 1;
-  ShowtimeDto showtime = 2;
+  ShowtimeModel showtime = 2;
 }
 
-message ShowtimeDto {
+message ShowtimeModel {
   string id = 1;
-  string movie_id = 2;
-  string cinema_id = 3;
-  string hall_id = 4;
-  string movie_title = 5;
-  string cinema_name = 6;
-  string hall_name = 7;
-  google.protobuf.Timestamp start_time_utc = 8;
+  string movieId = 2;
+  string cinemaId = 3;
+  string hallId = 4;
+  string movieTitle = 5;
+  string cinemaName = 6;
+  string hallName = 7;
+  google.protobuf.Timestamp startTimeUtc = 8;
 }

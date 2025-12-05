@@ -40,7 +40,7 @@ public sealed class ShowtimeGrpcService(
         return new GetShowtimeResponse
         {
             Found = true,
-            Showtime = new ShowtimeDto
+            Showtime = new ShowtimeModel
             {
                 Id = showtime.Id.ToString(),
                 MovieId = showtime.MovieId.ToString(),
