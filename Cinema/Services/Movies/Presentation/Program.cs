@@ -3,6 +3,7 @@ using Application;
 using Infrastructure;
 using Presentation;
 using Presentation.Extensions;
+using Presentation.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGrpcService<ShowtimeGrpcService>();
 
 app.MapEndpoints();
 

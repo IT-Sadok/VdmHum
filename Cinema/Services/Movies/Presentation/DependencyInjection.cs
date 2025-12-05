@@ -10,6 +10,8 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGenWithAuth();
 
+        services.AddGrpc();
+
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 

@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C3B7406F-57F5-4595-9928-B46274F4655B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts.Grpc", "..\Contracts.Grpc\Contracts.Grpc.csproj", "{CA537E16-1279-450B-8F9B-ADCF029ABB9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C3B7406F-57F5-4595-9928-B46274F4655B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3B7406F-57F5-4595-9928-B46274F4655B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3B7406F-57F5-4595-9928-B46274F4655B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA537E16-1279-450B-8F9B-ADCF029ABB9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA537E16-1279-450B-8F9B-ADCF029ABB9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA537E16-1279-450B-8F9B-ADCF029ABB9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA537E16-1279-450B-8F9B-ADCF029ABB9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
