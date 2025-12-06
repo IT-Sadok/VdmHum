@@ -10,6 +10,13 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
     {
         return InvokeHandler<TResult>(typeof(ICommandHandler<,>), command, ct);
     }
+    
+    public Task<Result> Send(
+        ICommand command,
+        CancellationToken ct = default)
+    {
+        return InvokeHandler(typeof(ICommandHandler<>), command, ct);
+    }
 
     public Task<Result<TResult>> Send<TResult>(
         IQuery<TResult> query,
@@ -28,6 +35,21 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
 
         var closedHandlerType = openGenericHandlerType
             .MakeGenericType(messageType, resultType);
+
+        var handler = serviceProvider.GetService(closedHandlerType);
+
+        return ((dynamic)handler!).HandleAsync((dynamic)message, ct);
+    }
+    
+    private Task<Result> InvokeHandler(
+        Type openGenericHandlerType,
+        object message,
+        CancellationToken ct)
+    {
+        var messageType = message.GetType();
+
+        var closedHandlerType = openGenericHandlerType
+            .MakeGenericType(messageType);
 
         var handler = serviceProvider.GetService(closedHandlerType);
 
