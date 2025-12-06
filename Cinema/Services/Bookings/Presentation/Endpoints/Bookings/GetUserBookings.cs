@@ -21,7 +21,7 @@ internal sealed class GetUserBookings : IEndpoint
     {
         app.MapGet(BookingsRoutes.GetPagedForUser, async (
                 [AsParameters] GetUserBookingsRequest request,
-                IQueryHandler<GetUserBookingsQuery, PagedResponse<BookingResponseModel>> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetUserBookingsQuery(
@@ -32,7 +32,7 @@ internal sealed class GetUserBookings : IEndpoint
                         Page: request.Page,
                         PageSize: request.PageSize));
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,

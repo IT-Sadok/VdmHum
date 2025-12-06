@@ -14,12 +14,12 @@ internal sealed class CancelPendingBooking : IEndpoint
     {
         app.MapPost(BookingsRoutes.Cancel, async (
                 [FromRoute] Guid id,
-                ICommandHandler<CancelPendingBookingCommand, BookingResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CancelPendingBookingCommand(BookingId: id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.Ok,

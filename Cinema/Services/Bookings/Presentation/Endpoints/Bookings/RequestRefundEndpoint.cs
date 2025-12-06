@@ -14,12 +14,12 @@ internal sealed class RequestRefundEndpoint : IEndpoint
     {
         app.MapPost(BookingsRoutes.RequestRefund, async (
                 [FromRoute] Guid id,
-                ICommandHandler<RequestRefundCommand, BookingResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new RequestRefundCommand(BookingId: id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.Ok,

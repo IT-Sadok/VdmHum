@@ -14,12 +14,12 @@ internal sealed class GetBookingById : IEndpoint
     {
         app.MapGet(BookingsRoutes.GetById, async (
                 [FromRoute] Guid id,
-                IQueryHandler<GetBookingByIdQuery, BookingResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetBookingByIdQuery(id);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,

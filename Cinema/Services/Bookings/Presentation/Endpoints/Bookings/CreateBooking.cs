@@ -20,7 +20,7 @@ internal sealed class CreateBooking : IEndpoint
     {
         app.MapPost(BookingsRoutes.Create, async (
                 CreateBookingRequest request,
-                ICommandHandler<CreateBookingCommand, BookingResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateBookingCommand(
@@ -29,7 +29,7 @@ internal sealed class CreateBooking : IEndpoint
                     TotalPrice: request.TotalPrice,
                     Currency: request.Currency);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     booking => Results.Created(

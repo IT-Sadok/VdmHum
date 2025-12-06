@@ -22,7 +22,7 @@ internal sealed class GetBookingsAdmin : IEndpoint
     {
         app.MapGet(BookingsRoutes.GetPaged, async (
                 [AsParameters] GetBookingsAdminRequest adminRequest,
-                IQueryHandler<GetBookingsQuery, PagedResponse<BookingResponseModel>> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetBookingsQuery(
@@ -33,7 +33,7 @@ internal sealed class GetBookingsAdmin : IEndpoint
                         Page: adminRequest.Page,
                         PageSize: adminRequest.PageSize));
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,
