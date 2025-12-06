@@ -1,8 +1,8 @@
 namespace Application.Queries.GetBookings;
 
-using Abstractions;
 using Contracts;
 using Contracts.Bookings;
+using Shared.Contracts.Abstractions;
 
 public sealed record GetBookingsQuery(
     PagedQuery<BookingFilter> Filter

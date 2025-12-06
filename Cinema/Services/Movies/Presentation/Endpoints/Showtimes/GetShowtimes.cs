@@ -1,6 +1,5 @@
 namespace Presentation.Endpoints.Showtimes;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtimes;
 using Domain.Enums;
@@ -8,6 +7,7 @@ using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetShowtimes : IEndpoint
 {

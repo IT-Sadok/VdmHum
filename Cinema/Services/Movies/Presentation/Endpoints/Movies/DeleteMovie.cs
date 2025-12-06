@@ -1,10 +1,10 @@
 namespace Presentation.Endpoints.Movies;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Movies.DeleteMovie;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class DeleteMovie : IEndpoint
 {

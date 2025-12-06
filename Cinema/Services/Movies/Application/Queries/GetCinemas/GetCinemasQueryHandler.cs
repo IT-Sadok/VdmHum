@@ -1,10 +1,10 @@
 namespace Application.Queries.GetCinemas;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Cinemas;
-using Domain.Abstractions;
 using Domain.Entities;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class GetCinemasQueryHandler(
     ICinemaRepository cinemaRepository)

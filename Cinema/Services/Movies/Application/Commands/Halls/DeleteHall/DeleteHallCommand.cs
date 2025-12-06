@@ -1,5 +1,5 @@
 namespace Application.Commands.Halls.DeleteHall;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 
 public sealed record DeleteHallCommand(Guid Id) : ICommand;

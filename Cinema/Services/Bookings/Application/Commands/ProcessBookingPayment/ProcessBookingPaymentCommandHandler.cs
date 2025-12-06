@@ -1,10 +1,10 @@
 namespace Application.Commands.ProcessBookingPayment;
 
-using Abstractions;
 using Abstractions.Repositories;
 using Contracts.Bookings;
-using Domain.Abstractions;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class ProcessBookingPaymentCommandHandler(
     IBookingRepository bookingRepository,

@@ -1,5 +1,5 @@
 namespace Application.Commands.Movies.DeleteMovie;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 
 public sealed record DeleteMovieCommand(Guid Id) : ICommand;

@@ -1,11 +1,11 @@
 namespace Presentation.Endpoints.Halls;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Halls.UpdateHall;
 using Application.Contracts.Halls;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class UpdateHall : IEndpoint
 {

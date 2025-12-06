@@ -1,7 +1,7 @@
 namespace Application.Commands.SystemCancelBooking;
 
-using Abstractions;
 using Domain.Enums;
+using Shared.Contracts.Abstractions;
 
 public sealed record SystemCancelBookingCommand(
     Guid BookingId,

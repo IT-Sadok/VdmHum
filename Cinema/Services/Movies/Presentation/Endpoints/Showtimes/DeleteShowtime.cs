@@ -1,10 +1,10 @@
 namespace Presentation.Endpoints.Showtimes;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Showtimes.DeleteShowtime;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class DeleteShowtime : IEndpoint
 {

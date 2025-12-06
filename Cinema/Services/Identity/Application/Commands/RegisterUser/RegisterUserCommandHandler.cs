@@ -1,13 +1,13 @@
 namespace Application.Commands.RegisterUser;
 
 using Microsoft.Extensions.Options;
-using Domain;
-using Domain.Abstractions;
-using Domain.Constants;
+using Errors;
+using Errors.Constants;
 using Options;
 using Abstractions.Providers;
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class RegisterUserCommandHandler(
     IIdentityService identityService,

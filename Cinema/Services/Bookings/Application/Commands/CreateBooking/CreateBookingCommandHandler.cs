@@ -1,15 +1,15 @@
 namespace Application.Commands.CreateBooking;
 
-using Abstractions;
 using Abstractions.Repositories;
 using Abstractions.Services;
 using Contracts.Bookings;
-using Domain.Abstractions;
 using Domain.Entities;
-using Domain.Errors;
 using Domain.ValueObjects;
+using Errors;
 using Microsoft.Extensions.Options;
 using Options;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class CreateBookingCommandHandler(
     IBookingRepository bookingRepository,

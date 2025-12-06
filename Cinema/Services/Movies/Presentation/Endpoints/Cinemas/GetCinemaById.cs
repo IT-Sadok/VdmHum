@@ -1,11 +1,11 @@
 ﻿namespace Presentation.Endpoints.Cinemas;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Cinemas;
 using Application.Queries.GetCinema;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetCinemaById : IEndpoint
 {

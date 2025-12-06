@@ -1,10 +1,10 @@
 namespace Presentation.Endpoints.Halls;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Halls.DeleteHall;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class DeleteHall : IEndpoint
 {

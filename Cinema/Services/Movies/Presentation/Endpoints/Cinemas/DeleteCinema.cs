@@ -1,10 +1,10 @@
 namespace Presentation.Endpoints.Cinemas;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Cinemas.DeleteCinema;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class DeleteCinema : IEndpoint
 {

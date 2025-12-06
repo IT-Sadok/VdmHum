@@ -1,4 +1,4 @@
-namespace Domain.Entities;
+namespace Application.Errors.Entities;
 
 public sealed class User
 {

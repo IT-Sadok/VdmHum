@@ -1,11 +1,11 @@
 namespace Application.Commands.Halls.CreateHall;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Application.Contracts.Halls;
-using Domain.Abstractions;
 using Domain.Entities;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class CreateHallCommandHandler(
     IHallRepository hallRepository,

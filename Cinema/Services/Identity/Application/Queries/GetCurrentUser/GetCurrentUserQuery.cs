@@ -1,6 +1,6 @@
 namespace Application.Queries.GetCurrentUser;
 
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
 
 public sealed record GetCurrentUserQuery : IQuery<UserResponseModel>;

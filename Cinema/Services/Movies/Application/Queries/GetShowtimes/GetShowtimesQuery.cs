@@ -1,6 +1,6 @@
 namespace Application.Queries.GetShowtimes;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 using Contracts.Showtimes;
 using Domain.Enums;
 

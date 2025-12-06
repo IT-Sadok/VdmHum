@@ -1,7 +1,7 @@
 namespace Application.Commands.LogoutUser;
 
-using Abstractions.Messaging;
-using Domain.Abstractions;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public record LogoutUserCommand(
     string RefreshToken

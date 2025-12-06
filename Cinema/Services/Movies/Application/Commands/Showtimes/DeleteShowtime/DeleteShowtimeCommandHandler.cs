@@ -1,9 +1,9 @@
 namespace Application.Commands.Showtimes.DeleteShowtime;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
-using Domain.Abstractions;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class DeleteShowtimeCommandHandler(
     IShowtimeRepository showtimeRepository,

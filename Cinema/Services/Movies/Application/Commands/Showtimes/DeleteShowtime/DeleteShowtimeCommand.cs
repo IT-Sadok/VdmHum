@@ -1,5 +1,5 @@
 namespace Application.Commands.Showtimes.DeleteShowtime;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 
 public sealed record DeleteShowtimeCommand(Guid Id) : ICommand;

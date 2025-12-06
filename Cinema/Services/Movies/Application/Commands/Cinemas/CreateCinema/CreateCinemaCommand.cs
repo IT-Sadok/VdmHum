@@ -1,7 +1,7 @@
 namespace Application.Commands.Cinemas.CreateCinema;
 
-using Abstractions.Messaging;
 using Application.Contracts.Cinemas;
+using Shared.Contracts.Abstractions;
 
 public sealed record CreateCinemaCommand(
     string Name,

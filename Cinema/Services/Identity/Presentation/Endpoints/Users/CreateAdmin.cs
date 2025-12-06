@@ -2,10 +2,10 @@ namespace Presentation.Endpoints.Users;
 
 using Routes;
 using Application.Contracts;
-using Application.Abstractions.Messaging;
 using Application.Commands.CreateAdminUser;
 using Extensions;
 using Infrastructure;
+using Shared.Contracts.Abstractions;
 
 internal sealed class CreateAdmin : IEndpoint
 {

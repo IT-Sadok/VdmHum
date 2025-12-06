@@ -3,7 +3,7 @@ namespace Infrastructure.Identity;
 using System.Security.Cryptography;
 using System.Text;
 using Application.Abstractions.Providers;
-using Domain.Entities;
+using Application.Errors.Entities;
 using Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

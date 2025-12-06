@@ -1,9 +1,9 @@
 ﻿namespace Application;
 
-using Abstractions;
-using Behaviours;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Behaviours;
 
 public static class DependencyInjection
 {

@@ -1,11 +1,11 @@
 namespace Presentation.Endpoints.Showtimes;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtime;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetShowtimeById : IEndpoint
 {

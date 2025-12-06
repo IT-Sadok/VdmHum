@@ -1,9 +1,9 @@
 namespace Application.Queries.GetHalls;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Halls;
-using Domain.Abstractions;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class GetHallsQueryHandler(
     IHallRepository hallRepository)

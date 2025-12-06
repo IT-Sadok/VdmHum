@@ -1,11 +1,11 @@
 namespace Presentation.Endpoints.Cinemas;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Cinemas.CreateCinema;
 using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class CreateCinema : IEndpoint
 {

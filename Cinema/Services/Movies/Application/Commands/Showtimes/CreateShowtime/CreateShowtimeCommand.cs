@@ -1,8 +1,8 @@
 namespace Application.Commands.Showtimes.CreateShowtime;
 
-using Abstractions.Messaging;
 using Contracts.Showtimes;
 using Domain.Enums;
+using Shared.Contracts.Abstractions;
 
 public sealed record CreateShowtimeCommand(
     Guid MovieId,

@@ -1,11 +1,11 @@
 ﻿namespace Presentation.Endpoints.Movies;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Movies;
 using Application.Queries.GetMovie;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetMovieById : IEndpoint
 {

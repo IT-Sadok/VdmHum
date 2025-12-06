@@ -1,6 +1,6 @@
 namespace Infrastructure;
 
-using Domain.Constants;
+using Application.Errors.Constants;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography.X509Certificates;
 using Application.Options;

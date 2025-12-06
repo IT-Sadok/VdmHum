@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Application.Options;
 using Application.Abstractions.Providers;
-using Domain.Entities;
+using Application.Errors.Entities;
 using Microsoft.Extensions.Options;
 
 public sealed class TokenProvider(

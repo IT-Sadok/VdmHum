@@ -1,10 +1,10 @@
 namespace Application.Queries.GetCurrentUser;
 
-using Domain;
+using Errors;
 using Abstractions.Providers;
-using Abstractions.Messaging;
 using Contracts;
-using Domain.Abstractions;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public class GetCurrentUserHandler(
     IIdentityService identityService,

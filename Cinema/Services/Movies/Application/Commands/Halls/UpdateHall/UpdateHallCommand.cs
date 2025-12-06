@@ -1,7 +1,7 @@
 namespace Application.Commands.Halls.UpdateHall;
 
-using Abstractions.Messaging;
 using Application.Contracts.Halls;
+using Shared.Contracts.Abstractions;
 
 public sealed record UpdateHallCommand(
     Guid Id,

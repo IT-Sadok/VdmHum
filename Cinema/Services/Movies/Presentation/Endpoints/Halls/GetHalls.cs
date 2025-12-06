@@ -1,12 +1,12 @@
 namespace Presentation.Endpoints.Halls;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Halls;
 using Application.Queries.GetHalls;
 using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetHalls : IEndpoint
 {

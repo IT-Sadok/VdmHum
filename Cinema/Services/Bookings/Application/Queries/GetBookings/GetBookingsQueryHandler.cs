@@ -1,11 +1,10 @@
 namespace Application.Queries.GetBookings;
 
-using Abstractions;
 using Abstractions.Repositories;
 using Contracts;
 using Contracts.Bookings;
-using Domain.Abstractions;
-using Domain.Entities;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class GetBookingsQueryHandler(
     IBookingRepository bookingRepository)

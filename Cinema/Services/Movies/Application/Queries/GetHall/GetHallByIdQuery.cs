@@ -1,6 +1,6 @@
 namespace Application.Queries.GetHall;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 using Contracts.Halls;
 
 public sealed record GetHallByIdQuery(Guid Id) : IQuery<HallResponseModel>;

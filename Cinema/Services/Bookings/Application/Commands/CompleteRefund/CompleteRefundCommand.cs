@@ -1,6 +1,6 @@
 namespace Application.Commands.CompleteRefund;
 
-using Abstractions;
+using Shared.Contracts.Abstractions;
 
 public sealed record CompleteRefundCommand(
     Guid BookingId,

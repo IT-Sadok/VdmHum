@@ -1,12 +1,12 @@
 namespace Presentation.Endpoints.Movies;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Movies.UpdateMovie;
 using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class UpdateMovie : IEndpoint
 {

@@ -1,11 +1,11 @@
 namespace Application.Commands.Showtimes.CreateShowtime;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Showtimes;
-using Domain.Abstractions;
 using Domain.Entities;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class CreateShowtimeCommandHandler(
     IShowtimeRepository showtimeRepository,

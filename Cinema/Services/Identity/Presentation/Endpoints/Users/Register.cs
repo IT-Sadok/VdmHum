@@ -5,11 +5,11 @@ using Application.Options;
 using Microsoft.Extensions.Options;
 using Contracts.Auth;
 using Helpers;
-using Application.Abstractions.Messaging;
 using Application.Commands.RegisterUser;
 using Application.Contracts;
 using Extensions;
 using Infrastructure;
+using Shared.Contracts.Abstractions;
 
 internal sealed class Register : IEndpoint
 {

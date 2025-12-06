@@ -1,8 +1,8 @@
 namespace Application.Commands.Movies.UpdateMovie;
 
-using Abstractions.Messaging;
 using Contracts.Movies;
 using Domain.Enums;
+using Shared.Contracts.Abstractions;
 
 public sealed record UpdateMovieCommand(
     Guid Id,

@@ -1,9 +1,9 @@
 namespace Application.Commands.LogoutUser;
 
 using Abstractions.Providers;
-using Abstractions.Messaging;
-using Domain;
-using Domain.Abstractions;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public class LogoutCommandHandler(
     IIdentityService identityService,

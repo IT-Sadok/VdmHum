@@ -1,10 +1,10 @@
 namespace Application.Commands.Movies.UpdateMovie;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Movies;
-using Domain.Abstractions;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class UpdateMovieCommandHandler(
     IMovieRepository movieRepository,

@@ -1,6 +1,6 @@
 namespace Application.Commands.UpdateProfile;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 
 public record UpdateProfileCommand(
     string? PhoneNumber,

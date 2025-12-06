@@ -1,7 +1,7 @@
 namespace Application.Commands.CreateAdminUser;
 
 using Contracts;
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 
 public record CreateAdminUserCommand(
     string Email,

@@ -1,14 +1,14 @@
 namespace Presentation.Infrastructure;
 
 using Constants;
-using Domain.Abstractions;
-using Domain.Errors;
+using Shared.Contracts.Core;
+using Shared.Contracts.Errors;
 
 public static class CustomResults
 {
     public static IResult Problem(Result result)
     {
-        if (result.IsSuccess)
+        if (result.IsSuccess || result.Error is null)
         {
             throw new InvalidOperationException();
         }

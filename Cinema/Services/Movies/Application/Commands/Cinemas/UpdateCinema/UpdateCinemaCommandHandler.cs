@@ -1,10 +1,10 @@
 namespace Application.Commands.Cinemas.UpdateCinema;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Application.Contracts.Cinemas;
-using Domain.Abstractions;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class UpdateCinemaCommandHandler(
     ICinemaRepository cinemaRepository,

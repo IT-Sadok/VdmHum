@@ -4,11 +4,11 @@ using Routes;
 using Application.Options;
 using Microsoft.Extensions.Options;
 using Helpers;
-using Application.Abstractions.Messaging;
 using Application.Commands.LogoutUser;
-using Domain.Abstractions;
 using Extensions;
 using Infrastructure;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 internal sealed class Logout : IEndpoint
 {

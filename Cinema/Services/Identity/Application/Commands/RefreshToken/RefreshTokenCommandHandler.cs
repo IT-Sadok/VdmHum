@@ -2,11 +2,11 @@ namespace Application.Commands.RefreshToken;
 
 using Options;
 using Microsoft.Extensions.Options;
-using Domain;
-using Domain.Abstractions;
+using Errors;
 using Abstractions.Providers;
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public class RefreshTokenCommandHandler(
     IIdentityService identityService,

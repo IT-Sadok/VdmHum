@@ -1,6 +1,5 @@
 namespace Presentation.Endpoints.Movies;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Movies;
 using Application.Queries.GetMovies;
 using Domain.Enums;
@@ -8,6 +7,7 @@ using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetMovies : IEndpoint
 {

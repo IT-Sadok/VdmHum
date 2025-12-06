@@ -1,11 +1,11 @@
 namespace Application.Commands.CreateAdminUser;
 
 using Contracts;
-using Domain;
-using Domain.Abstractions;
-using Domain.Constants;
+using Errors;
+using Errors.Constants;
 using Abstractions.Providers;
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public class CreateAdminUserCommandHandler(
     IIdentityService identityService,

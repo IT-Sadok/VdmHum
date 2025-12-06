@@ -1,6 +1,6 @@
 namespace Application.Abstractions.Providers;
 
-using Domain.Entities;
+using Errors.Entities;
 
 public interface IIdentityService
 {

@@ -1,6 +1,6 @@
 namespace Application.Queries.GetHalls;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 using Contracts.Halls;
 
 public sealed record GetHallsQuery(

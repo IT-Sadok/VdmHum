@@ -1,6 +1,6 @@
 namespace Application.Queries.GetCinemas;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 using Contracts.Cinemas;
 
 public sealed record GetCinemasQuery(

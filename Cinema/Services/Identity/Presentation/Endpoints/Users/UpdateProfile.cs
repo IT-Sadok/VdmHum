@@ -1,10 +1,10 @@
 namespace Presentation.Endpoints.Users;
 
 using Routes;
-using Application.Abstractions.Messaging;
 using Application.Commands.UpdateProfile;
 using Extensions;
 using Infrastructure;
+using Shared.Contracts.Abstractions;
 
 internal sealed class UpdateProfile : IEndpoint
 {

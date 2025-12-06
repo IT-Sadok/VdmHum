@@ -1,6 +1,6 @@
 namespace Application.Queries.GetMovies;
 
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
 using Contracts.Movies;
 using Domain.Enums;
 

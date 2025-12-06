@@ -1,10 +1,10 @@
 namespace Application.Queries.GetMovies;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Movies;
-using Domain.Abstractions;
 using Domain.Entities;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class GetMoviesQueryHandler(
     IMovieRepository movieRepository)

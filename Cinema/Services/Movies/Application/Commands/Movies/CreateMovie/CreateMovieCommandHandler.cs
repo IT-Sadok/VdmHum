@@ -1,11 +1,11 @@
 namespace Application.Commands.Movies.CreateMovie;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Application.Contracts.Movies;
-using Domain.Abstractions;
 using Domain.Entities;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class CreateMovieCommandHandler(
     IMovieRepository movieRepository,

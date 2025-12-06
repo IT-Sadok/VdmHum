@@ -1,7 +1,7 @@
 namespace Application.Commands.RefreshToken;
 
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
 
 public record RefreshTokenCommand(
     string RefreshToken

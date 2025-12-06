@@ -1,4 +1,4 @@
-namespace Domain.Constants;
+namespace Application.Errors.Constants;
 
 public static class RoleNames
 {

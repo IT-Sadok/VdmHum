@@ -1,11 +1,11 @@
 namespace Presentation.Endpoints.Users;
 
 using Routes;
-using Application.Abstractions.Messaging;
 using Application.Contracts;
 using Application.Queries.GetCurrentUser;
 using Extensions;
 using Infrastructure;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetCurrent : IEndpoint
 {

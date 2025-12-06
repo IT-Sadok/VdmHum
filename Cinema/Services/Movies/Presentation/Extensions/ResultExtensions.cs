@@ -1,6 +1,6 @@
 namespace Presentation.Extensions;
 
-using Domain.Abstractions;
+using Shared.Contracts.Core;
 
 public static class ResultExtensions
 {

@@ -1,12 +1,12 @@
 namespace Presentation.Endpoints.Showtimes;
 
-using Application.Abstractions.Messaging;
 using Application.Commands.Showtimes.CreateShowtime;
 using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class CreateShowtime : IEndpoint
 {

@@ -1,11 +1,11 @@
 namespace Application.Commands.Showtimes.UpdateShowtime;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Showtimes;
-using Domain.Abstractions;
 using Domain.Enums;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class UpdateShowtimeCommandHandler(
     IShowtimeRepository showtimeRepository,

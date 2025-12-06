@@ -1,10 +1,10 @@
 namespace Application.Commands.CancelPendingBooking;
 
-using Abstractions;
 using Abstractions.Repositories;
 using Contracts.Bookings;
-using Domain.Abstractions;
-using Domain.Errors;
+using Errors;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class CancelPendingBookingCommandHandler(
     IBookingRepository bookingRepository,

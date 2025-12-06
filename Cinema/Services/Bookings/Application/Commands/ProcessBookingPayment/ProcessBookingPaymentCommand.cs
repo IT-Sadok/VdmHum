@@ -1,7 +1,7 @@
 namespace Application.Commands.ProcessBookingPayment;
 
-using Abstractions;
 using Contracts.Bookings;
+using Shared.Contracts.Abstractions;
 
 public sealed record ProcessBookingPaymentCommand(
     Guid BookingId,

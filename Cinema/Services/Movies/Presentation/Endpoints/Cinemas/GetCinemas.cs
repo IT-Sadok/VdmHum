@@ -1,12 +1,12 @@
 namespace Presentation.Endpoints.Cinemas;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Cinemas;
 using Application.Queries.GetCinemas;
 using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetCinemas : IEndpoint
 {

@@ -1,9 +1,9 @@
 namespace Application.Commands.UpdateProfile;
 
-using Domain;
-using Domain.Abstractions;
+using Errors;
 using Abstractions.Providers;
-using Abstractions.Messaging;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public class UpdateProfileCommandHandler(
     IIdentityService identityService,

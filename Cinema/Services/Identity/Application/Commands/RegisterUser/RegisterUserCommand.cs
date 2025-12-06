@@ -1,7 +1,7 @@
 namespace Application.Commands.RegisterUser;
 
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
 
 public sealed record RegisterUserCommand(
     string Email,

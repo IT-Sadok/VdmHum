@@ -1,10 +1,10 @@
 namespace Application.Queries.GetShowtimes;
 
-using Abstractions.Messaging;
 using Abstractions.Repositories;
 using Contracts.Showtimes;
-using Domain.Abstractions;
 using Domain.Entities;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class GetShowtimesQueryHandler(
     IShowtimeRepository showtimeRepository)

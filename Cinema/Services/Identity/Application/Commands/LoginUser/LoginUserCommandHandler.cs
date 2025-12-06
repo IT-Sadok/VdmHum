@@ -1,12 +1,12 @@
 namespace Application.Commands.LoginUser;
 
 using Microsoft.Extensions.Options;
-using Domain;
-using Domain.Abstractions;
+using Errors;
 using Options;
 using Abstractions.Providers;
-using Abstractions.Messaging;
 using Contracts;
+using Shared.Contracts.Abstractions;
+using Shared.Contracts.Core;
 
 public sealed class LoginUserCommandHandler(
     IIdentityService identityService,

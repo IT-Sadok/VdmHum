@@ -1,11 +1,11 @@
 namespace Presentation.Endpoints.Halls;
 
-using Application.Abstractions.Messaging;
 using Application.Contracts.Halls;
 using Application.Queries.GetHall;
 using Extensions;
 using Infrastructure;
 using Routes;
+using Shared.Contracts.Abstractions;
 
 internal sealed class GetHallById : IEndpoint
 {

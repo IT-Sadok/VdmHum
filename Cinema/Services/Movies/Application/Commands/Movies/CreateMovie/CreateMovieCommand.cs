@@ -1,8 +1,8 @@
 namespace Application.Commands.Movies.CreateMovie;
 
-using Abstractions.Messaging;
 using Application.Contracts.Movies;
 using Domain.Enums;
+using Shared.Contracts.Abstractions;
 
 public sealed record CreateMovieCommand(
     string Title,
