@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Cinemas;
 
 using Application.Commands.Cinemas.CreateCinema;
-using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -20,7 +19,7 @@ internal sealed class CreateCinema : IEndpoint
     {
         app.MapPost(CinemasRoutes.Create, async (
                 CreateCinemaRequest request,
-                ICommandHandler<CreateCinemaCommand, CinemaResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateCinemaCommand(
@@ -30,7 +29,7 @@ internal sealed class CreateCinema : IEndpoint
                     Latitude: request.Latitude,
                     Longitude: request.Longitude);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     cinema => Results.Created(

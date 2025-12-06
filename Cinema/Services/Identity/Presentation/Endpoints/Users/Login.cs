@@ -6,7 +6,6 @@ using Helpers;
 using Application.Options;
 using Microsoft.Extensions.Options;
 using Application.Commands.LoginUser;
-using Application.Contracts;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
@@ -21,12 +20,12 @@ internal sealed class Login : IEndpoint
                 LoginRequest loginRequest,
                 HttpContext httpContext,
                 IOptions<JwtOptions> jwtOptions,
-                ICommandHandler<LoginUserCommand, AuthResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new LoginUserCommand(loginRequest.Email, loginRequest.Password);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     auth =>

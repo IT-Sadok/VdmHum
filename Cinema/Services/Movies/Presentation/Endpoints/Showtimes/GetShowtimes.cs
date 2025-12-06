@@ -1,6 +1,5 @@
 namespace Presentation.Endpoints.Showtimes;
 
-using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtimes;
 using Domain.Enums;
 using Extensions;
@@ -25,7 +24,7 @@ internal sealed class GetShowtimes : IEndpoint
     {
         app.MapGet(ShowtimesRoutes.GetPaged, async (
                 [AsParameters] GetShowtimesRequest request,
-                IQueryHandler<GetShowtimesQuery, PagedShowtimesResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetShowtimesQuery(
@@ -38,7 +37,7 @@ internal sealed class GetShowtimes : IEndpoint
                     Page: request.Page,
                     PageSize: request.PageSize);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,

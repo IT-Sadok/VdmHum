@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Halls;
 
 using Application.Commands.Halls.UpdateHall;
-using Application.Contracts.Halls;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -16,7 +15,7 @@ internal sealed class UpdateHall : IEndpoint
         app.MapPut(HallsRoutes.Update, async (
                 Guid id,
                 UpdateHallRequest request,
-                ICommandHandler<UpdateHallCommand, HallResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateHallCommand(
@@ -24,7 +23,7 @@ internal sealed class UpdateHall : IEndpoint
                     Name: request.Name,
                     NumberOfSeats: request.NumberOfSeats);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.Ok,

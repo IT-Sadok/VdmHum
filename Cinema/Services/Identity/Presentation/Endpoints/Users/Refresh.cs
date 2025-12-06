@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Contracts.Auth;
 using Helpers;
 using Application.Commands.RefreshToken;
-using Application.Contracts;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
@@ -18,7 +17,7 @@ internal sealed class Refresh : IEndpoint
         app.MapPost(UsersRoutes.Refresh, async (
                 IOptions<JwtOptions> jwtOptions,
                 HttpContext httpContext,
-                ICommandHandler<RefreshTokenCommand, AuthResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 if (!httpContext.Request.Cookies.TryGetValue("refresh_token", out var refreshToken) ||
@@ -29,7 +28,7 @@ internal sealed class Refresh : IEndpoint
 
                 var command = new RefreshTokenCommand(refreshToken);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     onSuccess: auth =>

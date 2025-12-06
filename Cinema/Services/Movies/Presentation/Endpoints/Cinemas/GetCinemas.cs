@@ -1,6 +1,5 @@
 namespace Presentation.Endpoints.Cinemas;
 
-using Application.Contracts.Cinemas;
 using Application.Queries.GetCinemas;
 using Extensions;
 using Infrastructure;
@@ -20,7 +19,7 @@ internal sealed class GetCinemas : IEndpoint
     {
         app.MapGet(CinemasRoutes.GetPaged, async (
                 [AsParameters] GetCinemasRequest request,
-                IQueryHandler<GetCinemasQuery, PagedCinemasResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetCinemasQuery(
@@ -29,7 +28,7 @@ internal sealed class GetCinemas : IEndpoint
                     Page: request.Page,
                     PageSize: request.PageSize);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),

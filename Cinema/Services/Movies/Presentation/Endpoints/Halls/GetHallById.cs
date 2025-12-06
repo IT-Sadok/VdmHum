@@ -1,6 +1,5 @@
 namespace Presentation.Endpoints.Halls;
 
-using Application.Contracts.Halls;
 using Application.Queries.GetHall;
 using Extensions;
 using Infrastructure;
@@ -13,12 +12,12 @@ internal sealed class GetHallById : IEndpoint
     {
         app.MapGet(HallsRoutes.GetById, async (
                 Guid id,
-                IQueryHandler<GetHallByIdQuery, HallResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetHallByIdQuery(id);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,

@@ -1,7 +1,6 @@
 ﻿namespace Presentation.Endpoints.Movies;
 
 using Application.Commands.Movies.CreateMovie;
-using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -24,7 +23,7 @@ internal sealed class CreateMovie : IEndpoint
     {
         app.MapPost(MoviesRoutes.Create, async (
                 CreateMovieRequest request,
-                ICommandHandler<CreateMovieCommand, MovieResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateMovieCommand(
@@ -37,7 +36,7 @@ internal sealed class CreateMovie : IEndpoint
                     ReleaseDate: request.ReleaseDate,
                     PosterUrl: request.PosterUrl);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     movie => Results.Created(

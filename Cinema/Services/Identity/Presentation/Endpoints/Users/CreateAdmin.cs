@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
 using Routes;
-using Application.Contracts;
 using Application.Commands.CreateAdminUser;
 using Extensions;
 using Infrastructure;
@@ -20,7 +19,7 @@ internal sealed class CreateAdmin : IEndpoint
     {
         app.MapPost(UsersRoutes.CreateAdmin, async (
                 CreateAdminRequest createAdminRequest,
-                ICommandHandler<CreateAdminUserCommand, CreateAdminResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateAdminUserCommand(
@@ -30,7 +29,7 @@ internal sealed class CreateAdmin : IEndpoint
                     createAdminRequest.FirstName,
                     createAdminRequest.LastName);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     adminResponseModel => Results.Created(

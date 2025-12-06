@@ -1,6 +1,5 @@
 ﻿namespace Presentation.Endpoints.Cinemas;
 
-using Application.Contracts.Cinemas;
 using Application.Queries.GetCinema;
 using Extensions;
 using Infrastructure;
@@ -13,12 +12,12 @@ internal sealed class GetCinemaById : IEndpoint
     {
         app.MapGet(CinemasRoutes.GetById, async (
                 Guid id,
-                IQueryHandler<GetCinemaByIdQuery, CinemaResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetCinemaByIdQuery(id);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.Send(query, ct);
 
                 return result.Match(
                     Results.Ok,

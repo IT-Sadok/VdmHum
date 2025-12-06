@@ -12,12 +12,12 @@ internal sealed class DeleteCinema : IEndpoint
     {
         app.MapDelete(CinemasRoutes.Delete, async (
                 Guid id,
-                ICommandHandler<DeleteCinemaCommand> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new DeleteCinemaCommand(id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.NoContent,

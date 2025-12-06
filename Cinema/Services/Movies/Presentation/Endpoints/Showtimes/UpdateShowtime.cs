@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Showtimes;
 
 using Application.Commands.Showtimes.UpdateShowtime;
-using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -24,7 +23,7 @@ internal sealed class UpdateShowtime : IEndpoint
         app.MapPut(ShowtimesRoutes.Update, async (
                 Guid id,
                 UpdateShowtimeRequest request,
-                ICommandHandler<UpdateShowtimeCommand, ShowtimeResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateShowtimeCommand(
@@ -37,7 +36,7 @@ internal sealed class UpdateShowtime : IEndpoint
                     Format: request.Format,
                     CancelReason: request.CancelReason);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.Ok,

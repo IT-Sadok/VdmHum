@@ -12,12 +12,12 @@ internal sealed class DeleteShowtime : IEndpoint
     {
         app.MapDelete(ShowtimesRoutes.Delete, async (
                 Guid id,
-                ICommandHandler<DeleteShowtimeCommand> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new DeleteShowtimeCommand(id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.NoContent,

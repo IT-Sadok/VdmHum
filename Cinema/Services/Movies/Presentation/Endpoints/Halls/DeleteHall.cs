@@ -12,12 +12,12 @@ internal sealed class DeleteHall : IEndpoint
     {
         app.MapDelete(HallsRoutes.Delete, async (
                 Guid id,
-                ICommandHandler<DeleteHallCommand> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new DeleteHallCommand(id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.NoContent,

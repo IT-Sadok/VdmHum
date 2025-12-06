@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Movies;
 
 using Application.Commands.Movies.UpdateMovie;
-using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -25,7 +24,7 @@ internal sealed class UpdateMovie : IEndpoint
         app.MapPut(MoviesRoutes.Update, async (
                 Guid id,
                 UpdateMovieRequest request,
-                ICommandHandler<UpdateMovieCommand, MovieResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateMovieCommand(
@@ -39,7 +38,7 @@ internal sealed class UpdateMovie : IEndpoint
                     ReleaseDate: request.ReleaseDate,
                     PosterUrl: request.PosterUrl);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     Results.Ok,

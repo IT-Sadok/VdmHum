@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Showtimes;
 
 using Application.Commands.Showtimes.CreateShowtime;
-using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -26,7 +25,7 @@ internal sealed class CreateShowtime : IEndpoint
     {
         app.MapPost(ShowtimesRoutes.Create, async (
                 CreateShowtimeRequest request,
-                ICommandHandler<CreateShowtimeCommand, ShowtimeResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateShowtimeCommand(
@@ -41,7 +40,7 @@ internal sealed class CreateShowtime : IEndpoint
                     Language: request.Language,
                     Format: request.Format);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.Send(command, ct);
 
                 return result.Match(
                     showtime => Results.Created(
