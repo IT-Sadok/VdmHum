@@ -4,6 +4,7 @@ using Application.Commands.RequestRefund;
 using Application.Contracts.Bookings;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -12,7 +13,7 @@ internal sealed class RequestRefundEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(BookingsRoutes.RequestRefund, async (
-                Guid id,
+                [FromRoute] Guid id,
                 ICommandHandler<RequestRefundCommand, BookingResponseModel> handler,
                 CancellationToken ct) =>
             {

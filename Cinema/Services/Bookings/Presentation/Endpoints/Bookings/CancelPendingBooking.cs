@@ -4,6 +4,7 @@ using Application.Commands.CancelPendingBooking;
 using Application.Contracts.Bookings;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -12,7 +13,7 @@ internal sealed class CancelPendingBooking : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(BookingsRoutes.Cancel, async (
-                Guid id,
+                [FromRoute] Guid id,
                 ICommandHandler<CancelPendingBookingCommand, BookingResponseModel> handler,
                 CancellationToken ct) =>
             {

@@ -4,6 +4,7 @@ using Application.Contracts.Bookings;
 using Application.Queries.GetBookingById;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -12,7 +13,7 @@ internal sealed class GetBookingById : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(BookingsRoutes.GetById, async (
-                Guid id,
+                [FromRoute] Guid id,
                 IQueryHandler<GetBookingByIdQuery, BookingResponseModel> handler,
                 CancellationToken ct) =>
             {
