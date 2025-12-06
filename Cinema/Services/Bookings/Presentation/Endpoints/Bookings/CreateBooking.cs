@@ -1,7 +1,6 @@
 namespace Presentation.Endpoints.Bookings;
 
 using Application.Commands.CreateBooking;
-using Application.Contracts.Bookings;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;

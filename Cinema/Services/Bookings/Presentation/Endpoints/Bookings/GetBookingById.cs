@@ -1,6 +1,5 @@
 ﻿namespace Presentation.Endpoints.Bookings;
 
-using Application.Contracts.Bookings;
 using Application.Queries.GetBookingById;
 using Extensions;
 using Infrastructure;

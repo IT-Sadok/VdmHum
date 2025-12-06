@@ -1,8 +1,8 @@
-namespace Application.Queries.GetBookings;
+namespace Application.Queries.GetUserBookings;
 
 using FluentValidation;
 
-public sealed class GetUserBookingsQueryValidator : AbstractValidator<GetBookingsQuery>
+public sealed class GetUserBookingsQueryValidator : AbstractValidator<GetUserBookingsQuery>
 {
     public GetUserBookingsQueryValidator()
     {

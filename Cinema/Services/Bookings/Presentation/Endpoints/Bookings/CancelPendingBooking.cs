@@ -1,7 +1,6 @@
 ﻿namespace Presentation.Endpoints.Bookings;
 
 using Application.Commands.CancelPendingBooking;
-using Application.Contracts.Bookings;
 using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
