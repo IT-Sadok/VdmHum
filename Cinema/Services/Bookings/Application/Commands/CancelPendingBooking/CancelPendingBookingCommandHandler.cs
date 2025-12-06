@@ -17,12 +17,7 @@ public sealed class CancelPendingBookingCommandHandler(
         CancelPendingBookingCommand command,
         CancellationToken ct)
     {
-        var userContext = userContextService.Get();
-
-        if (!userContext.IsAuthenticated || userContext.UserId is null)
-        {
-            return Result.Failure<BookingResponseModel>(CommonErrors.Unauthorized);
-        }
+        var userId = userContextService.Get().UserId!.Value;
 
         var booking = await bookingRepository.GetByIdAsync(command.BookingId, asNoTracking: false, ct);
 
@@ -31,7 +26,7 @@ public sealed class CancelPendingBookingCommandHandler(
             return Result.Failure<BookingResponseModel>(BookingErrors.NotFound);
         }
 
-        if (booking.UserId != userContext.UserId)
+        if (booking.UserId != userId)
         {
             return Result.Failure<BookingResponseModel>(BookingErrors.UserIdNotMatch);
         }

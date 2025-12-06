@@ -1,5 +1,6 @@
 ﻿namespace Application;
 
+using Behaviours;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Contracts.Abstractions;
@@ -21,6 +22,8 @@ public static class DependencyInjection
             .WithScopedLifetime());
 
         services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationDecorator.CommandHandler<,>));
+
+        services.Decorate(typeof(ICommandHandler<,>), typeof(AuthenticationCommandHandlerDecorator<,>));
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
 
