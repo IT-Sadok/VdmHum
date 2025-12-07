@@ -5,6 +5,7 @@ using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -23,7 +24,7 @@ internal sealed class UpdateMovie : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(MoviesRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateMovieRequest request,
                 IMediator mediator,
                 CancellationToken ct) =>

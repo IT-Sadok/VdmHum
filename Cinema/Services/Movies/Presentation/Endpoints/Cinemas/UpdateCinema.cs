@@ -4,6 +4,7 @@ using Application.Commands.Cinemas.UpdateCinema;
 using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -19,7 +20,7 @@ internal sealed class UpdateCinema : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(CinemasRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateCinemaRequest request,
                 IMediator mediator,
                 CancellationToken ct) =>

@@ -4,6 +4,7 @@ using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtime;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -12,7 +13,7 @@ internal sealed class GetShowtimeById : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(ShowtimesRoutes.GetById, async (
-                Guid id,
+                [FromRoute] Guid id,
                 IMediator mediator,
                 CancellationToken ct) =>
             {
