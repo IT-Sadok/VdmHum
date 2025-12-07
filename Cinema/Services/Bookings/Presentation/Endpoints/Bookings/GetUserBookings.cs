@@ -26,9 +26,7 @@ internal sealed class GetUserBookings : IEndpoint
             {
                 var query = new GetUserBookingsQuery(
                     new PagedQuery<BookingFilter>(
-                        new BookingFilter(
-                            UserId: null,
-                            Status: request.Status),
+                        Filter: new BookingFilter(request.Status),
                         Page: request.Page,
                         PageSize: request.PageSize));
 
