@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Cinemas;
 
 using Application.Commands.Cinemas.CreateCinema;
+using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -29,7 +30,7 @@ internal sealed class CreateCinema : IEndpoint
                     Latitude: request.Latitude,
                     Longitude: request.Longitude);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<CreateCinemaCommand, CinemaResponseModel>(command, ct);
 
                 return result.Match(
                     cinema => Results.Created(

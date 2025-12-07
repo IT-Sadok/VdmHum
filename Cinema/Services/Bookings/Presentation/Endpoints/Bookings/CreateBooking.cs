@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Bookings;
 
 using Application.Commands.CreateBooking;
+using Application.Contracts.Bookings;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -28,7 +29,8 @@ internal sealed class CreateBooking : IEndpoint
                     TotalPrice: request.TotalPrice,
                     Currency: request.Currency);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync
+                    <CreateBookingCommand, BookingResponseModel>(command, ct);
 
                 return result.Match(
                     booking => Results.Created(

@@ -2,6 +2,7 @@ namespace Presentation.Endpoints.Users;
 
 using Routes;
 using Application.Commands.CreateAdminUser;
+using Application.Contracts;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
@@ -29,7 +30,8 @@ internal sealed class CreateAdmin : IEndpoint
                     createAdminRequest.FirstName,
                     createAdminRequest.LastName);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync
+                    <CreateAdminUserCommand, CreateAdminResponseModel>(command, ct);
 
                 return result.Match(
                     adminResponseModel => Results.Created(

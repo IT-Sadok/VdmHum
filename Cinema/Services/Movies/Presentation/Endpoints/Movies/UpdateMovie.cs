@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Movies;
 
 using Application.Commands.Movies.UpdateMovie;
+using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -38,7 +39,7 @@ internal sealed class UpdateMovie : IEndpoint
                     ReleaseDate: request.ReleaseDate,
                     PosterUrl: request.PosterUrl);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateMovieCommand, MovieResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

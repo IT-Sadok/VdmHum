@@ -1,5 +1,6 @@
 ﻿namespace Presentation.Endpoints.Cinemas;
 
+using Application.Contracts.Cinemas;
 using Application.Queries.GetCinema;
 using Extensions;
 using Infrastructure;
@@ -17,7 +18,7 @@ internal sealed class GetCinemaById : IEndpoint
             {
                 var query = new GetCinemaByIdQuery(id);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetCinemaByIdQuery, CinemaResponseModel>(query, ct);
 
                 return result.Match(
                     Results.Ok,

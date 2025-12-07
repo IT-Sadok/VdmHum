@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Showtimes;
 
+using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtime;
 using Extensions;
 using Infrastructure;
@@ -17,7 +18,7 @@ internal sealed class GetShowtimeById : IEndpoint
             {
                 var query = new GetShowtimeByIdQuery(id);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetShowtimeByIdQuery, ShowtimeResponseModel>(query, ct);
 
                 return result.Match(
                     Results.Ok,

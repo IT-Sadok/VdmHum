@@ -5,4 +5,4 @@ using Shared.Contracts.Core;
 
 public record LogoutUserCommand(
     string RefreshToken
-) : ICommand<Result>;
+) : ICommand;

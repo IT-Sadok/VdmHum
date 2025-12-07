@@ -30,7 +30,8 @@ internal sealed class GetUserBookings : IEndpoint
                         Page: request.Page,
                         PageSize: request.PageSize));
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync
+                    <GetUserBookingsQuery, PagedResponse<BookingResponseModel>>(query, ct);
 
                 return result.Match(
                     Results.Ok,

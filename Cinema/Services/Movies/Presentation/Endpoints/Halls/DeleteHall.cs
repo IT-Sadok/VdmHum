@@ -17,7 +17,7 @@ internal sealed class DeleteHall : IEndpoint
             {
                 var command = new DeleteHallCommand(id);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync(command, ct);
 
                 return result.Match(
                     Results.NoContent,

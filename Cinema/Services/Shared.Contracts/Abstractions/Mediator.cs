@@ -1,58 +1,40 @@
 namespace Shared.Contracts.Abstractions;
 
 using Core;
+using Microsoft.Extensions.DependencyInjection;
 
-public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
+public sealed class Mediator(IServiceScopeFactory scopeFactory) : IMediator
 {
-    public Task<Result<TResult>> Send<TResult>(
-        ICommand<TResult> command,
-        CancellationToken ct = default)
+    public async Task<Result> ExecuteCommandAsync<TCommand>(
+        TCommand command,
+        CancellationToken cancellationToken)
+        where TCommand : ICommand
     {
-        return InvokeHandler<TResult>(typeof(ICommandHandler<,>), command, ct);
-    }
-    
-    public Task<Result> Send(
-        ICommand command,
-        CancellationToken ct = default)
-    {
-        return InvokeHandler(typeof(ICommandHandler<>), command, ct);
+        await using var scope = scopeFactory.CreateAsyncScope();
+        var commandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand>>();
+
+        return await commandHandler.HandleAsync(command, cancellationToken);
     }
 
-    public Task<Result<TResult>> Send<TResult>(
-        IQuery<TResult> query,
-        CancellationToken ct = default)
+    public async Task<Result<TResponse>> ExecuteCommandAsync<TCommand, TResponse>(
+        TCommand command,
+        CancellationToken cancellationToken)
+        where TCommand : ICommand<TResponse>
     {
-        return InvokeHandler<TResult>(typeof(IQueryHandler<,>), query, ct);
+        await using var scope = scopeFactory.CreateAsyncScope();
+        var commandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand, TResponse>>();
+
+        return await commandHandler.HandleAsync(command, cancellationToken);
     }
 
-    private Task<Result<TResult>> InvokeHandler<TResult>(
-        Type openGenericHandlerType,
-        object message,
-        CancellationToken ct)
+    public async Task<Result<TResponse>> ExecuteQueryAsync<TQuery, TResponse>(
+        TQuery query,
+        CancellationToken cancellationToken)
+        where TQuery : IQuery<TResponse>
     {
-        var messageType = message.GetType();
-        var resultType = typeof(TResult);
+        await using var scope = scopeFactory.CreateAsyncScope();
+        var queryHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<TQuery, TResponse>>();
 
-        var closedHandlerType = openGenericHandlerType
-            .MakeGenericType(messageType, resultType);
-
-        var handler = serviceProvider.GetService(closedHandlerType);
-
-        return ((dynamic)handler!).HandleAsync((dynamic)message, ct);
-    }
-    
-    private Task<Result> InvokeHandler(
-        Type openGenericHandlerType,
-        object message,
-        CancellationToken ct)
-    {
-        var messageType = message.GetType();
-
-        var closedHandlerType = openGenericHandlerType
-            .MakeGenericType(messageType);
-
-        var handler = serviceProvider.GetService(closedHandlerType);
-
-        return ((dynamic)handler!).HandleAsync((dynamic)message, ct);
+        return await queryHandler.HandleAsync(query, cancellationToken);
     }
 }

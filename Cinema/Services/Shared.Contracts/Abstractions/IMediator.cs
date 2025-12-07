@@ -4,15 +4,17 @@ using Core;
 
 public interface IMediator
 {
-    Task<Result<TResult>> Send<TResult>(
-        ICommand<TResult> command,
-        CancellationToken ct = default);
-    
-    Task<Result> Send(
-        ICommand command,
-        CancellationToken ct = default);
+    Task<Result> ExecuteCommandAsync<TCommand>(
+        TCommand command,
+        CancellationToken cancellationToken)
+        where TCommand : ICommand;
 
-    Task<Result<TResult>> Send<TResult>(
-        IQuery<TResult> query,
-        CancellationToken ct = default);
+    Task<Result<TResponse>> ExecuteCommandAsync<TCommand, TResponse>(
+        TCommand command,
+        CancellationToken cancellationToken)
+        where TCommand : ICommand<TResponse>;
+
+    Task<Result<TResponse>> ExecuteQueryAsync<TQuery, TResponse>(TQuery query,
+        CancellationToken cancellationToken)
+        where TQuery : IQuery<TResponse>;
 }

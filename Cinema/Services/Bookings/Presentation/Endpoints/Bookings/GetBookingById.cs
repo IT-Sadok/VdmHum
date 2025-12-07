@@ -1,5 +1,6 @@
 ﻿namespace Presentation.Endpoints.Bookings;
 
+using Application.Contracts.Bookings;
 using Application.Queries.GetBookingById;
 using Extensions;
 using Infrastructure;
@@ -18,7 +19,7 @@ internal sealed class GetBookingById : IEndpoint
             {
                 var query = new GetBookingByIdQuery(id);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetBookingByIdQuery, BookingResponseModel>(query, ct);
 
                 return result.Match(
                     Results.Ok,

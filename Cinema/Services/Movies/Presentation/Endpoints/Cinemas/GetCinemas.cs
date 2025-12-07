@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Cinemas;
 
+using Application.Contracts.Cinemas;
 using Application.Queries.GetCinemas;
 using Extensions;
 using Infrastructure;
@@ -28,7 +29,7 @@ internal sealed class GetCinemas : IEndpoint
                     Page: request.Page,
                     PageSize: request.PageSize);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetCinemasQuery, PagedCinemasResponseModel>(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),

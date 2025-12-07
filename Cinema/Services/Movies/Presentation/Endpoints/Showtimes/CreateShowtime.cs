@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Showtimes;
 
 using Application.Commands.Showtimes.CreateShowtime;
+using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -40,7 +41,7 @@ internal sealed class CreateShowtime : IEndpoint
                     Language: request.Language,
                     Format: request.Format);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<CreateShowtimeCommand, ShowtimeResponseModel>(command, ct);
 
                 return result.Match(
                     showtime => Results.Created(

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Contracts.Auth;
 using Helpers;
 using Application.Commands.RegisterUser;
+using Application.Contracts;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
@@ -35,7 +36,7 @@ internal sealed class Register : IEndpoint
                     registerRequest.FirstName,
                     registerRequest.LastName);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<RegisterUserCommand, AuthResponseModel>(command, ct);
 
                 return result.Match(
                     auth =>

@@ -8,9 +8,9 @@ using Shared.Contracts.Core;
 public class LogoutCommandHandler(
     IIdentityService identityService,
     IUserContext userContext)
-    : ICommandHandler<LogoutUserCommand, Result>
+    : ICommandHandler<LogoutUserCommand>
 {
-    public async Task<Result<Result>> HandleAsync(LogoutUserCommand command, CancellationToken ct)
+    public async Task<Result> HandleAsync(LogoutUserCommand command, CancellationToken ct)
     {
         if (!userContext.IsAuthenticated || userContext.UserId is null)
         {

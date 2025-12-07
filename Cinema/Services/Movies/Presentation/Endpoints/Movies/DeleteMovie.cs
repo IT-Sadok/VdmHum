@@ -17,7 +17,7 @@ internal sealed class DeleteMovie : IEndpoint
             {
                 var command = new DeleteMovieCommand(id);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync(command, ct);
 
                 return result.Match(
                     Results.NoContent,

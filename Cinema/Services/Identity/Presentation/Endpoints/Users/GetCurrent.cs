@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Users;
 
+using Application.Contracts;
 using Routes;
 using Application.Queries.GetCurrentUser;
 using Extensions;
@@ -16,7 +17,7 @@ internal sealed class GetCurrent : IEndpoint
             {
                 var query = new GetCurrentUserQuery();
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetCurrentUserQuery, UserResponseModel>(query, ct);
 
                 return result.Match(Results.Ok, CustomResults.Problem);
             })

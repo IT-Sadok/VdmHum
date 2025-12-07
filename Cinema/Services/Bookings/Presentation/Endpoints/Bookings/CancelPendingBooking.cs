@@ -1,6 +1,7 @@
 ﻿namespace Presentation.Endpoints.Bookings;
 
 using Application.Commands.CancelPendingBooking;
+using Application.Contracts.Bookings;
 using Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,8 @@ internal sealed class CancelPendingBooking : IEndpoint
             {
                 var command = new CancelPendingBookingCommand(BookingId: id);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync
+                    <CancelPendingBookingCommand, BookingResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

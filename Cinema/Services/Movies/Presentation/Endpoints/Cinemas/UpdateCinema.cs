@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Cinemas;
 
 using Application.Commands.Cinemas.UpdateCinema;
+using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -31,7 +32,7 @@ internal sealed class UpdateCinema : IEndpoint
                     Latitude: request.Latitude,
                     Longitude: request.Longitude);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateCinemaCommand, CinemaResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

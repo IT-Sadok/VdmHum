@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Halls;
 
 using Application.Commands.Halls.CreateHall;
+using Application.Contracts.Halls;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -25,7 +26,7 @@ internal sealed class CreateHall : IEndpoint
                     Name: request.Name,
                     NumberOfSeats: request.NumberOfSeats);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<CreateHallCommand, HallResponseModel>(command, ct);
 
                 return result.Match(
                     hall => Results.Created(

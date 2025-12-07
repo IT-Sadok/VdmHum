@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Halls;
 
+using Application.Contracts.Halls;
 using Application.Queries.GetHall;
 using Extensions;
 using Infrastructure;
@@ -17,7 +18,7 @@ internal sealed class GetHallById : IEndpoint
             {
                 var query = new GetHallByIdQuery(id);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetHallByIdQuery, HallResponseModel>(query, ct);
 
                 return result.Match(
                     Results.Ok,

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Contracts.Auth;
 using Helpers;
 using Application.Commands.RefreshToken;
+using Application.Contracts;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
@@ -28,7 +29,7 @@ internal sealed class Refresh : IEndpoint
 
                 var command = new RefreshTokenCommand(refreshToken);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<RefreshTokenCommand, AuthResponseModel>(command, ct);
 
                 return result.Match(
                     onSuccess: auth =>

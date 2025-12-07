@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Showtimes;
 
 using Application.Commands.Showtimes.UpdateShowtime;
+using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
@@ -36,7 +37,7 @@ internal sealed class UpdateShowtime : IEndpoint
                     Format: request.Format,
                     CancelReason: request.CancelReason);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateShowtimeCommand, ShowtimeResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

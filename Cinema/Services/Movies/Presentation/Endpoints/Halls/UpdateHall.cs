@@ -1,6 +1,7 @@
 namespace Presentation.Endpoints.Halls;
 
 using Application.Commands.Halls.UpdateHall;
+using Application.Contracts.Halls;
 using Extensions;
 using Infrastructure;
 using Routes;
@@ -23,7 +24,7 @@ internal sealed class UpdateHall : IEndpoint
                     Name: request.Name,
                     NumberOfSeats: request.NumberOfSeats);
 
-                var result = await mediator.Send(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateHallCommand, HallResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

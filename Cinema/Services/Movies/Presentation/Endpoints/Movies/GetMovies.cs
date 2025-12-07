@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Movies;
 
+using Application.Contracts.Movies;
 using Application.Queries.GetMovies;
 using Domain.Enums;
 using Extensions;
@@ -37,7 +38,7 @@ internal sealed class GetMovies : IEndpoint
                     Page: request.Page,
                     PageSize: request.PageSize);
 
-                var result = await mediator.Send(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetMoviesQuery, PagedMoviesResponseModel>(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),
