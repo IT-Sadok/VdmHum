@@ -1,6 +1,7 @@
 namespace Infrastructure.Repositories;
 
 using Application.Abstractions.Repositories;
+using Application.Contracts;
 using Application.Contracts.Cinemas;
 using Database;
 using Domain.Entities;
@@ -56,34 +57,32 @@ public sealed class CinemaRepository(ApplicationDbContext dbContext) : ICinemaRe
     }
 
     public async Task<(IReadOnlyList<Cinema> Items, int TotalCount)> GetPagedAsync(
-        CinemaFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<CinemaFilter> pagedFilter,
         CancellationToken ct)
     {
         var query = dbContext.Cinemas.AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(filter.Name))
+        if (!string.IsNullOrWhiteSpace(pagedFilter.ModelFilter.Name))
         {
-            var name = filter.Name.Trim();
+            var name = pagedFilter.ModelFilter.Name.Trim();
             query = query.Where(c => c.Name.Contains(name));
         }
 
-        if (!string.IsNullOrWhiteSpace(filter.City))
+        if (!string.IsNullOrWhiteSpace(pagedFilter.ModelFilter.City))
         {
-            var city = filter.City.Trim();
+            var city = pagedFilter.ModelFilter.City.Trim();
             query = query.Where(c => c.City.Contains(city));
         }
 
         var totalCount = await query.CountAsync(ct);
 
-        var skip = (page - 1) * pageSize;
+        var skip = (pagedFilter.Page - 1) * pagedFilter.PageSize;
 
         var items = await query
             .OrderBy(c => c.City)
             .ThenBy(c => c.Name)
             .Skip(skip)
-            .Take(pageSize)
+            .Take(pagedFilter.PageSize)
             .ToListAsync(ct);
 
         return (items, totalCount);

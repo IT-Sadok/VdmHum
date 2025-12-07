@@ -15,7 +15,7 @@ public sealed class GetBookingsQueryHandler(
         CancellationToken ct)
     {
         var (bookings, totalCount) = await bookingRepository.GetPagedAsync(
-            query.Filter,
+            query.PagedFilter,
             ct);
 
         var responseItems = bookings
@@ -23,8 +23,8 @@ public sealed class GetBookingsQueryHandler(
             .ToArray();
 
         var response = new PagedResponse<BookingResponseModel>(
-            Page: query.Filter.Page,
-            PageSize: query.Filter.PageSize,
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

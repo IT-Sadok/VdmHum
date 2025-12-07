@@ -6,27 +6,27 @@ public sealed class GetShowtimesQueryValidator : AbstractValidator<GetShowtimesQ
 {
     public GetShowtimesQueryValidator()
     {
-        RuleFor(q => q.Page)
+        RuleFor(q => q.PagedFilter.Page)
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(q => q.PageSize)
+        RuleFor(q => q.PagedFilter.PageSize)
             .InclusiveBetween(1, 100);
 
         RuleFor(q => q)
             .Must(q =>
-                !q.DateFromUtc.HasValue ||
-                !q.DateToUtc.HasValue ||
-                q.DateFromUtc <= q.DateToUtc)
+                !q.PagedFilter.ModelFilter.DateFromUtc.HasValue ||
+                !q.PagedFilter.ModelFilter.DateToUtc.HasValue ||
+                q.PagedFilter.ModelFilter.DateFromUtc <= q.PagedFilter.ModelFilter.DateToUtc)
             .WithMessage("DateFromUtc cannot be greater than DateToUtc.");
 
-        RuleFor(q => q.DateFromUtc)
+        RuleFor(q => q.PagedFilter.ModelFilter.DateFromUtc)
             .Must(d => d!.Value.Kind == DateTimeKind.Utc)
-            .When(q => q.DateFromUtc.HasValue)
+            .When(q => q.PagedFilter.ModelFilter.DateFromUtc.HasValue)
             .WithMessage("DateFromUtc must be in UTC (DateTimeKind.Utc).");
 
-        RuleFor(q => q.DateToUtc)
+        RuleFor(q => q.PagedFilter.ModelFilter.DateToUtc)
             .Must(d => d!.Value.Kind == DateTimeKind.Utc)
-            .When(q => q.DateToUtc.HasValue)
+            .When(q => q.PagedFilter.ModelFilter.DateToUtc.HasValue)
             .WithMessage("DateToUtc must be in UTC (DateTimeKind.Utc).");
     }
 }

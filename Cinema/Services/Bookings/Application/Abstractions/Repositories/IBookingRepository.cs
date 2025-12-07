@@ -9,7 +9,7 @@ public interface IBookingRepository
     Task<Booking?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
     Task<(IReadOnlyList<Booking> Items, int TotalCount)> GetPagedAsync(
-        PagedQuery<BookingFilter> filter,
+        PagedFilter<BookingFilter> pagedFilter,
         CancellationToken ct);
 
     void Add(Booking booking);

@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Cinemas;
 
+using Application.Contracts;
 using Application.Contracts.Cinemas;
 using Application.Queries.GetCinemas;
 using Extensions;
@@ -24,12 +25,15 @@ internal sealed class GetCinemas : IEndpoint
                 CancellationToken ct) =>
             {
                 var query = new GetCinemasQuery(
-                    Name: request.Name,
-                    City: request.City,
-                    Page: request.Page,
-                    PageSize: request.PageSize);
+                    new PagedFilter<CinemaFilter>(
+                        ModelFilter: new CinemaFilter(
+                            Name: request.Name,
+                            City: request.City),
+                        Page: request.Page,
+                        PageSize: request.PageSize));
 
-                var result = await mediator.ExecuteQueryAsync<GetCinemasQuery, PagedCinemasResponseModel>(query, ct);
+                var result = await mediator.ExecuteQueryAsync
+                    <GetCinemasQuery, PagedResponse<CinemaResponseModel>>(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),

@@ -6,32 +6,32 @@ public sealed class GetMoviesQueryValidator : AbstractValidator<GetMoviesQuery>
 {
     public GetMoviesQueryValidator()
     {
-        RuleFor(q => q.Page)
+        RuleFor(q => q.PagedFilter.Page)
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(q => q.PageSize)
+        RuleFor(q => q.PagedFilter.PageSize)
             .InclusiveBetween(1, 100);
 
-        RuleFor(q => q.MinDurationMinutes)
+        RuleFor(q => q.PagedFilter.ModelFilter.MinDurationMinutes)
             .GreaterThan(0)
-            .When(q => q.MinDurationMinutes.HasValue);
+            .When(q => q.PagedFilter.ModelFilter.MinDurationMinutes.HasValue);
 
-        RuleFor(q => q.MaxDurationMinutes)
+        RuleFor(q => q.PagedFilter.ModelFilter.MaxDurationMinutes)
             .GreaterThan(0)
-            .When(q => q.MaxDurationMinutes.HasValue);
+            .When(q => q.PagedFilter.ModelFilter.MaxDurationMinutes.HasValue);
 
         RuleFor(q => q)
             .Must(q =>
-                !q.MinDurationMinutes.HasValue ||
-                !q.MaxDurationMinutes.HasValue ||
-                q.MinDurationMinutes <= q.MaxDurationMinutes)
+                !q.PagedFilter.ModelFilter.MinDurationMinutes.HasValue ||
+                !q.PagedFilter.ModelFilter.MaxDurationMinutes.HasValue ||
+                q.PagedFilter.ModelFilter.MinDurationMinutes <= q.PagedFilter.ModelFilter.MaxDurationMinutes)
             .WithMessage("MinDurationMinutes cannot be greater than MaxDurationMinutes.");
 
         RuleFor(q => q)
             .Must(q =>
-                !q.MinAgeRating.HasValue ||
-                !q.MaxAgeRating.HasValue ||
-                q.MinAgeRating.Value <= q.MaxAgeRating.Value)
+                !q.PagedFilter.ModelFilter.MinAgeRating.HasValue ||
+                !q.PagedFilter.ModelFilter.MaxAgeRating.HasValue ||
+                q.PagedFilter.ModelFilter.MinAgeRating.Value <= q.PagedFilter.ModelFilter.MaxAgeRating.Value)
             .WithMessage("MinAgeRating cannot be greater than MaxAgeRating.");
     }
 }

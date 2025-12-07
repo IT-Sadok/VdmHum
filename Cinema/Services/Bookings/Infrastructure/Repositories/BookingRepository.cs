@@ -28,29 +28,29 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
     }
 
     public async Task<(IReadOnlyList<Booking> Items, int TotalCount)> GetPagedAsync(
-        PagedQuery<BookingFilter> filter,
+        PagedFilter<BookingFilter> pagedFilter,
         CancellationToken ct)
     {
         var query = dbContext.Bookings.AsQueryable();
 
-        if (filter.Filter.UserId is not null)
+        if (pagedFilter.ModelFilter.UserId is not null)
         {
-            query = query.Where(b => b.UserId == filter.Filter.UserId);
+            query = query.Where(b => b.UserId == pagedFilter.ModelFilter.UserId);
         }
 
-        if (filter.Filter.Status is not null)
+        if (pagedFilter.ModelFilter.Status is not null)
         {
-            query = query.Where(b => b.Status == filter.Filter.Status);
+            query = query.Where(b => b.Status == pagedFilter.ModelFilter.Status);
         }
 
         var totalCount = await query.CountAsync(ct);
 
-        var skip = (filter.Page - 1) * filter.PageSize;
+        var skip = (pagedFilter.Page - 1) * pagedFilter.PageSize;
 
         var items = await query
             .OrderBy(c => c.Id)
             .Skip(skip)
-            .Take(filter.PageSize)
+            .Take(pagedFilter.PageSize)
             .ToListAsync(ct);
 
         return (items, totalCount);

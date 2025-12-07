@@ -1,6 +1,8 @@
 namespace Infrastructure.Repositories;
 
 using Application.Abstractions.Repositories;
+using Application.Contracts;
+using Application.Contracts.Halls;
 using Database;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -49,35 +51,32 @@ public sealed class HallRepository(ApplicationDbContext dbContext) : IHallReposi
     }
 
     public async Task<(IReadOnlyList<Hall> Items, int TotalCount)> GetPagedAsync(
-        Guid? cinemaId,
-        string? name,
-        int page,
-        int pageSize,
+        PagedFilter<HallFilter> pagedFilter,
         CancellationToken ct)
     {
         var query = dbContext.Halls.AsQueryable();
 
-        if (cinemaId.HasValue)
+        if (pagedFilter.ModelFilter.CinemaId.HasValue)
         {
-            var id = cinemaId.Value;
+            var id = pagedFilter.ModelFilter.CinemaId.Value;
             query = query.Where(h => h.CinemaId == id);
         }
 
-        if (!string.IsNullOrWhiteSpace(name))
+        if (!string.IsNullOrWhiteSpace(pagedFilter.ModelFilter.Name))
         {
-            var n = name.Trim();
+            var n = pagedFilter.ModelFilter.Name.Trim();
             query = query.Where(h => h.Name.Contains(n));
         }
 
         var totalCount = await query.CountAsync(ct);
 
-        var skip = (page - 1) * pageSize;
+        var skip = (pagedFilter.Page - 1) * pagedFilter.PageSize;
 
         var items = await query
             .OrderBy(h => h.CinemaId)
             .ThenBy(h => h.Name)
             .Skip(skip)
-            .Take(pageSize)
+            .Take(pagedFilter.PageSize)
             .ToListAsync(ct);
 
         return (items, totalCount);

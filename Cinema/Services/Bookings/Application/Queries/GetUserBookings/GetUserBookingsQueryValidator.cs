@@ -6,10 +6,10 @@ public sealed class GetUserBookingsQueryValidator : AbstractValidator<GetUserBoo
 {
     public GetUserBookingsQueryValidator()
     {
-        RuleFor(q => q.Filter.Page)
+        RuleFor(q => q.PagedFilter.Page)
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(q => q.Filter.PageSize)
+        RuleFor(q => q.PagedFilter.PageSize)
             .InclusiveBetween(1, 100);
     }
 }

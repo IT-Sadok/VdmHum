@@ -1,5 +1,7 @@
 namespace Application.Abstractions.Repositories;
 
+using Contracts;
+using Contracts.Halls;
 using Domain.Entities;
 
 public interface IHallRepository
@@ -17,9 +19,6 @@ public interface IHallRepository
         CancellationToken ct);
 
     Task<(IReadOnlyList<Hall> Items, int TotalCount)> GetPagedAsync(
-        Guid? cinemaId,
-        string? name,
-        int page,
-        int pageSize,
+        PagedFilter<HallFilter> pagedFilter,
         CancellationToken ct);
 }

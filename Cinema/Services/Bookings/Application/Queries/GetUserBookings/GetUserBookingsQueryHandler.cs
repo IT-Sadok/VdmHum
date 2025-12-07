@@ -18,12 +18,12 @@ public sealed class GetUserBookingsQueryHandler(
     {
         var userId = userContextService.Get().UserId!.Value;
 
-        var filter = query.Filter.Filter with { UserId = userId };
+        var filter = query.PagedFilter.ModelFilter with { UserId = userId };
 
         var (bookings, totalCount) = await bookingRepository.GetPagedAsync(
-            query.Filter with
+            query.PagedFilter with
             {
-                Filter = filter
+                ModelFilter = filter
             },
             ct);
 
@@ -32,8 +32,8 @@ public sealed class GetUserBookingsQueryHandler(
             .ToArray();
 
         var response = new PagedResponse<BookingResponseModel>(
-            Page: query.Filter.Page,
-            PageSize: query.Filter.PageSize,
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

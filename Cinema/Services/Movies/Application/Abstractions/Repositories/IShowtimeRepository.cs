@@ -1,5 +1,6 @@
 namespace Application.Abstractions.Repositories;
 
+using Contracts;
 using Contracts.Showtimes;
 using Domain.Entities;
 
@@ -12,9 +13,7 @@ public interface IShowtimeRepository
     void Remove(Showtime showtime);
 
     Task<(IReadOnlyList<Showtime> Items, int TotalCount)> GetPagedAsync(
-        ShowtimeFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<ShowtimeFilter> pagedFilter,
         CancellationToken ct);
 
     Task<bool> HasOverlappingAsync(

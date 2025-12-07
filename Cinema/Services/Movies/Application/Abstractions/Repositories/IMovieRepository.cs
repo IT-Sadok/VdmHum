@@ -1,5 +1,6 @@
 namespace Application.Abstractions.Repositories;
 
+using Contracts;
 using Contracts.Movies;
 using Domain.Entities;
 
@@ -14,8 +15,6 @@ public interface IMovieRepository
     Task<bool> IsTitleUniqueAsync(string title, Guid? excludeMovieId, CancellationToken ct);
 
     Task<(IReadOnlyList<Movie> Items, int TotalCount)> GetPagedAsync(
-        MovieFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<MovieFilter> pagedFilter,
         CancellationToken ct);
 }

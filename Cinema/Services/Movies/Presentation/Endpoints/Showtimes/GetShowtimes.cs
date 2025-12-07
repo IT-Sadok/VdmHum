@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Showtimes;
 
+using Application.Contracts;
 using Application.Contracts.Showtimes;
 using Application.Queries.GetShowtimes;
 using Domain.Enums;
@@ -29,16 +30,20 @@ internal sealed class GetShowtimes : IEndpoint
                 CancellationToken ct) =>
             {
                 var query = new GetShowtimesQuery(
-                    MovieId: request.MovieId,
-                    CinemaId: request.CinemaId,
-                    HallId: request.HallId,
-                    DateFromUtc: request.DateFromUtc,
-                    DateToUtc: request.DateToUtc,
-                    Status: request.Status,
-                    Page: request.Page,
-                    PageSize: request.PageSize);
+                    new PagedFilter<ShowtimeFilter>(
+                        new ShowtimeFilter(
+                            MovieId: request.MovieId,
+                            CinemaId: request.CinemaId,
+                            HallId: request.HallId,
+                            DateFromUtc: request.DateFromUtc,
+                            DateToUtc: request.DateToUtc,
+                            Status: request.Status),
+                        Page: request.Page,
+                        PageSize: request.PageSize));
 
-                var result = await mediator.ExecuteQueryAsync<GetShowtimesQuery, PagedShowtimesResponseModel>(query, ct);
+                var result =
+                    await mediator.ExecuteQueryAsync
+                        <GetShowtimesQuery, PagedResponse<ShowtimeResponseModel>>(query, ct);
 
                 return result.Match(
                     Results.Ok,

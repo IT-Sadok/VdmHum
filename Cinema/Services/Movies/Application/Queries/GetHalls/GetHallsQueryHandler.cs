@@ -1,23 +1,21 @@
 namespace Application.Queries.GetHalls;
 
 using Abstractions.Repositories;
+using Contracts;
 using Contracts.Halls;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
 
 public sealed class GetHallsQueryHandler(
     IHallRepository hallRepository)
-    : IQueryHandler<GetHallsQuery, PagedHallsResponseModel>
+    : IQueryHandler<GetHallsQuery, PagedResponse<HallResponseModel>>
 {
-    public async Task<Result<PagedHallsResponseModel>> HandleAsync(
+    public async Task<Result<PagedResponse<HallResponseModel>>> HandleAsync(
         GetHallsQuery query,
         CancellationToken ct)
     {
         var (items, totalCount) = await hallRepository.GetPagedAsync(
-            query.CinemaId,
-            query.Name,
-            query.Page,
-            query.PageSize,
+            query.PagedFilter,
             ct);
 
         var responseItems = items
@@ -28,9 +26,9 @@ public sealed class GetHallsQueryHandler(
                 h.NumberOfSeats))
             .ToArray();
 
-        var response = new PagedHallsResponseModel(
-            Page: query.Page,
-            PageSize: query.PageSize,
+        var response = new PagedResponse<HallResponseModel>(
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

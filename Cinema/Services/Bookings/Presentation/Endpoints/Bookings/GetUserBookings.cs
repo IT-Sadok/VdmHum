@@ -25,8 +25,8 @@ internal sealed class GetUserBookings : IEndpoint
                 CancellationToken ct) =>
             {
                 var query = new GetUserBookingsQuery(
-                    new PagedQuery<BookingFilter>(
-                        Filter: new BookingFilter(request.Status),
+                    new PagedFilter<BookingFilter>(
+                        ModelFilter: new BookingFilter(request.Status),
                         Page: request.Page,
                         PageSize: request.PageSize));
 

@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Movies;
 
+using Application.Contracts;
 using Application.Contracts.Movies;
 using Application.Queries.GetMovies;
 using Domain.Enums;
@@ -29,16 +30,19 @@ internal sealed class GetMovies : IEndpoint
                 CancellationToken ct) =>
             {
                 var query = new GetMoviesQuery(
-                    Genres: request.Genres,
-                    MinDurationMinutes: request.MinDurationMinutes,
-                    MaxDurationMinutes: request.MaxDurationMinutes,
-                    MinAgeRating: request.MinAgeRating,
-                    MaxAgeRating: request.MaxAgeRating,
-                    Status: request.Status,
-                    Page: request.Page,
-                    PageSize: request.PageSize);
+                    new PagedFilter<MovieFilter>(
+                        new MovieFilter(
+                            Genres: request.Genres,
+                            MinDurationMinutes: request.MinDurationMinutes,
+                            MaxDurationMinutes: request.MaxDurationMinutes,
+                            MinAgeRating: request.MinAgeRating,
+                            MaxAgeRating: request.MaxAgeRating,
+                            Status: request.Status),
+                        Page: request.Page,
+                        PageSize: request.PageSize));
 
-                var result = await mediator.ExecuteQueryAsync<GetMoviesQuery, PagedMoviesResponseModel>(query, ct);
+                var result = await mediator.ExecuteQueryAsync
+                    <GetMoviesQuery, PagedResponse<MovieResponseModel>>(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),
