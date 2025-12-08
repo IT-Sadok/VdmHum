@@ -1,6 +1,7 @@
 namespace Application.Queries.GetCinemas;
 
 using Abstractions.Repositories;
+using Contracts;
 using Contracts.Cinemas;
 using Domain.Entities;
 using Shared.Contracts.Abstractions;
@@ -8,29 +9,21 @@ using Shared.Contracts.Core;
 
 public sealed class GetCinemasQueryHandler(
     ICinemaRepository cinemaRepository)
-    : IQueryHandler<GetCinemasQuery, PagedCinemasResponseModel>
+    : IQueryHandler<GetCinemasQuery, PagedResponse<CinemaResponseModel>>
 {
-    public async Task<Result<PagedCinemasResponseModel>> HandleAsync(
+    public async Task<Result<PagedResponse<CinemaResponseModel>>> HandleAsync(
         GetCinemasQuery query,
         CancellationToken ct)
     {
-        var filter = new CinemaFilter(
-            Name: query.Name,
-            City: query.City);
-
-        var (items, totalCount) = await cinemaRepository.GetPagedAsync(
-            filter,
-            query.Page,
-            query.PageSize,
-            ct);
+        var (items, totalCount) = await cinemaRepository.GetPagedAsync(query.PagedFilter, ct);
 
         var responseItems = items
             .Select(MapToResponse)
             .ToArray();
 
-        var response = new PagedCinemasResponseModel(
-            Page: query.Page,
-            PageSize: query.PageSize,
+        var response = new PagedResponse<CinemaResponseModel>(
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

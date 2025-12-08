@@ -20,7 +20,7 @@ internal sealed class CreateCinema : IEndpoint
     {
         app.MapPost(CinemasRoutes.Create, async (
                 CreateCinemaRequest request,
-                ICommandHandler<CreateCinemaCommand, CinemaResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateCinemaCommand(
@@ -30,7 +30,7 @@ internal sealed class CreateCinema : IEndpoint
                     Latitude: request.Latitude,
                     Longitude: request.Longitude);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<CreateCinemaCommand, CinemaResponseModel>(command, ct);
 
                 return result.Match(
                     cinema => Results.Created(

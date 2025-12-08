@@ -6,10 +6,10 @@ public sealed class GetHallsQueryValidator : AbstractValidator<GetHallsQuery>
 {
     public GetHallsQueryValidator()
     {
-        RuleFor(q => q.Page)
+        RuleFor(q => q.PagedFilter.Page)
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(q => q.PageSize)
+        RuleFor(q => q.PagedFilter.PageSize)
             .InclusiveBetween(1, 100);
     }
 }

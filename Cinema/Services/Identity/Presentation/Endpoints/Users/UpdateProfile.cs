@@ -17,7 +17,7 @@ internal sealed class UpdateProfile : IEndpoint
     {
         app.MapPut(UsersRoutes.UpdateProfile, async (
                 UpdateProfileRequest updateProfileRequest,
-                ICommandHandler<UpdateProfileCommand, Guid> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateProfileCommand(
@@ -25,9 +25,9 @@ internal sealed class UpdateProfile : IEndpoint
                     updateProfileRequest.FirstName,
                     updateProfileRequest.LastName);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateProfileCommand, Guid>(command, ct);
 
-                return result.Match(Results.NoContent, CustomResults.Problem);
+                return result.Match(Results.Ok, CustomResults.Problem);
             })
             .RequireAuthorization()
             .WithTags(Tags.Users);

@@ -1,5 +1,6 @@
 namespace Application.Abstractions.Repositories;
 
+using Contracts;
 using Contracts.Cinemas;
 using Domain.Entities;
 
@@ -18,8 +19,6 @@ public interface ICinemaRepository
         CancellationToken ct);
 
     Task<(IReadOnlyList<Cinema> Items, int TotalCount)> GetPagedAsync(
-        CinemaFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<CinemaFilter> pagedFilter,
         CancellationToken ct);
 }

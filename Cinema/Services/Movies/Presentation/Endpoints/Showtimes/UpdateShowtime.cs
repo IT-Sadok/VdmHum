@@ -5,6 +5,7 @@ using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -22,9 +23,9 @@ internal sealed class UpdateShowtime : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(ShowtimesRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateShowtimeRequest request,
-                ICommandHandler<UpdateShowtimeCommand, ShowtimeResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateShowtimeCommand(
@@ -37,7 +38,7 @@ internal sealed class UpdateShowtime : IEndpoint
                     Format: request.Format,
                     CancelReason: request.CancelReason);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateShowtimeCommand, ShowtimeResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

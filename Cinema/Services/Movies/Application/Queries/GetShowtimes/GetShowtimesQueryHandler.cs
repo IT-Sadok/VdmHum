@@ -1,6 +1,7 @@
 namespace Application.Queries.GetShowtimes;
 
 using Abstractions.Repositories;
+using Contracts;
 using Contracts.Showtimes;
 using Domain.Entities;
 using Shared.Contracts.Abstractions;
@@ -8,33 +9,23 @@ using Shared.Contracts.Core;
 
 public sealed class GetShowtimesQueryHandler(
     IShowtimeRepository showtimeRepository)
-    : IQueryHandler<GetShowtimesQuery, PagedShowtimesResponseModel>
+    : IQueryHandler<GetShowtimesQuery, PagedResponse<ShowtimeResponseModel>>
 {
-    public async Task<Result<PagedShowtimesResponseModel>> HandleAsync(
+    public async Task<Result<PagedResponse<ShowtimeResponseModel>>> HandleAsync(
         GetShowtimesQuery query,
         CancellationToken ct)
     {
-        var filter = new ShowtimeFilter(
-            MovieId: query.MovieId,
-            CinemaId: query.CinemaId,
-            HallId: query.HallId,
-            DateFromUtc: query.DateFromUtc,
-            DateToUtc: query.DateToUtc,
-            Status: query.Status);
-
         var (items, totalCount) = await showtimeRepository.GetPagedAsync(
-            filter,
-            query.Page,
-            query.PageSize,
+            query.PagedFilter,
             ct);
 
         var responseItems = items
             .Select(MapToResponse)
             .ToArray();
 
-        var response = new PagedShowtimesResponseModel(
-            Page: query.Page,
-            PageSize: query.PageSize,
+        var response = new PagedResponse<ShowtimeResponseModel>(
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

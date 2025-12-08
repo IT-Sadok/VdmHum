@@ -5,6 +5,7 @@ using Application.Contracts.Movies;
 using Domain.Enums;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -23,9 +24,9 @@ internal sealed class UpdateMovie : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(MoviesRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateMovieRequest request,
-                ICommandHandler<UpdateMovieCommand, MovieResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateMovieCommand(
@@ -39,7 +40,7 @@ internal sealed class UpdateMovie : IEndpoint
                     ReleaseDate: request.ReleaseDate,
                     PosterUrl: request.PosterUrl);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateMovieCommand, MovieResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

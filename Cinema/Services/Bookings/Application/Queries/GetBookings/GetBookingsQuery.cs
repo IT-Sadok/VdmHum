@@ -5,5 +5,5 @@ using Contracts.Bookings;
 using Shared.Contracts.Abstractions;
 
 public sealed record GetBookingsQuery(
-    PagedQuery<BookingFilter> Filter
+    PagedFilter<BookingFilter> PagedFilter
 ) : IQuery<PagedResponse<BookingResponseModel>>;

@@ -21,12 +21,12 @@ internal sealed class Login : IEndpoint
                 LoginRequest loginRequest,
                 HttpContext httpContext,
                 IOptions<JwtOptions> jwtOptions,
-                ICommandHandler<LoginUserCommand, AuthResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new LoginUserCommand(loginRequest.Email, loginRequest.Password);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<LoginUserCommand, AuthResponseModel>(command, ct);
 
                 return result.Match(
                     auth =>

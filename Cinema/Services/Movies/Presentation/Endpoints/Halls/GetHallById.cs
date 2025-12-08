@@ -4,6 +4,7 @@ using Application.Contracts.Halls;
 using Application.Queries.GetHall;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -12,13 +13,13 @@ internal sealed class GetHallById : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(HallsRoutes.GetById, async (
-                Guid id,
-                IQueryHandler<GetHallByIdQuery, HallResponseModel> handler,
+                [FromRoute] Guid id,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetHallByIdQuery(id);
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.ExecuteQueryAsync<GetHallByIdQuery, HallResponseModel>(query, ct);
 
                 return result.Match(
                     Results.Ok,

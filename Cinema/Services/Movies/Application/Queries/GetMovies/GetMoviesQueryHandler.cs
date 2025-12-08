@@ -1,6 +1,7 @@
 namespace Application.Queries.GetMovies;
 
 using Abstractions.Repositories;
+using Contracts;
 using Contracts.Movies;
 using Domain.Entities;
 using Shared.Contracts.Abstractions;
@@ -8,33 +9,23 @@ using Shared.Contracts.Core;
 
 public sealed class GetMoviesQueryHandler(
     IMovieRepository movieRepository)
-    : IQueryHandler<GetMoviesQuery, PagedMoviesResponseModel>
+    : IQueryHandler<GetMoviesQuery, PagedResponse<MovieResponseModel>>
 {
-    public async Task<Result<PagedMoviesResponseModel>> HandleAsync(
+    public async Task<Result<PagedResponse<MovieResponseModel>>> HandleAsync(
         GetMoviesQuery query,
         CancellationToken ct)
     {
-        var filter = new MovieFilter(
-            Genres: query.Genres,
-            MinDurationMinutes: query.MinDurationMinutes,
-            MaxDurationMinutes: query.MaxDurationMinutes,
-            MinAgeRating: query.MinAgeRating,
-            MaxAgeRating: query.MaxAgeRating,
-            Status: query.Status);
-
         var (items, totalCount) = await movieRepository.GetPagedAsync(
-            filter,
-            query.Page,
-            query.PageSize,
+            query.PagedFilter,
             ct);
 
         var responseItems = items
             .Select(MapToResponse)
             .ToArray();
 
-        var response = new PagedMoviesResponseModel(
-            Page: query.Page,
-            PageSize: query.PageSize,
+        var response = new PagedResponse<MovieResponseModel>(
+            Page: query.PagedFilter.Page,
+            PageSize: query.PagedFilter.PageSize,
             TotalCount: totalCount,
             Items: responseItems);
 

@@ -8,7 +8,6 @@ using Application.Commands.LogoutUser;
 using Extensions;
 using Infrastructure;
 using Shared.Contracts.Abstractions;
-using Shared.Contracts.Core;
 
 internal sealed class Logout : IEndpoint
 {
@@ -17,7 +16,7 @@ internal sealed class Logout : IEndpoint
         app.MapPost(UsersRoutes.Logout, async (
                 HttpContext httpContext,
                 IOptions<JwtOptions> jwtOptions,
-                ICommandHandler<LogoutUserCommand, Result> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 if (!httpContext.Request.Cookies.TryGetValue("refresh_token", out var refreshToken) ||
@@ -28,7 +27,7 @@ internal sealed class Logout : IEndpoint
 
                 var command = new LogoutUserCommand(refreshToken);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync(command, ct);
 
                 return result.Match(
                     onSuccess: () =>

@@ -1,6 +1,7 @@
 namespace Infrastructure.Repositories;
 
 using Application.Abstractions.Repositories;
+using Application.Contracts;
 using Application.Contracts.Showtimes;
 using Database;
 using Domain.Entities;
@@ -30,58 +31,56 @@ public sealed class ShowtimeRepository(ApplicationDbContext dbContext) : IShowti
         dbContext.Showtimes.Remove(showtime);
 
     public async Task<(IReadOnlyList<Showtime> Items, int TotalCount)> GetPagedAsync(
-        ShowtimeFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<ShowtimeFilter> pagedFilter,
         CancellationToken ct)
     {
         var query = dbContext.Showtimes.AsQueryable();
 
-        if (filter.MovieId.HasValue)
+        if (pagedFilter.ModelFilter.MovieId.HasValue)
         {
-            var movieId = filter.MovieId.Value;
+            var movieId = pagedFilter.ModelFilter.MovieId.Value;
             query = query.Where(s => s.MovieId == movieId);
         }
 
-        if (filter.CinemaId.HasValue)
+        if (pagedFilter.ModelFilter.CinemaId.HasValue)
         {
-            var cinemaId = filter.CinemaId.Value;
+            var cinemaId = pagedFilter.ModelFilter.CinemaId.Value;
             query = query.Where(s => s.CinemaId == cinemaId);
         }
 
-        if (filter.HallId.HasValue)
+        if (pagedFilter.ModelFilter.HallId.HasValue)
         {
-            var hallId = filter.HallId.Value;
+            var hallId = pagedFilter.ModelFilter.HallId.Value;
             query = query.Where(s => s.HallId == hallId);
         }
 
-        if (filter.DateFromUtc.HasValue)
+        if (pagedFilter.ModelFilter.DateFromUtc.HasValue)
         {
-            var from = filter.DateFromUtc.Value;
+            var from = pagedFilter.ModelFilter.DateFromUtc.Value;
             query = query.Where(s => s.StartTimeUtc >= from);
         }
 
-        if (filter.DateToUtc.HasValue)
+        if (pagedFilter.ModelFilter.DateToUtc.HasValue)
         {
-            var to = filter.DateToUtc.Value;
+            var to = pagedFilter.ModelFilter.DateToUtc.Value;
             query = query.Where(s => s.StartTimeUtc <= to);
         }
 
-        if (filter.Status.HasValue)
+        if (pagedFilter.ModelFilter.Status.HasValue)
         {
-            var status = filter.Status.Value;
+            var status = pagedFilter.ModelFilter.Status.Value;
             query = query.Where(s => s.Status == status);
         }
 
         var totalCount = await query.CountAsync(ct);
 
-        var skip = (page - 1) * pageSize;
+        var skip = (pagedFilter.Page - 1) * pagedFilter.PageSize;
 
         var items = await query
             .OrderBy(s => s.StartTimeUtc)
             .ThenBy(s => s.HallId)
             .Skip(skip)
-            .Take(pageSize)
+            .Take(pagedFilter.PageSize)
             .ToListAsync(ct);
 
         return (items, totalCount);

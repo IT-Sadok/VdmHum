@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Halls;
 
+using Application.Contracts;
 using Application.Contracts.Halls;
 using Application.Queries.GetHalls;
 using Extensions;
@@ -20,16 +21,19 @@ internal sealed class GetHalls : IEndpoint
     {
         app.MapGet(HallsRoutes.GetPaged, async (
                 [AsParameters] GetHallsRequest request,
-                IQueryHandler<GetHallsQuery, PagedHallsResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetHallsQuery(
-                    CinemaId: request.CinemaId,
-                    Name: request.Name,
-                    Page: request.Page,
-                    PageSize: request.PageSize);
+                    new PagedFilter<HallFilter>(
+                        new HallFilter(
+                            CinemaId: request.CinemaId,
+                            Name: request.Name),
+                        Page: request.Page,
+                        PageSize: request.PageSize));
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.ExecuteQueryAsync
+                    <GetHallsQuery, PagedResponse<HallResponseModel>>(query, ct);
 
                 return result.Match(
                     Results.Ok,

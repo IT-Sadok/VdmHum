@@ -1,5 +1,6 @@
 namespace Presentation.Endpoints.Cinemas;
 
+using Application.Contracts;
 using Application.Contracts.Cinemas;
 using Application.Queries.GetCinemas;
 using Extensions;
@@ -20,16 +21,19 @@ internal sealed class GetCinemas : IEndpoint
     {
         app.MapGet(CinemasRoutes.GetPaged, async (
                 [AsParameters] GetCinemasRequest request,
-                IQueryHandler<GetCinemasQuery, PagedCinemasResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var query = new GetCinemasQuery(
-                    Name: request.Name,
-                    City: request.City,
-                    Page: request.Page,
-                    PageSize: request.PageSize);
+                    new PagedFilter<CinemaFilter>(
+                        ModelFilter: new CinemaFilter(
+                            Name: request.Name,
+                            City: request.City),
+                        Page: request.Page,
+                        PageSize: request.PageSize));
 
-                var result = await handler.HandleAsync(query, ct);
+                var result = await mediator.ExecuteQueryAsync
+                    <GetCinemasQuery, PagedResponse<CinemaResponseModel>>(query, ct);
 
                 return result.Match(
                     paged => Results.Ok(paged),

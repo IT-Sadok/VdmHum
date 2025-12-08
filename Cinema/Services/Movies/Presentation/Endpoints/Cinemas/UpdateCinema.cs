@@ -4,6 +4,7 @@ using Application.Commands.Cinemas.UpdateCinema;
 using Application.Contracts.Cinemas;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -19,9 +20,9 @@ internal sealed class UpdateCinema : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(CinemasRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateCinemaRequest request,
-                ICommandHandler<UpdateCinemaCommand, CinemaResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateCinemaCommand(
@@ -32,7 +33,7 @@ internal sealed class UpdateCinema : IEndpoint
                     Latitude: request.Latitude,
                     Longitude: request.Longitude);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateCinemaCommand, CinemaResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

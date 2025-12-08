@@ -4,6 +4,7 @@ using Application.Commands.Halls.UpdateHall;
 using Application.Contracts.Halls;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -14,9 +15,9 @@ internal sealed class UpdateHall : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(HallsRoutes.Update, async (
-                Guid id,
+                [FromRoute] Guid id,
                 UpdateHallRequest request,
-                ICommandHandler<UpdateHallCommand, HallResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new UpdateHallCommand(
@@ -24,7 +25,7 @@ internal sealed class UpdateHall : IEndpoint
                     Name: request.Name,
                     NumberOfSeats: request.NumberOfSeats);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<UpdateHallCommand, HallResponseModel>(command, ct);
 
                 return result.Match(
                     Results.Ok,

@@ -15,4 +15,8 @@ public static class BookingErrors
     public static readonly Error NotFound = Error.NotFound(
         code: "Booking.NotFound",
         description: ValidationMessages.NotFound);
+
+    public static readonly Error UserIdNotMatch = Error.Failure(
+        code: "Booking.UserIdNotMatch",
+        description: "UserId does not match in booking.");
 }

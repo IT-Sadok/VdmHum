@@ -3,6 +3,7 @@ namespace Presentation.Endpoints.Movies;
 using Application.Commands.Movies.DeleteMovie;
 using Extensions;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;
 
@@ -11,13 +12,13 @@ internal sealed class DeleteMovie : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete(MoviesRoutes.Delete, async (
-                Guid id,
-                ICommandHandler<DeleteMovieCommand> handler,
+                [FromRoute] Guid id,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new DeleteMovieCommand(id);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync(command, ct);
 
                 return result.Match(
                     Results.NoContent,

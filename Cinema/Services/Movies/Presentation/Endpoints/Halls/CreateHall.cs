@@ -18,7 +18,7 @@ internal sealed class CreateHall : IEndpoint
     {
         app.MapPost(HallsRoutes.Create, async (
                 CreateHallRequest request,
-                ICommandHandler<CreateHallCommand, HallResponseModel> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
             {
                 var command = new CreateHallCommand(
@@ -26,7 +26,7 @@ internal sealed class CreateHall : IEndpoint
                     Name: request.Name,
                     NumberOfSeats: request.NumberOfSeats);
 
-                var result = await handler.HandleAsync(command, ct);
+                var result = await mediator.ExecuteCommandAsync<CreateHallCommand, HallResponseModel>(command, ct);
 
                 return result.Match(
                     hall => Results.Created(

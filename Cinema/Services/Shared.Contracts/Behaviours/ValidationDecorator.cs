@@ -46,23 +46,4 @@ public static class ValidationDecorator
             return Result.Failure<TResponse>(CreateValidationError(validationFailures));
         }
     }
-
-    public sealed class CommandBaseHandler<TCommand>(
-        ICommandHandler<TCommand> innerHandler,
-        IEnumerable<IValidator<TCommand>> validators)
-        : ICommandHandler<TCommand>
-        where TCommand : ICommand
-    {
-        public async Task<Result> HandleAsync(TCommand command, CancellationToken ct)
-        {
-            var validationFailures = await ValidateAsync(command, validators);
-
-            if (validationFailures.Count == 0)
-            {
-                return await innerHandler.HandleAsync(command, ct);
-            }
-
-            return Result.Failure(CreateValidationError(validationFailures));
-        }
-    }
 }

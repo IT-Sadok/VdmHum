@@ -1,6 +1,7 @@
 namespace Infrastructure.Repositories;
 
 using Application.Abstractions.Repositories;
+using Application.Contracts;
 using Application.Contracts.Movies;
 using Database;
 using Domain.Entities;
@@ -49,65 +50,63 @@ public sealed class MovieRepository(ApplicationDbContext dbContext) : IMovieRepo
     }
 
     public async Task<(IReadOnlyList<Movie> Items, int TotalCount)> GetPagedAsync(
-        MovieFilter filter,
-        int page,
-        int pageSize,
+        PagedFilter<MovieFilter> pagedFilter,
         CancellationToken ct)
     {
         var query = dbContext.Movies.AsQueryable();
 
-        if (filter.Genres is { Count: > 0 })
+        if (pagedFilter.ModelFilter.Genres is { Count: > 0 })
         {
-            var genres = filter.Genres;
+            var genres = pagedFilter.ModelFilter.Genres;
             query = query.Where(m => m.MovieGenres.Any(mg => genres.Contains(mg.Genre)));
         }
 
-        if (filter.MinDurationMinutes.HasValue)
+        if (pagedFilter.ModelFilter.MinDurationMinutes.HasValue)
         {
-            var min = filter.MinDurationMinutes.Value;
+            var min = pagedFilter.ModelFilter.MinDurationMinutes.Value;
             query = query.Where(m =>
                 m.DurationMinutes.HasValue &&
                 m.DurationMinutes.Value >= min);
         }
 
-        if (filter.MaxDurationMinutes.HasValue)
+        if (pagedFilter.ModelFilter.MaxDurationMinutes.HasValue)
         {
-            var max = filter.MaxDurationMinutes.Value;
+            var max = pagedFilter.ModelFilter.MaxDurationMinutes.Value;
             query = query.Where(m =>
                 m.DurationMinutes.HasValue &&
                 m.DurationMinutes.Value <= max);
         }
 
-        if (filter.MinAgeRating.HasValue)
+        if (pagedFilter.ModelFilter.MinAgeRating.HasValue)
         {
-            var min = filter.MinAgeRating.Value;
+            var min = pagedFilter.ModelFilter.MinAgeRating.Value;
             query = query.Where(m =>
                 m.AgeRating.HasValue &&
                 m.AgeRating.Value >= min);
         }
 
-        if (filter.MaxAgeRating.HasValue)
+        if (pagedFilter.ModelFilter.MaxAgeRating.HasValue)
         {
-            var max = filter.MaxAgeRating.Value;
+            var max = pagedFilter.ModelFilter.MaxAgeRating.Value;
             query = query.Where(m =>
                 m.AgeRating.HasValue &&
                 m.AgeRating.Value <= max);
         }
 
-        if (filter.Status.HasValue)
+        if (pagedFilter.ModelFilter.Status.HasValue)
         {
-            var status = filter.Status.Value;
+            var status = pagedFilter.ModelFilter.Status.Value;
             query = query.Where(m => m.Status == status);
         }
 
         var totalCount = await query.CountAsync(ct);
 
-        var skip = (page - 1) * pageSize;
+        var skip = (pagedFilter.Page - 1) * pagedFilter.PageSize;
 
         var items = await query
             .OrderBy(m => m.Title)
             .Skip(skip)
-            .Take(pageSize)
+            .Take(pagedFilter.PageSize)
             .ToListAsync(ct);
 
         return (items, totalCount);
