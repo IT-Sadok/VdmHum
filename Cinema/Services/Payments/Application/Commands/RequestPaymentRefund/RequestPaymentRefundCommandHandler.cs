@@ -12,7 +12,6 @@ using Shared.Contracts.Core;
 public sealed class RequestPaymentRefundCommandHandler(
     IPaymentRepository paymentRepository,
     IPaymentProviderClient paymentProviderClient,
-    IDateTimeProvider dateTimeProvider,
     IUnitOfWork unitOfWork)
     : ICommandHandler<RequestPaymentRefundCommand, PaymentRefundResponseModel>
 {
@@ -59,7 +58,7 @@ public sealed class RequestPaymentRefundCommandHandler(
             amount: refundAmount,
             remainingAmountToRefund: remainingAmountToRefund,
             providerRefundId: providerRefundId,
-            requestedAtUtc: dateTimeProvider.UtcNow,
+            requestedAtUtc: DateTime.UtcNow,
             bookingRefundId: command.BookingRefundId,
             reason: command.Reason);
 

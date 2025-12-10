@@ -11,7 +11,6 @@ using Shared.Contracts.Core;
 public sealed class CancelPaymentCommandHandler(
     IPaymentRepository paymentRepository,
     IPaymentProviderClient paymentProviderClient,
-    IDateTimeProvider dateTimeProvider,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CancelPaymentCommand, PaymentResponseModel>
 {
@@ -38,7 +37,7 @@ public sealed class CancelPaymentCommandHandler(
 
         await paymentProviderClient.CancelPaymentSessionAsync(payment.ProviderPaymentId, ct);
 
-        payment.Cancel(dateTimeProvider.UtcNow);
+        payment.Cancel(DateTime.UtcNow);
 
         await unitOfWork.SaveChangesAsync(ct);
 
