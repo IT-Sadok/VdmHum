@@ -60,8 +60,8 @@ public sealed class RequestPaymentRefundCommandHandler(
             remainingAmountToRefund: remainingAmountToRefund,
             providerRefundId: providerRefundId,
             requestedAtUtc: dateTimeProvider.UtcNow,
-            reason: command.Reason,
-            bookingRefundId: command.BookingRefundId);
+            bookingRefundId: command.BookingRefundId,
+            reason: command.Reason);
 
         await unitOfWork.SaveChangesAsync(ct);
 

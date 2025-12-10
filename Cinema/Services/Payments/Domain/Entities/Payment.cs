@@ -183,13 +183,18 @@ public sealed class Payment
         Money remainingAmountToRefund,
         string providerRefundId,
         DateTime requestedAtUtc,
-        string? reason = null,
-        Guid? bookingRefundId = null)
+        Guid bookingRefundId,
+        string? reason = null)
     {
         if (this.Status is not (PaymentStatus.Succeeded or PaymentStatus.PartiallyRefunded))
         {
             throw new InvalidOperationException(
                 $"Refund can only be requested when payment is {PaymentStatus.Succeeded} or {PaymentStatus.PartiallyRefunded}.");
+        }
+
+        if (bookingRefundId == Guid.Empty)
+        {
+            throw new ArgumentException("BookingRefundId cannot be empty.", nameof(bookingRefundId));
         }
 
         if (this.Amount.Currency != amount.Currency

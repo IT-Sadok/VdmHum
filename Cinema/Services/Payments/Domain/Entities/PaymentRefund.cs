@@ -15,8 +15,8 @@ public sealed class PaymentRefund
         Money amount,
         string providerRefundId,
         DateTime requestedAtUtc,
-        string? reason,
-        Guid? bookingRefundId)
+        Guid bookingRefundId,
+        string? reason)
     {
         this.Id = id;
         this.PaymentId = paymentId;
@@ -32,7 +32,7 @@ public sealed class PaymentRefund
 
     public Guid PaymentId { get; private set; }
 
-    public Guid? BookingRefundId { get; private set; }
+    public Guid BookingRefundId { get; private set; }
 
     public Money Amount { get; private set; } = null!;
 
@@ -57,8 +57,8 @@ public sealed class PaymentRefund
         Money amount,
         string providerRefundId,
         DateTime requestedAtUtc,
-        string? reason = null,
-        Guid? bookingRefundId = null)
+        Guid bookingRefundId,
+        string? reason = null)
     {
         if (paymentId == Guid.Empty)
         {

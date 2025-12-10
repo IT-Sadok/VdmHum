@@ -8,6 +8,6 @@ public sealed record RequestPaymentRefundCommand(
     Guid PaymentId,
     decimal Amount,
     Currency Currency,
-    string? Reason,
-    Guid? BookingRefundId
+    Guid BookingRefundId,
+    string? Reason
 ) : ICommand<PaymentRefundResponseModel>;
