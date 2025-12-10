@@ -61,13 +61,6 @@ public sealed class Payment
 
     public IReadOnlyCollection<PaymentRefund> Refunds => this._refunds.AsReadOnly();
 
-    public decimal RefundedAmount =>
-        this._refunds
-            .Where(r => r.Status == RefundStatus.Succeeded)
-            .Sum(r => r.Amount.Amount);
-
-    public decimal RemainingAmountToRefund => this.Amount.Amount - this.RefundedAmount;
-
     public static Payment Create(
         Guid bookingId,
         Money amount,
@@ -187,6 +180,7 @@ public sealed class Payment
 
     public PaymentRefund RequestRefund(
         Money amount,
+        Money remainingAmountToRefund,
         string providerRefundId,
         DateTime requestedAtUtc,
         string? reason = null,
@@ -205,7 +199,7 @@ public sealed class Payment
             throw new ArgumentOutOfRangeException(nameof(amount), "Refund amount must be greater than zero.");
         }
 
-        if (amount.Amount > this.RemainingAmountToRefund)
+        if (amount.Amount > remainingAmountToRefund.Amount)
         {
             throw new InvalidOperationException("Refund amount cannot exceed remaining refundable amount.");
         }
@@ -224,7 +218,7 @@ public sealed class Payment
         return refund;
     }
 
-    public void CompleteRefund(Guid refundId, DateTime? succeededAtUtc = null)
+    public void CompleteRefund(Guid refundId, Money remainingAmountToRefund, DateTime? succeededAtUtc = null)
     {
         var refund = this._refunds.SingleOrDefault(r => r.Id == refundId);
 
@@ -243,16 +237,9 @@ public sealed class Payment
 
         this.UpdatedAtUtc = DateTime.UtcNow;
 
-        var remaining = this.RemainingAmountToRefund;
-
-        if (remaining <= 0)
-        {
-            this.Status = PaymentStatus.Refunded;
-        }
-        else
-        {
-            this.Status = PaymentStatus.PartiallyRefunded;
-        }
+        this.Status = remainingAmountToRefund.Amount <= 0
+            ? PaymentStatus.Refunded
+            : PaymentStatus.PartiallyRefunded;
     }
 
     public void FailRefund(
