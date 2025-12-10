@@ -4,9 +4,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{72397F53-13FA-4BF6-8667-B4437EA9702F}"
 	ProjectSection(SolutionItems) = preProject
-    		.editorconfig = .editorconfig
-    		Directory.Build.props = Directory.Build.props
-    EndProjectSection
+						.editorconfig = .editorconfig
+						Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{6C83A0BE-BBAD-43F6-8B07-A5D330F8B405}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Contracts", "..\Shared.Contracts\Shared.Contracts.csproj", "{C35013B8-6E31-4006-92D5-C1EC6D8EAB76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +22,13 @@ Global
 		{AD7FF035-29A9-4459-B13E-7784F47FA0EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD7FF035-29A9-4459-B13E-7784F47FA0EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD7FF035-29A9-4459-B13E-7784F47FA0EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C83A0BE-BBAD-43F6-8B07-A5D330F8B405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C83A0BE-BBAD-43F6-8B07-A5D330F8B405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C83A0BE-BBAD-43F6-8B07-A5D330F8B405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C83A0BE-BBAD-43F6-8B07-A5D330F8B405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C35013B8-6E31-4006-92D5-C1EC6D8EAB76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C35013B8-6E31-4006-92D5-C1EC6D8EAB76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C35013B8-6E31-4006-92D5-C1EC6D8EAB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C35013B8-6E31-4006-92D5-C1EC6D8EAB76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
