@@ -1,23 +1,18 @@
 namespace Application.Abstractions.Services;
 
-using Contracts.Payments;
-using Domain.Enums;
+using Contracts.PaymentProvider;
 
 public interface IPaymentProviderClient
 {
     Task<CreatePaymentSessionResult> CreatePaymentSessionAsync(
-        Guid bookingId,
-        decimal amount,
-        Currency currency,
-        string description,
+        CreatePaymentSessionRequest request,
         CancellationToken ct);
 
-    Task CancelPaymentSessionAsync(string providerPaymentId, CancellationToken ct);
+    Task CancelPaymentSessionAsync(
+        CancelPaymentSessionRequest request,
+        CancellationToken ct);
 
     Task<string> CreateRefundAsync(
-        string providerPaymentId,
-        decimal amount,
-        Currency currency,
-        string? reason,
+        CreateRefundRequest request,
         CancellationToken ct);
 }

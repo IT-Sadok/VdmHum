@@ -2,6 +2,7 @@ namespace Application.Commands.CreatePayment;
 
 using Abstractions.Repositories;
 using Abstractions.Services;
+using Contracts.PaymentProvider;
 using Contracts.Payments;
 using Domain.Entities;
 using Domain.ValueObjects;
@@ -31,12 +32,13 @@ public sealed class CreatePaymentCommandHandler(
 
         var money = Money.From(command.Amount, command.Currency);
 
-        var session = await paymentProviderClient.CreatePaymentSessionAsync(
-            bookingId: command.BookingId,
-            amount: money.Amount,
-            currency: money.Currency,
-            description: command.Description,
-            ct: ct);
+        var request = new CreatePaymentSessionRequest(
+            command.BookingId,
+            money.Amount,
+            money.Currency,
+            command.Description);
+
+        var session = await paymentProviderClient.CreatePaymentSessionAsync(request, ct);
 
         var payment = Payment.Create(
             bookingId: command.BookingId,

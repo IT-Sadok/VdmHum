@@ -2,6 +2,7 @@ namespace Application.Commands.RequestPaymentRefund;
 
 using Abstractions.Repositories;
 using Abstractions.Services;
+using Contracts.PaymentProvider;
 using Contracts.Payments;
 using Domain.Enums;
 using Domain.ValueObjects;
@@ -38,12 +39,13 @@ public sealed class RequestPaymentRefundCommandHandler(
 
         var refundAmount = Money.From(command.Amount, command.Currency);
 
-        var providerRefundId = await paymentProviderClient.CreateRefundAsync(
-            providerPaymentId: payment.ProviderPaymentId,
-            amount: refundAmount.Amount,
-            currency: refundAmount.Currency,
-            reason: command.Reason,
-            ct: ct);
+        var request = new CreateRefundRequest(
+            payment.ProviderPaymentId,
+            refundAmount.Amount,
+            refundAmount.Currency,
+            command.Reason);
+
+        var providerRefundId = await paymentProviderClient.CreateRefundAsync(request, ct);
 
         var refundedAmount = payment.Refunds
             .Where(r => r.Status == RefundStatus.Succeeded)

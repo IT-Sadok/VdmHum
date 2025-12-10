@@ -1,4 +1,4 @@
-namespace Application.Contracts.Payments;
+namespace Application.Contracts.PaymentProvider;
 
 public sealed record CreatePaymentSessionResult(
     string ProviderPaymentId,
