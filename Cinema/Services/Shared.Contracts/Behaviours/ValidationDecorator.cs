@@ -28,6 +28,25 @@ public static class ValidationDecorator
     private static ValidationError CreateValidationError(ICollection<ValidationFailure> validationFailures) =>
         new(validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray());
 
+    public sealed class CommandHandler<TCommand>(
+        ICommandHandler<TCommand> innerHandler,
+        IEnumerable<IValidator<TCommand>> validators)
+        : ICommandHandler<TCommand>
+        where TCommand : ICommand
+    {
+        public async Task<Result> HandleAsync(TCommand command, CancellationToken ct)
+        {
+            var validationFailures = await ValidateAsync(command, validators);
+
+            if (validationFailures.Count == 0)
+            {
+                return await innerHandler.HandleAsync(command, ct);
+            }
+
+            return Result.Failure(CreateValidationError(validationFailures));
+        }
+    }
+    
     public sealed class CommandHandler<TCommand, TResponse>(
         ICommandHandler<TCommand, TResponse> innerHandler,
         IEnumerable<IValidator<TCommand>> validators)
@@ -41,6 +60,25 @@ public static class ValidationDecorator
             if (validationFailures.Count == 0)
             {
                 return await innerHandler.HandleAsync(command, ct);
+            }
+
+            return Result.Failure<TResponse>(CreateValidationError(validationFailures));
+        }
+    }
+    
+    public sealed class QueryHandler<TQuery, TResponse>(
+        IQueryHandler<TQuery, TResponse> innerHandler,
+        IEnumerable<IValidator<TQuery>> validators)
+        : IQueryHandler<TQuery, TResponse>
+        where TQuery : IQuery<TResponse>
+    {
+        public async Task<Result<TResponse>> HandleAsync(TQuery query, CancellationToken ct)
+        {
+            var validationFailures = await ValidateAsync(query, validators);
+
+            if (validationFailures.Count == 0)
+            {
+                return await innerHandler.HandleAsync(query, ct);
             }
 
             return Result.Failure<TResponse>(CreateValidationError(validationFailures));

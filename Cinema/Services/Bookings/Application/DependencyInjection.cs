@@ -22,6 +22,8 @@ public static class DependencyInjection
 
         services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationDecorator.CommandHandler<,>));
 
+        services.Decorate(typeof(IQueryHandler<,>), typeof(ValidationDecorator.QueryHandler<,>));
+
         services.Decorate(typeof(ICommandHandler<,>), typeof(AuthenticationCommandHandlerDecorator<,>));
 
         services.Decorate(typeof(IQueryHandler<,>), typeof(AuthenticationQueryHandlerDecorator<,>));

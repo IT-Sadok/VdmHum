@@ -183,8 +183,8 @@ public sealed class Payment
         Money remainingAmountToRefund,
         string providerRefundId,
         DateTime requestedAtUtc,
-        string? reason = null,
-        Guid? bookingRefundId = null)
+        Guid bookingRefundId,
+        string? reason = null)
     {
         if (this.Status is not (PaymentStatus.Succeeded or PaymentStatus.PartiallyRefunded))
         {
@@ -192,11 +192,22 @@ public sealed class Payment
                 $"Refund can only be requested when payment is {PaymentStatus.Succeeded} or {PaymentStatus.PartiallyRefunded}.");
         }
 
+        if (bookingRefundId == Guid.Empty)
+        {
+            throw new ArgumentException("BookingRefundId cannot be empty.", nameof(bookingRefundId));
+        }
+
+        if (this.Amount.Currency != amount.Currency
+            || this.Amount.Currency != remainingAmountToRefund.Currency)
+        {
+            throw new InvalidOperationException("Refund currency must be equal to payment currency.");
+        }
+
         ArgumentNullException.ThrowIfNull(amount);
 
         if (amount.Amount <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Refund amount must be greater than zero.");
+            throw new ArgumentException("Refund amount must be greater than zero.", nameof(amount));
         }
 
         if (amount.Amount > remainingAmountToRefund.Amount)
@@ -231,6 +242,11 @@ public sealed class Payment
         {
             throw new InvalidOperationException(
                 $"Refund must be in {RefundStatus.Requested} state to be completed.");
+        }
+
+        if (this.Amount.Currency != remainingAmountToRefund.Currency)
+        {
+            throw new InvalidOperationException("Refund currency must be equal to payment currency.");
         }
 
         refund.MarkSucceeded(succeededAtUtc);
