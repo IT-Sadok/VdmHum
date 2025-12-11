@@ -48,7 +48,6 @@ public sealed class RequestPaymentRefundCommandHandler(
 
         var refund = payment.RequestRefund(
             amount: refundAmount,
-            remainingAmountToRefund: remainingAmountToRefund,
             providerRefundId: providerRefundId,
             requestedAtUtc: DateTime.UtcNow,
             bookingRefundId: command.BookingRefundId,

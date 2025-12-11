@@ -40,7 +40,7 @@ public sealed class HandleProviderRefundSucceededCommandHandler(
             Amount = payment.Amount.Amount - refundedAmount
         };
 
-        payment.CompleteRefund(refund.Id, remainingAmountToRefund, command.SucceededAtUtc);
+        payment.CompleteRefund(refund.Id, command.SucceededAtUtc);
 
         await unitOfWork.SaveChangesAsync(ct);
 
