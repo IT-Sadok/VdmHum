@@ -1,11 +1,10 @@
 namespace Application.Contracts.Payments;
 
 using Domain.Entities;
-using Shared.Contracts.Core;
 
 public static class PaymentMappings
 {
-    public static Result<PaymentResponseModel> ToResponse(
+    public static PaymentResponseModel ToResponse(
         this Payment payment,
         bool includeRefunds = false)
     {
@@ -13,7 +12,7 @@ public static class PaymentMappings
             ? payment.Refunds.Select(r => r.ToResponse()).ToArray()
             : [];
 
-        var dto = new PaymentResponseModel(
+        var model = new PaymentResponseModel(
             Id: payment.Id,
             BookingId: payment.BookingId,
             Amount: payment.Amount.Amount,
@@ -31,7 +30,7 @@ public static class PaymentMappings
             CanceledAtUtc: payment.CanceledAtUtc,
             Refunds: refunds);
 
-        return Result.Success(dto);
+        return model;
     }
 
     public static PaymentRefundResponseModel ToResponse(this PaymentRefund refund)
