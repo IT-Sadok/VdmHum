@@ -115,6 +115,7 @@ public sealed class Payment
             throw new ArgumentException("SucceededAtUtc cannot be earlier than CreatedAtUtc.", nameof(succeededAtUtc));
         }
 
+        this.Status = PaymentStatus.Succeeded;
         this.SucceededAtUtc = succeededAtUtc;
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
