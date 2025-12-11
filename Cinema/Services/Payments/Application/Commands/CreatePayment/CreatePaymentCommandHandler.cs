@@ -20,16 +20,6 @@ public sealed class CreatePaymentCommandHandler(
         CreatePaymentCommand command,
         CancellationToken ct)
     {
-        if (command.BookingId == Guid.Empty)
-        {
-            return Result.Failure<PaymentResponseModel>(CommonErrors.InvalidId);
-        }
-
-        if (command.Amount <= 0)
-        {
-            return Result.Failure<PaymentResponseModel>(CommonErrors.InvalidAmount);
-        }
-
         var money = Money.From(command.Amount, command.Currency);
 
         var request = new CreatePaymentSessionRequest(

@@ -14,11 +14,6 @@ public sealed class GetPaymentByIdQueryHandler(
         GetPaymentByIdQuery query,
         CancellationToken ct)
     {
-        if (query.PaymentId == Guid.Empty)
-        {
-            return Result.Failure<PaymentResponseModel>(CommonErrors.InvalidId);
-        }
-
         var payment = await paymentRepository.GetByIdAsync(query.PaymentId, asNoTracking: true, ct);
 
         if (payment is null)

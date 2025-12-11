@@ -20,16 +20,6 @@ public sealed class RequestPaymentRefundCommandHandler(
         RequestPaymentRefundCommand command,
         CancellationToken ct)
     {
-        if (command.PaymentId == Guid.Empty)
-        {
-            return Result.Failure<PaymentRefundResponseModel>(CommonErrors.InvalidId);
-        }
-
-        if (command.Amount <= 0)
-        {
-            return Result.Failure<PaymentRefundResponseModel>(CommonErrors.InvalidAmount);
-        }
-
         var payment = await paymentRepository.GetByIdAsync(command.PaymentId, false, ct);
 
         if (payment is null)

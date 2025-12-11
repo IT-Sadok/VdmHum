@@ -19,11 +19,6 @@ public sealed class CancelPaymentCommandHandler(
         CancelPaymentCommand command,
         CancellationToken ct)
     {
-        if (command.PaymentId == Guid.Empty)
-        {
-            return Result.Failure<PaymentResponseModel>(CommonErrors.InvalidId);
-        }
-
         var payment = await paymentRepository.GetByIdAsync(command.PaymentId, asNoTracking: false, ct);
 
         if (payment is null)

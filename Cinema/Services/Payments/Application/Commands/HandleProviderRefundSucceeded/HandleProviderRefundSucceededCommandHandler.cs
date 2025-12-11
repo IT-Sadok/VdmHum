@@ -16,11 +16,6 @@ public sealed class HandleProviderRefundSucceededCommandHandler(
         HandleProviderRefundSucceededCommand command,
         CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(command.ProviderRefundId))
-        {
-            return Result.Failure(CommonErrors.InvalidId);
-        }
-
         var refund = await refundRepository
             .GetByProviderRefundIdAsync(command.ProviderRefundId, asNoTracking: true, ct);
 
