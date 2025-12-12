@@ -5,6 +5,6 @@ using Shared.Contracts.Abstractions;
 
 public sealed record ProcessBookingPaymentCommand(
     Guid BookingId,
-    string PaymentId,
+    Guid PaymentId,
     DateTime PaymentTime
 ) : ICommand<BookingResponseModel>;

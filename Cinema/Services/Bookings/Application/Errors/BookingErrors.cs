@@ -19,4 +19,8 @@ public static class BookingErrors
     public static readonly Error UserIdNotMatch = Error.Failure(
         code: "Booking.UserIdNotMatch",
         description: "UserId does not match in booking.");
+
+    public static readonly Error PaymentNotFound = Error.NotFound(
+        code: "Booking.PaymentNotFound",
+        description: "Payment for this booking not found.");
 }

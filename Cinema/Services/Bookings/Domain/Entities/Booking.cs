@@ -52,7 +52,7 @@ public sealed class Booking
 
     public DateTime ReservationExpiresAtUtc { get; private set; }
 
-    public string? PaymentId { get; private set; }
+    public Guid? PaymentId { get; private set; }
 
     public BookingCancellationReason? CancellationReason { get; private set; }
 
@@ -117,11 +117,21 @@ public sealed class Booking
         return booking;
     }
 
-    public void ConfirmPayment(string paymentId, DateTime paidAtUtc)
+    public void SetPayment(Guid paymentId)
     {
-        if (string.IsNullOrWhiteSpace(paymentId))
+        if (paymentId == Guid.Empty)
         {
-            throw new ArgumentException("PaymentId is required.", nameof(paymentId));
+            throw new ArgumentException("PaymentId cannot be empty.", nameof(paymentId));
+        }
+
+        this.PaymentId = paymentId;
+    }
+
+    public void ConfirmPayment(Guid paymentId, DateTime paidAtUtc)
+    {
+        if (paymentId == Guid.Empty)
+        {
+            throw new ArgumentException("PaymentId cannot be empty.", nameof(paymentId));
         }
 
         // Idempotency: if this booking is already confirmed with the same paymentId,

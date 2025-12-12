@@ -31,6 +31,11 @@ public sealed class CancelPendingBookingCommandHandler(
             return Result.Failure<BookingResponseModel>(BookingErrors.UserIdNotMatch);
         }
 
+        if (booking.PaymentId is null)
+        {
+            return Result.Failure<BookingResponseModel>(BookingErrors.PaymentNotFound);
+        }
+
         booking.CancelPendingPayment();
 
         await unitOfWork.SaveChangesAsync(ct);
