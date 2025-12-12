@@ -3,23 +3,21 @@ namespace Domain.Entities;
 using Enums;
 using ValueObjects;
 
-public sealed class Refund
+public sealed class BookingRefund
 {
-    private Refund()
+    private BookingRefund()
     {
     }
 
-    private Refund(
+    private BookingRefund(
         Guid id,
         Guid bookingId,
         Money amount,
-        string? paymentId,
         DateTime requestedAtUtc)
     {
         this.Id = id;
         this.BookingId = bookingId;
         this.Amount = amount;
-        this.PaymentId = paymentId;
         this.RequestedAtUtc = requestedAtUtc;
         this.Status = RefundStatus.Requested;
     }
@@ -36,14 +34,11 @@ public sealed class Refund
 
     public DateTime? ProcessedAtUtc { get; private set; }
 
-    public string? PaymentId { get; private set; }
-
     public string? FailureReason { get; private set; }
 
-    public static Refund Create(
+    public static BookingRefund Create(
         Guid bookingId,
-        Money amount,
-        string? paymentId)
+        Money amount)
     {
         if (bookingId == Guid.Empty)
         {
@@ -52,11 +47,10 @@ public sealed class Refund
 
         var now = DateTime.UtcNow;
 
-        return new Refund(
+        return new BookingRefund(
             id: Guid.CreateVersion7(),
             bookingId: bookingId,
             amount: amount,
-            paymentId: paymentId,
             requestedAtUtc: now);
     }
 

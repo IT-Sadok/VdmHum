@@ -9,7 +9,7 @@ public sealed class Booking
 
     private readonly List<Ticket> _tickets = null!;
 
-    private readonly List<Refund> _refunds = null!;
+    private readonly List<BookingRefund> _refunds = null!;
 
     private Booking()
     {
@@ -60,7 +60,7 @@ public sealed class Booking
 
     public IReadOnlyCollection<Ticket> Tickets => this._tickets.AsReadOnly();
 
-    public IReadOnlyCollection<Refund> Refunds => this._refunds.AsReadOnly();
+    public IReadOnlyCollection<BookingRefund> Refunds => this._refunds.AsReadOnly();
 
     public static Booking Create(
         Guid userId,
@@ -181,7 +181,7 @@ public sealed class Booking
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public void ProcessLatePayment()
+    public BookingRefund ProcessLatePayment()
     {
         // If booking is already confirmed or in any refund process,
         // receiving a "late" payment event doesn't make sense and should be treated as an error.
@@ -200,16 +200,16 @@ public sealed class Booking
             throw new InvalidOperationException("There is already an active refund for this booking.");
         }
 
-        var refund = Refund.Create(
+        var refund = BookingRefund.Create(
             bookingId: this.Id,
-            amount: this.TotalPrice,
-            paymentId: this.PaymentId);
+            amount: this.TotalPrice);
 
         this._refunds.Add(refund);
 
         this.Status = BookingStatus.RefundPending;
         this.CancellationReason = BookingCancellationReason.PaymentExpired;
         this.UpdatedAtUtc = DateTime.UtcNow;
+        return refund;
     }
 
     public void CancelPendingPayment()
@@ -241,7 +241,7 @@ public sealed class Booking
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
 
-    public Refund? CancelBySystem(BookingCancellationReason reason)
+    public BookingRefund? CancelBySystem(BookingCancellationReason reason)
     {
         // If booking is already fully closed, just return (idempotent behavior).
         if (this.Status is BookingStatus.Cancelled
@@ -284,7 +284,7 @@ public sealed class Booking
             $"System cancellation is not supported when booking status is {this.Status}.");
     }
 
-    public Refund RequestRefund()
+    public BookingRefund RequestRefund()
     {
         // Refunds are only allowed for bookings that were successfully confirmed (tickets issued).
         if (this.Status != BookingStatus.Confirmed)
@@ -302,10 +302,9 @@ public sealed class Booking
             throw new InvalidOperationException("There is already an active refund for this booking.");
         }
 
-        var refund = Refund.Create(
+        var refund = BookingRefund.Create(
             bookingId: this.Id,
-            amount: this.TotalPrice,
-            paymentId: this.PaymentId);
+            amount: this.TotalPrice);
 
         this._refunds.Add(refund);
 

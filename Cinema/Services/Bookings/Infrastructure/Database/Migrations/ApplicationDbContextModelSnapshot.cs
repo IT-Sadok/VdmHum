@@ -37,9 +37,8 @@ namespace Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
 
-                    b.Property<string>("PaymentId")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
+                    b.Property<Guid?>("PaymentId")
+                        .HasColumnType("uuid")
                         .HasColumnName("payment_id");
 
                     b.Property<DateTime>("ReservationExpiresAtUtc")
@@ -62,6 +61,43 @@ namespace Infrastructure.Database.Migrations
                         .HasName("pk_bookings");
 
                     b.ToTable("Bookings", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.BookingRefund", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("booking_id");
+
+                    b.Property<string>("FailureReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("failure_reason");
+
+                    b.Property<DateTime?>("ProcessedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at_utc");
+
+                    b.Property<DateTime>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("requested_at_utc");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_booking_refunds");
+
+                    b.HasIndex("BookingId")
+                        .HasDatabaseName("ix_booking_refunds_booking_id");
+
+                    b.ToTable("BookingRefunds", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.BookingSeat", b =>
@@ -94,48 +130,6 @@ namespace Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_booking_seats_showtime_id_seat_number");
 
                     b.ToTable("BookingSeats", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Refund", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("BookingId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("booking_id");
-
-                    b.Property<string>("FailureReason")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)")
-                        .HasColumnName("failure_reason");
-
-                    b.Property<string>("PaymentId")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("payment_id");
-
-                    b.Property<DateTime?>("ProcessedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("processed_at_utc");
-
-                    b.Property<DateTime>("RequestedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("requested_at_utc");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("pk_refunds");
-
-                    b.HasIndex("BookingId")
-                        .HasDatabaseName("ix_refunds_booking_id");
-
-                    b.ToTable("Refunds", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Ticket", b =>
@@ -270,28 +264,18 @@ namespace Infrastructure.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.BookingSeat", b =>
-                {
-                    b.HasOne("Domain.Entities.Booking", null)
-                        .WithMany("Seats")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_booking_seats_bookings_booking_id");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Refund", b =>
+            modelBuilder.Entity("Domain.Entities.BookingRefund", b =>
                 {
                     b.HasOne("Domain.Entities.Booking", null)
                         .WithMany("Refunds")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_refunds_bookings_booking_id");
+                        .HasConstraintName("fk_booking_refunds_bookings_booking_id");
 
                     b.OwnsOne("Domain.ValueObjects.Money", "Amount", b1 =>
                         {
-                            b1.Property<Guid>("RefundId")
+                            b1.Property<Guid>("BookingRefundId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
@@ -303,17 +287,27 @@ namespace Infrastructure.Database.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("Currency");
 
-                            b1.HasKey("RefundId");
+                            b1.HasKey("BookingRefundId");
 
-                            b1.ToTable("Refunds");
+                            b1.ToTable("BookingRefunds");
 
                             b1.WithOwner()
-                                .HasForeignKey("RefundId")
-                                .HasConstraintName("fk_refunds_refunds_id");
+                                .HasForeignKey("BookingRefundId")
+                                .HasConstraintName("fk_booking_refunds_booking_refunds_id");
                         });
 
                     b.Navigation("Amount")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.BookingSeat", b =>
+                {
+                    b.HasOne("Domain.Entities.Booking", null)
+                        .WithMany("Seats")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_booking_seats_bookings_booking_id");
                 });
 
             modelBuilder.Entity("Domain.Entities.Ticket", b =>

@@ -4,11 +4,11 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public sealed class RefundConfiguration : IEntityTypeConfiguration<Refund>
+public sealed class BookingRefundConfiguration : IEntityTypeConfiguration<BookingRefund>
 {
-    public void Configure(EntityTypeBuilder<Refund> builder)
+    public void Configure(EntityTypeBuilder<BookingRefund> builder)
     {
-        builder.ToTable("Refunds");
+        builder.ToTable("BookingRefunds");
 
         builder.HasKey(r => r.Id);
 
@@ -22,9 +22,6 @@ public sealed class RefundConfiguration : IEntityTypeConfiguration<Refund>
             .IsRequired();
 
         builder.Property(r => r.ProcessedAtUtc);
-
-        builder.Property(r => r.PaymentId)
-            .HasMaxLength(200);
 
         builder.Property(r => r.FailureReason)
             .HasMaxLength(1000);
