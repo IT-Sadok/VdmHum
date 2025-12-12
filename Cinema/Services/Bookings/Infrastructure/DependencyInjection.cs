@@ -13,8 +13,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Services;
-using Showtime.Grpc;
 using Movies.Grpc;
+using Payments.Grpc;
 
 public static class DependencyInjection
 {
@@ -56,6 +56,11 @@ public static class DependencyInjection
             options.Address = new Uri(configuration["Grpc:ShowtimeServiceUrl"]
                                       ?? throw new InvalidOperationException());
         });
+        services.AddGrpcClient<Payments.PaymentsClient>(options =>
+        {
+            options.Address = new Uri(configuration["Grpc:PaymentServiceUrl"]
+                                      ?? throw new InvalidOperationException());
+        });
 
         return services;
     }
@@ -64,8 +69,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-        services.AddScoped<IShowtimeReadService, ShowtimeReadService>();
         services.AddScoped<IMoviesGrpcClient, MoviesGrpcClient>();
+        services.AddScoped<IPaymentsGrpcClient, PaymentsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
 
         return services;

@@ -1,6 +1,7 @@
 namespace Application.Commands.HandleProviderPaymentSucceeded;
 
 using Abstractions.Repositories;
+using Abstractions.Services;
 using Domain.Enums;
 using Errors;
 using Shared.Contracts.Abstractions;
@@ -8,6 +9,7 @@ using Shared.Contracts.Core;
 
 public sealed class HandleProviderPaymentSucceededCommandHandler(
     IPaymentRepository paymentRepository,
+    IBookingsGrpcClient bookingsGrpcClient,
     IUnitOfWork unitOfWork)
     : ICommandHandler<HandleProviderPaymentSucceededCommand>
 {
@@ -31,6 +33,12 @@ public sealed class HandleProviderPaymentSucceededCommandHandler(
         payment.MarkSucceeded(command.SucceededAtUtc);
 
         await unitOfWork.SaveChangesAsync(ct);
+
+        await bookingsGrpcClient.ProcessBookingPaymentAsync(
+            bookingId: payment.BookingId,
+            paymentId: payment.Id,
+            paymentTime: command.SucceededAtUtc,
+            ct: ct);
 
         return Result.Success();
     }

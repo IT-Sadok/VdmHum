@@ -13,8 +13,8 @@ using Shared.Contracts.Core;
 
 public sealed class CreateBookingCommandHandler(
     IBookingRepository bookingRepository,
-    IShowtimeReadService showtimeReadService,
     IMoviesGrpcClient moviesGrpcClient,
+    IPaymentsGrpcClient paymentsGrpcClient,
     IOptions<BookingOptions> bookingOptions,
     IUserContextService userContextService,
     IUnitOfWork unitOfWork)
@@ -57,6 +57,17 @@ public sealed class CreateBookingCommandHandler(
             reservationExpiresAtUtc: reservationExpiresAt);
 
         bookingRepository.Add(booking);
+        await unitOfWork.SaveChangesAsync(ct);
+
+        var paymentResult = await paymentsGrpcClient.CreatePaymentForBookingAsync(
+            bookingId: booking.Id,
+            amount: totalPrice.Amount,
+            currency: totalPrice.Currency,
+            description: $"Booking {booking.Id} for showtime {showtimeSnapshot.ShowtimeId}",
+            ct: ct);
+
+        booking.SetPayment(paymentResult.PaymentId);
+
         await unitOfWork.SaveChangesAsync(ct);
 
         return booking.ToResponse(includeTickets: false);

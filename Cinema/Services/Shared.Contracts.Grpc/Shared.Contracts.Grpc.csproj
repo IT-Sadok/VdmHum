@@ -13,8 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\showtime.proto" GrpcServices="Both" />
         <Protobuf Include="Protos\movies.proto" GrpcServices="Both" />
+        <Protobuf Include="Protos\payments.proto" GrpcServices="Both" />
+        <Protobuf Include="Protos\bookings.proto" GrpcServices="Both" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Bookings.Grpc";
+
+import "google/protobuf/timestamp.proto";
+
+service Bookings {
+  rpc ProcessBookingPayment (ProcessBookingPaymentRequest) returns (ProcessBookingPaymentResponse);
+}
+
+message ProcessBookingPaymentRequest {
+  string bookingId = 1;
+  string paymentId = 2;
+  google.protobuf.Timestamp paymentTime = 3;
+}
+
+message ProcessBookingPaymentResponse {
+  string bookingId = 1;
+  string status = 2;
+}
