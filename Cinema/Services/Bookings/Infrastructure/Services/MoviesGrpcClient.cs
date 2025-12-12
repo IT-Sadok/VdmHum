@@ -2,10 +2,10 @@ namespace Infrastructure.Services;
 
 using Application.Abstractions.Services;
 using Domain.ValueObjects;
-using Showtime.Grpc;
+using Movies.Grpc;
 
-public sealed class ShowtimeReadService(ShowtimeService.ShowtimeServiceClient client)
-    : IShowtimeReadService
+public sealed class MoviesGrpcClient(Movies.MoviesClient client)
+    : IMoviesGrpcClient
 {
     public async Task<ShowtimeSnapshot?> GetShowtimeSnapshotAsync(
         Guid showtimeId,

@@ -3,14 +3,14 @@ namespace Presentation.Grpc;
 using Application.Abstractions.Repositories;
 using global::Grpc.Core;
 using Google.Protobuf.WellKnownTypes;
-using Showtime.Grpc;
+using Movies.Grpc;
 
-public sealed class ShowtimeGrpcService(
+public sealed class MoviesGrpcService(
     IShowtimeRepository showtimeRepo,
     IMovieRepository movieRepo,
     ICinemaRepository cinemaRepo,
     IHallRepository hallRepo)
-    : ShowtimeService.ShowtimeServiceBase
+    : Movies.MoviesBase
 {
     public override async Task<GetShowtimeResponse> GetShowtime(
         GetShowtimeRequest request,

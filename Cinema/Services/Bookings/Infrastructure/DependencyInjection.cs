@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Services;
 using Showtime.Grpc;
+using Movies.Grpc;
 
 public static class DependencyInjection
 {
@@ -50,7 +51,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddGrpcClients(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddGrpcClient<ShowtimeService.ShowtimeServiceClient>(options =>
+        services.AddGrpcClient<Movies.MoviesClient>(options =>
         {
             options.Address = new Uri(configuration["Grpc:ShowtimeServiceUrl"]
                                       ?? throw new InvalidOperationException());
@@ -64,6 +65,7 @@ public static class DependencyInjection
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IShowtimeReadService, ShowtimeReadService>();
+        services.AddScoped<IMoviesGrpcClient, MoviesGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
 
         return services;

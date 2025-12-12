@@ -30,7 +30,7 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGrpcService<ShowtimeGrpcService>();
+app.MapGrpcService<MoviesGrpcService>();
 
 app.MapEndpoints();
 

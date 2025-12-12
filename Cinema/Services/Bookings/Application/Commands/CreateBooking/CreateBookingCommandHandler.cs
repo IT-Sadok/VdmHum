@@ -14,6 +14,7 @@ using Shared.Contracts.Core;
 public sealed class CreateBookingCommandHandler(
     IBookingRepository bookingRepository,
     IShowtimeReadService showtimeReadService,
+    IMoviesGrpcClient moviesGrpcClient,
     IOptions<BookingOptions> bookingOptions,
     IUserContextService userContextService,
     IUnitOfWork unitOfWork)
@@ -25,7 +26,7 @@ public sealed class CreateBookingCommandHandler(
     {
         var userId = userContextService.Get().UserId!.Value;
 
-        var showtimeSnapshot = await showtimeReadService
+        var showtimeSnapshot = await moviesGrpcClient
             .GetShowtimeSnapshotAsync(command.ShowtimeId, ct);
 
         if (showtimeSnapshot is null)

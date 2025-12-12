@@ -2,7 +2,7 @@ namespace Application.Abstractions.Services;
 
 using Domain.ValueObjects;
 
-public interface IShowtimeReadService
+public interface IMoviesGrpcClient
 {
     Task<ShowtimeSnapshot?> GetShowtimeSnapshotAsync(
         Guid showtimeId,

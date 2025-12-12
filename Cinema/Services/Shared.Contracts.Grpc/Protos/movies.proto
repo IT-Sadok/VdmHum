@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option csharp_namespace = "Showtime.Grpc";
+option csharp_namespace = "Movies.Grpc";
 
 import "google/protobuf/timestamp.proto";
 
-service ShowtimeService {
+service Movies {
   rpc GetShowtime (GetShowtimeRequest) returns (GetShowtimeResponse);
 }
 
