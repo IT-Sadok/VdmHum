@@ -31,7 +31,7 @@ public sealed class CreateBookingCommandHandler(
 
         if (showtimeSnapshot is null)
         {
-            return Result.Failure<BookingResponseModel>(BookingErrors.ShowtimeNotFound);
+            return Result.Failure<BookingResponseModel>(BookingErrors.NotFound);
         }
 
         var seats = command.Seats.Distinct().ToArray();
