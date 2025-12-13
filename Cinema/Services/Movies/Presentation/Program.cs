@@ -3,7 +3,7 @@ using Application;
 using Infrastructure;
 using Presentation;
 using Presentation.Extensions;
-using Presentation.Grpc;
+using Presentation.GrpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

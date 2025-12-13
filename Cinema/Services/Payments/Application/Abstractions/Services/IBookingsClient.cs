@@ -1,6 +1,6 @@
 namespace Application.Abstractions.Services;
 
-public interface IBookingsGrpcClient
+public interface IBookingsClient
 {
     Task ProcessBookingPaymentAsync(
         Guid bookingId,

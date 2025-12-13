@@ -9,7 +9,7 @@ using Shared.Contracts.Core;
 
 public sealed class HandleProviderPaymentSucceededCommandHandler(
     IPaymentRepository paymentRepository,
-    IBookingsGrpcClient bookingsGrpcClient,
+    IBookingsClient bookingsClient,
     IUnitOfWork unitOfWork)
     : ICommandHandler<HandleProviderPaymentSucceededCommand>
 {
@@ -34,7 +34,7 @@ public sealed class HandleProviderPaymentSucceededCommandHandler(
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        await bookingsGrpcClient.ProcessBookingPaymentAsync(
+        await bookingsClient.ProcessBookingPaymentAsync(
             bookingId: payment.BookingId,
             paymentId: payment.Id,
             paymentTime: command.SucceededAtUtc,

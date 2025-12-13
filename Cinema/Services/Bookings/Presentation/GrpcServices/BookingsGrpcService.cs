@@ -1,9 +1,9 @@
-namespace Presentation.Grpc;
+namespace Presentation.GrpcServices;
 
 using Application.Commands.ProcessBookingPayment;
 using Application.Contracts.Bookings;
 using Bookings.Grpc;
-using global::Grpc.Core;
+using Grpc.Core;
 using Shared.Contracts.Abstractions;
 
 public sealed class BookingsGrpcService(IMediator mediator) : Bookings.BookingsBase

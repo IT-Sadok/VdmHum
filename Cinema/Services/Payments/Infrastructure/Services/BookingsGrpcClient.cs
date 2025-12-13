@@ -5,7 +5,7 @@ using Bookings.Grpc;
 using Google.Protobuf.WellKnownTypes;
 
 public sealed class BookingsGrpcClient(Bookings.BookingsClient client)
-    : IBookingsGrpcClient
+    : IBookingsClient
 {
     public async Task ProcessBookingPaymentAsync(
         Guid bookingId,

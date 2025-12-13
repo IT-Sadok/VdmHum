@@ -1,7 +1,7 @@
-namespace Presentation.Grpc;
+namespace Presentation.GrpcServices;
 
 using Application.Abstractions.Repositories;
-using global::Grpc.Core;
+using Grpc.Core;
 using Google.Protobuf.WellKnownTypes;
 using Movies.Grpc;
 

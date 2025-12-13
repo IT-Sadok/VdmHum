@@ -3,7 +3,7 @@ namespace Application.Abstractions.Services;
 using Contracts.Payments;
 using Domain.Enums;
 
-public interface IPaymentsGrpcClient
+public interface IPaymentsClient
 {
     Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
         Guid bookingId,

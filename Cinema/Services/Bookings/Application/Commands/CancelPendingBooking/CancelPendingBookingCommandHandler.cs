@@ -9,7 +9,7 @@ using Shared.Contracts.Core;
 
 public sealed class CancelPendingBookingCommandHandler(
     IBookingRepository bookingRepository,
-    IPaymentsGrpcClient paymentsGrpcClient,
+    IPaymentsClient paymentsClient,
     IUserContextService userContextService,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CancelPendingBookingCommand, BookingResponseModel>
@@ -41,7 +41,7 @@ public sealed class CancelPendingBookingCommandHandler(
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        await paymentsGrpcClient.CancelPaymentAsync(
+        await paymentsClient.CancelPaymentAsync(
             paymentId: booking.PaymentId.Value,
             ct: ct);
 

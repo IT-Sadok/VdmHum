@@ -69,8 +69,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-        services.AddScoped<IMoviesGrpcClient, MoviesGrpcClient>();
-        services.AddScoped<IPaymentsGrpcClient, PaymentsGrpcClient>();
+        services.AddScoped<IMoviesClient, MoviesGrpcClient>();
+        services.AddScoped<IPaymentsClient, PaymentsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
 
         return services;

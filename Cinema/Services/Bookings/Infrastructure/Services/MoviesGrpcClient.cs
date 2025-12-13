@@ -5,7 +5,7 @@ using Domain.ValueObjects;
 using Movies.Grpc;
 
 public sealed class MoviesGrpcClient(Movies.MoviesClient client)
-    : IMoviesGrpcClient
+    : IMoviesClient
 {
     public async Task<ShowtimeSnapshot?> GetShowtimeSnapshotAsync(
         Guid showtimeId,

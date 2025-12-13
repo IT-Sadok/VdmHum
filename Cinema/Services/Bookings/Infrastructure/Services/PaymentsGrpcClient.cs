@@ -7,7 +7,7 @@ using CancelPaymentResponse = Application.Contracts.Payments.CancelPaymentRespon
 using CreatePaymentForBookingResponse = Application.Contracts.Payments.CreatePaymentForBookingResponse;
 
 public class PaymentsGrpcClient(Payments.PaymentsClient client)
-    : IPaymentsGrpcClient
+    : IPaymentsClient
 {
     public async Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
         Guid bookingId,
