@@ -32,7 +32,7 @@ public sealed class BookingsGrpcService(IMediator mediator) : Bookings.BookingsB
         return new ProcessBookingPaymentResponse
         {
             BookingId = request.BookingId,
-            Status = result.Value.Status.ToString(),
+            Status = (BookingStatus)result.Value.Status,
         };
     }
 }

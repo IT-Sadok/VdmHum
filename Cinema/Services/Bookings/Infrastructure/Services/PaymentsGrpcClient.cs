@@ -2,7 +2,6 @@ namespace Infrastructure.Services;
 
 using System.Globalization;
 using Application.Abstractions.Services;
-using Domain.Enums;
 using Payments.Grpc;
 using CancelPaymentResponse = Application.Contracts.Payments.CancelPaymentResponse;
 using CreatePaymentForBookingResponse = Application.Contracts.Payments.CreatePaymentForBookingResponse;
@@ -13,7 +12,7 @@ public class PaymentsGrpcClient(Payments.PaymentsClient client)
     public async Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
         Guid bookingId,
         decimal amount,
-        Currency currency,
+        Domain.Enums.Currency currency,
         string description,
         CancellationToken ct)
     {
@@ -21,7 +20,7 @@ public class PaymentsGrpcClient(Payments.PaymentsClient client)
         {
             BookingId = bookingId.ToString(),
             Amount = Convert.ToDouble(amount, CultureInfo.InvariantCulture),
-            Currency = (int)currency,
+            Currency = (Currency)currency,
             Description = description,
         };
 

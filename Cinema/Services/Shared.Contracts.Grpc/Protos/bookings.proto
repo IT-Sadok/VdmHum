@@ -8,6 +8,16 @@ service Bookings {
   rpc ProcessBookingPayment (ProcessBookingPaymentRequest) returns (ProcessBookingPaymentResponse);
 }
 
+enum BookingStatus
+{
+  BOOKING_STATUS_PENDING_PAYMENT = 0;
+  BOOKING_STATUS_CONFIRMED = 1;
+  BOOKING_STATUS_CANCELED = 2;
+  BOOKING_STATUS_EXPIRED = 3;
+  BOOKING_STATUS_REFUND_PENDING = 4;
+  BOOKING_STATUS_REFUNDED = 5;
+}
+
 message ProcessBookingPaymentRequest {
   string bookingId = 1;
   string paymentId = 2;
@@ -16,5 +26,5 @@ message ProcessBookingPaymentRequest {
 
 message ProcessBookingPaymentResponse {
   string bookingId = 1;
-  string status = 2;
+  BookingStatus status = 2;
 }
