@@ -2,7 +2,7 @@ namespace Presentation.Endpoints.Halls;
 
 using Application.Commands.Halls.DeleteHall;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

@@ -12,7 +12,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     public DbSet<Ticket> Tickets => this.Set<Ticket>();
 
-    public DbSet<Refund> Refunds => this.Set<Refund>();
+    public DbSet<BookingRefund> Refunds => this.Set<BookingRefund>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

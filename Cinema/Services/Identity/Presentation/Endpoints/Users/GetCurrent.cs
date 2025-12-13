@@ -4,7 +4,7 @@ using Application.Contracts;
 using Routes;
 using Application.Queries.GetCurrentUser;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Shared.Contracts.Abstractions;
 
 internal sealed class GetCurrent : IEndpoint

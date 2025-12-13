@@ -4,10 +4,6 @@ using Shared.Contracts.Core;
 
 public static class BookingErrors
 {
-    public static readonly Error ShowtimeNotFound = Error.NotFound(
-        code: "Booking.ShowtimeNotFound",
-        description: ValidationMessages.NotFound);
-
     public static readonly Error SeatsUnavailable = Error.Conflict(
         code: "Booking.SeatsUnavailable",
         description: "One or more selected seats are not available.");

@@ -11,7 +11,6 @@ public sealed class ProcessBookingPaymentCommandValidator
             .NotEmpty();
 
         RuleFor(c => c.PaymentId)
-            .NotEmpty()
-            .MaximumLength(200);
+            .NotEmpty();
     }
 }

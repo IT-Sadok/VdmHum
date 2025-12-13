@@ -4,7 +4,7 @@ using Application.Commands.CreateBooking;
 using Application.Contracts.Bookings;
 using Domain.Enums;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Routes;
 using Shared.Contracts.Abstractions;
 

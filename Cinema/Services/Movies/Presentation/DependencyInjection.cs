@@ -1,7 +1,7 @@
 namespace Presentation;
 
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 
 public static class DependencyInjection
 {

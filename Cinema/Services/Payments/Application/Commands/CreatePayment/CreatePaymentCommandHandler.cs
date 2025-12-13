@@ -1,5 +1,6 @@
 namespace Application.Commands.CreatePayment;
 
+using System.Net;
 using Abstractions.Repositories;
 using Abstractions.Services;
 using Contracts.PaymentProvider;
@@ -7,6 +8,7 @@ using Contracts.Payments;
 using Domain.Entities;
 using Domain.ValueObjects;
 using Errors;
+using Exceptions;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
 
@@ -28,7 +30,20 @@ public sealed class CreatePaymentCommandHandler(
             money.Currency,
             command.Description);
 
-        var session = await paymentProviderClient.CreatePaymentSessionAsync(request, ct);
+        CreatePaymentSessionResult session;
+
+        try
+        {
+            session = await paymentProviderClient.CreatePaymentSessionAsync(request, ct);
+        }
+        catch (PaymentProviderException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+        {
+            return Result.Failure<PaymentResponseModel>(PaymentProviderErrors.BadRequest);
+        }
+        catch (PaymentProviderException)
+        {
+            return Result.Failure<PaymentResponseModel>(PaymentProviderErrors.ServerError);
+        }
 
         var payment = Payment.Create(
             bookingId: command.BookingId,

@@ -4,7 +4,7 @@ using Application.Commands.Showtimes.UpdateShowtime;
 using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

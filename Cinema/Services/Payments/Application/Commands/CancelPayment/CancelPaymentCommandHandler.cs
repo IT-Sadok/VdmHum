@@ -1,11 +1,13 @@
 namespace Application.Commands.CancelPayment;
 
+using System.Net;
 using Abstractions.Repositories;
 using Abstractions.Services;
 using Contracts.PaymentProvider;
 using Contracts.Payments;
 using Domain.Enums;
 using Errors;
+using Exceptions;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
 
@@ -33,7 +35,18 @@ public sealed class CancelPaymentCommandHandler(
 
         var request = new CancelPaymentSessionRequest(payment.ProviderPaymentId);
 
-        await paymentProviderClient.CancelPaymentSessionAsync(request, ct);
+        try
+        {
+            await paymentProviderClient.CancelPaymentSessionAsync(request, ct);
+        }
+        catch (PaymentProviderException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+        {
+            return Result.Failure<PaymentResponseModel>(PaymentProviderErrors.BadRequest);
+        }
+        catch (PaymentProviderException)
+        {
+            return Result.Failure<PaymentResponseModel>(PaymentProviderErrors.ServerError);
+        }
 
         payment.Cancel(DateTime.UtcNow);
 

@@ -3,7 +3,7 @@ namespace Presentation.Endpoints.Halls;
 using Application.Commands.Halls.UpdateHall;
 using Application.Contracts.Halls;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

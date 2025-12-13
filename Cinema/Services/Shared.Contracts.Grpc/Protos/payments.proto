@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option csharp_namespace = "Payments.Grpc";
+
+import "google/protobuf/wrappers.proto";
+
+service Payments {
+  rpc CreatePaymentForBooking (CreatePaymentForBookingRequest) returns (CreatePaymentForBookingResponse);
+  rpc CancelPayment (CancelPaymentRequest) returns (CancelPaymentResponse); 
+}
+
+enum Currency {
+  CURRENCY_UAH = 0;
+  CURRENCY_USD = 1;
+  CURRENCY_EUR = 2;
+}
+
+message CreatePaymentForBookingRequest {
+  string bookingId = 1;
+  double amount = 2;
+  Currency currency = 3;
+  google.protobuf.StringValue description = 4;
+}
+
+message CreatePaymentForBookingResponse {
+  string paymentId = 1;
+}
+
+message CancelPaymentRequest {
+  string paymentId = 1;
+}
+
+message CancelPaymentResponse {
+  bool canceled = 1;
+}
+

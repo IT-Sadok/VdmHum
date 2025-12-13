@@ -1,6 +1,7 @@
 namespace Application.Commands.HandleProviderPaymentFailed;
 
 using Abstractions.Repositories;
+using Domain.Enums;
 using Errors;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
@@ -20,6 +21,11 @@ public sealed class HandleProviderPaymentFailedCommandHandler(
         if (payment is null)
         {
             return Result.Failure(CommonErrors.NotFound);
+        }
+
+        if (payment.Status is not PaymentStatus.Pending)
+        {
+            return Result.Failure(PaymentErrors.AlreadyProcessed);
         }
 
         payment.MarkFailed(

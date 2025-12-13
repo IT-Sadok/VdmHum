@@ -3,7 +3,7 @@
 using Application.Contracts.Bookings;
 using Application.Queries.GetBookingById;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

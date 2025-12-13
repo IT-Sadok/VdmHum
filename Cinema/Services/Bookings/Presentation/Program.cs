@@ -3,6 +3,7 @@ using Application;
 using Infrastructure;
 using Presentation;
 using Presentation.Extensions;
+using Presentation.GrpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    app.ApplyMigrations();
+    await app.ApplyMigrations();
 }
 
 app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGrpcService<BookingsGrpcService>();
 
 app.MapEndpoints();
 

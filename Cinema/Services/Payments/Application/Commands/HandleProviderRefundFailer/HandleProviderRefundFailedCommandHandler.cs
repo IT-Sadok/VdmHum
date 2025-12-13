@@ -1,6 +1,7 @@
 namespace Application.Commands.HandleProviderRefundFailer;
 
 using Abstractions.Repositories;
+using Domain.Enums;
 using Errors;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
@@ -28,6 +29,11 @@ public sealed class HandleProviderRefundFailedCommandHandler(
         if (payment is null)
         {
             return Result.Failure(CommonErrors.NotFound);
+        }
+
+        if (refund.Status is not RefundStatus.Requested)
+        {
+            return Result.Failure(PaymentRefundErrors.AlreadyProcessed);
         }
 
         payment.FailRefund(

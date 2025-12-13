@@ -26,8 +26,7 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         builder.Property(b => b.UpdatedAtUtc);
 
-        builder.Property(b => b.PaymentId)
-            .HasMaxLength(200);
+        builder.Property(b => b.PaymentId);
 
         builder.Property(b => b.CancellationReason);
 

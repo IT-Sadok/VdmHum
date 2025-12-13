@@ -2,7 +2,7 @@ namespace Presentation.Extensions;
 
 using Application.Options;
 using Application.Errors.Constants;
-using global::Infrastructure.Identity;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
