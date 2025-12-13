@@ -1,4 +1,4 @@
-namespace Presentation.Infrastructure;
+namespace Presentation.ErrorHandling;
 
 using Constants;
 using Microsoft.AspNetCore.Diagnostics;

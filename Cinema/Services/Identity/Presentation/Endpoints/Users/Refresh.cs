@@ -8,7 +8,7 @@ using Helpers;
 using Application.Commands.RefreshToken;
 using Application.Contracts;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Shared.Contracts.Abstractions;
 
 internal sealed class Refresh : IEndpoint

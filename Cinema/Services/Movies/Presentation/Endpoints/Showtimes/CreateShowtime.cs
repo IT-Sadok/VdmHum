@@ -4,7 +4,7 @@ using Application.Commands.Showtimes.CreateShowtime;
 using Application.Contracts.Showtimes;
 using Domain.Enums;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Routes;
 using Shared.Contracts.Abstractions;
 

@@ -1,4 +1,4 @@
-namespace Presentation.Infrastructure.Constants;
+namespace Presentation.ErrorHandling.Constants;
 
 public static class ErrorTypesDocumentation
 {

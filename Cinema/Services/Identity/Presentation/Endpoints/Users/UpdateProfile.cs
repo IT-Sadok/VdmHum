@@ -3,7 +3,7 @@ namespace Presentation.Endpoints.Users;
 using Routes;
 using Application.Commands.UpdateProfile;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Shared.Contracts.Abstractions;
 
 internal sealed class UpdateProfile : IEndpoint

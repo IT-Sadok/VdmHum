@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Helpers;
 using Application.Commands.LogoutUser;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Shared.Contracts.Abstractions;
 
 internal sealed class Logout : IEndpoint
