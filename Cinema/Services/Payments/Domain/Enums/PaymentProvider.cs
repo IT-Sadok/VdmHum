@@ -2,6 +2,7 @@ namespace Domain.Enums;
 
 public enum PaymentProvider
 {
-    Fake = 0,
+    Portmone = 0,
     LiqPay = 1,
+    NovaPay = 2,
 }
