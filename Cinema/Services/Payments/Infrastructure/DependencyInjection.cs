@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using Bookings.Grpc;
 using Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         IConfiguration configuration) =>
         services
             .AddDatabase(configuration)
+            .AddGrpcClients(configuration)
             .AddRepositories()
             .AddPaymentOptions(configuration)
             .AddAuthOptions(configuration)
@@ -56,11 +58,23 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddGrpcClients(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddGrpcClient<Bookings.BookingsClient>(options =>
+        {
+            options.Address = new Uri(configuration["Grpc:BookingsServiceUrl"]
+                                      ?? throw new InvalidOperationException());
+        });
+
+        return services;
+    }
+
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IPaymentRefundRepository, PaymentRefundRepository>();
+        services.AddScoped<IBookingsClient, BookingsGrpcClient>();
         services.AddSingleton<IPaymentProviderClient, FakePaymentProviderClient>();
         services.Decorate<IPaymentProviderClient, RetryingPaymentProviderClient>();
 
