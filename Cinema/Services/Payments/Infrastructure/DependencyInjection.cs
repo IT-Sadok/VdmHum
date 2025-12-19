@@ -22,6 +22,7 @@ public static class DependencyInjection
         services
             .AddDatabase(configuration)
             .AddRepositories()
+            .AddPaymentOptions(configuration)
             .AddAuthOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
@@ -33,6 +34,15 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
                 .UseSnakeCaseNamingConvention());
+
+        return services;
+    }
+
+    private static IServiceCollection AddPaymentOptions(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<PaymentOptions>(configuration.GetSection("Payment"));
 
         return services;
     }

@@ -18,10 +18,6 @@ public sealed class CreatePaymentCommandValidator : AbstractValidator<CreatePaym
             .IsInEnum()
             .WithMessage("Currency must be a valid value.");
 
-        RuleFor(x => x.Provider)
-            .IsInEnum()
-            .WithMessage("Provider must be a valid value.");
-
         RuleFor(x => x.Description)
             .NotEmpty()
             .WithMessage("Description is required.")

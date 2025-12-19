@@ -9,12 +9,15 @@ using Domain.Entities;
 using Domain.ValueObjects;
 using Errors;
 using Exceptions;
+using Microsoft.Extensions.Options;
+using Options;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Core;
 
 public sealed class CreatePaymentCommandHandler(
     IPaymentRepository paymentRepository,
     IPaymentProviderClient paymentProviderClient,
+    IOptions<PaymentOptions> options,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CreatePaymentCommand, PaymentResponseModel>
 {
@@ -45,10 +48,12 @@ public sealed class CreatePaymentCommandHandler(
             return Result.Failure<PaymentResponseModel>(PaymentProviderErrors.ServerError);
         }
 
+        var provider = options.Value.DefaultProvider;
+
         var payment = Payment.Create(
             bookingId: command.BookingId,
             amount: money,
-            provider: command.Provider,
+            provider: provider,
             providerPaymentId: session.ProviderPaymentId,
             checkoutUrl: session.CheckoutUrl);
 

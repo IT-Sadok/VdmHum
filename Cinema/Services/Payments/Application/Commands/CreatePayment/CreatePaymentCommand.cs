@@ -8,6 +8,5 @@ public sealed record CreatePaymentCommand(
     Guid BookingId,
     decimal Amount,
     Currency Currency,
-    PaymentProvider Provider,
     string Description
 ) : ICommand<PaymentResponseModel>;
