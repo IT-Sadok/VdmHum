@@ -14,9 +14,11 @@ public sealed class PaymentsGrpcService(IMediator mediator) : Payments.PaymentsB
         CreatePaymentForBookingRequest request,
         ServerCallContext context)
     {
+        var userId = Guid.Parse(request.UserId);
         var bookingId = Guid.Parse(request.BookingId);
 
         var command = new CreatePaymentCommand(
+            UserId: userId,
             BookingId: bookingId,
             Amount: (decimal)request.Amount,
             Currency: (Currency)request.Currency,

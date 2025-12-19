@@ -51,6 +51,7 @@ public sealed class CreatePaymentCommandHandler(
         var provider = options.Value.DefaultProvider;
 
         var payment = Payment.Create(
+            userId: command.UserId,
             bookingId: command.BookingId,
             amount: money,
             provider: provider,

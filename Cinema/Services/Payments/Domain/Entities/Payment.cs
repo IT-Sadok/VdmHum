@@ -13,6 +13,7 @@ public sealed class Payment
 
     private Payment(
         Guid id,
+        Guid userId,
         Guid bookingId,
         Money amount,
         PaymentProvider provider,
@@ -21,6 +22,7 @@ public sealed class Payment
         DateTime createdAtUtc)
     {
         this.Id = id;
+        this.UserId = userId;
         this.BookingId = bookingId;
         this.Amount = amount;
         this.Provider = provider;
@@ -32,6 +34,8 @@ public sealed class Payment
     }
 
     public Guid Id { get; private set; }
+
+    public Guid UserId { get; private set; }
 
     public Guid BookingId { get; private set; }
 
@@ -62,6 +66,7 @@ public sealed class Payment
     public IReadOnlyCollection<PaymentRefund> Refunds => this._refunds.AsReadOnly();
 
     public static Payment Create(
+        Guid userId,
         Guid bookingId,
         Money amount,
         PaymentProvider provider,
@@ -90,6 +95,7 @@ public sealed class Payment
 
         return new Payment(
             id: id,
+            userId: userId,
             bookingId: bookingId,
             amount: amount,
             provider: provider,

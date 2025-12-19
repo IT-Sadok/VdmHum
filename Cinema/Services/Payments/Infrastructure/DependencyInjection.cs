@@ -75,6 +75,7 @@ public static class DependencyInjection
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IPaymentRefundRepository, PaymentRefundRepository>();
         services.AddScoped<IBookingsClient, BookingsGrpcClient>();
+        services.AddScoped<IUserContextService, UserContextService>();
         services.AddSingleton<IPaymentProviderClient, FakePaymentProviderClient>();
         services.Decorate<IPaymentProviderClient, RetryingPaymentProviderClient>();
 

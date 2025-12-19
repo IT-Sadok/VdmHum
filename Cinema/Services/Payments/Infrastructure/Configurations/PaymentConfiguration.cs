@@ -15,6 +15,9 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.Id)
             .ValueGeneratedNever();
 
+        builder.Property(p => p.UserId)
+            .IsRequired();
+
         builder.Property(p => p.BookingId)
             .IsRequired();
 

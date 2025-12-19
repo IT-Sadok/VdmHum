@@ -20,6 +20,7 @@ message CreatePaymentForBookingRequest {
   double amount = 2;
   Currency currency = 3;
   google.protobuf.StringValue description = 4;
+  string userId = 5;
 }
 
 message CreatePaymentForBookingResponse {

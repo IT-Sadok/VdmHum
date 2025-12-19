@@ -60,6 +60,7 @@ public sealed class CreateBookingCommandHandler(
         await unitOfWork.SaveChangesAsync(ct);
 
         var paymentResult = await paymentsClient.CreatePaymentForBookingAsync(
+            userId: userId,
             bookingId: booking.Id,
             amount: totalPrice.Amount,
             currency: totalPrice.Currency,
