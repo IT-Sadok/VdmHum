@@ -25,6 +25,8 @@ public static class CustomResults
             {
                 ErrorType.Validation => error.Code,
                 ErrorType.Problem => error.Code,
+                ErrorType.Unauthorized => error.Code,
+                ErrorType.Forbidden => error.Code,
                 ErrorType.NotFound => error.Code,
                 ErrorType.Conflict => error.Code,
                 _ => "Server failure"
@@ -35,6 +37,8 @@ public static class CustomResults
             {
                 ErrorType.Validation => error.Description,
                 ErrorType.Problem => error.Description,
+                ErrorType.Unauthorized => error.Description,
+                ErrorType.Forbidden => error.Description,
                 ErrorType.NotFound => error.Description,
                 ErrorType.Conflict => error.Description,
                 _ => "An unexpected error occurred"
@@ -45,6 +49,8 @@ public static class CustomResults
             {
                 ErrorType.Validation => ErrorTypesDocumentation.Type400Validation,
                 ErrorType.Problem => ErrorTypesDocumentation.Type400Problem,
+                ErrorType.Unauthorized => ErrorTypesDocumentation.Type401Unauthorized,
+                ErrorType.Forbidden => ErrorTypesDocumentation.Type403Forbidden,
                 ErrorType.NotFound => ErrorTypesDocumentation.Type404NotFound,
                 ErrorType.Conflict => ErrorTypesDocumentation.Type409Conflict,
                 _ => ErrorTypesDocumentation.Type500InternalSeverError
@@ -54,6 +60,8 @@ public static class CustomResults
             errorType switch
             {
                 ErrorType.Validation or ErrorType.Problem => StatusCodes.Status400BadRequest,
+                ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+                ErrorType.Forbidden => StatusCodes.Status403Forbidden,
                 ErrorType.NotFound => StatusCodes.Status404NotFound,
                 ErrorType.Conflict => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError

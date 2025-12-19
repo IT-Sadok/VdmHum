@@ -6,6 +6,10 @@ public static class ErrorTypesDocumentation
 
     public const string Type400Problem = $"{Base}6.5.1";
 
+    public const string Type401Unauthorized = $"{Base}3.1";
+
+    public const string Type403Forbidden = $"{Base}6.5.3";
+
     public const string Type404NotFound = $"{Base}6.5.4";
 
     public const string Type409Conflict = $"{Base}6.5.8";
