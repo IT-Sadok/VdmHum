@@ -17,7 +17,8 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
     {
         IQueryable<Booking> query = dbContext
             .Bookings
-            .Include(b => b.Tickets);
+            .Include(b => b.Tickets)
+            .Include(b => b.Seats);
 
         if (asNoTracking)
         {
