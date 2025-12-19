@@ -3,7 +3,7 @@ namespace Presentation.Endpoints.Cinemas;
 using Application.Commands.Cinemas.UpdateCinema;
 using Application.Contracts.Cinemas;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

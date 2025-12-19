@@ -3,7 +3,7 @@ namespace Presentation.Endpoints.Cinemas;
 using Application.Commands.Cinemas.CreateCinema;
 using Application.Contracts.Cinemas;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Routes;
 using Shared.Contracts.Abstractions;
 

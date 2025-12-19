@@ -115,6 +115,7 @@ public sealed class Payment
             throw new ArgumentException("SucceededAtUtc cannot be earlier than CreatedAtUtc.", nameof(succeededAtUtc));
         }
 
+        this.Status = PaymentStatus.Succeeded;
         this.SucceededAtUtc = succeededAtUtc;
         this.UpdatedAtUtc = DateTime.UtcNow;
     }
@@ -180,7 +181,6 @@ public sealed class Payment
 
     public PaymentRefund RequestRefund(
         Money amount,
-        Money remainingAmountToRefund,
         string providerRefundId,
         DateTime requestedAtUtc,
         Guid bookingRefundId,
@@ -197,12 +197,6 @@ public sealed class Payment
             throw new ArgumentException("BookingRefundId cannot be empty.", nameof(bookingRefundId));
         }
 
-        if (this.Amount.Currency != amount.Currency
-            || this.Amount.Currency != remainingAmountToRefund.Currency)
-        {
-            throw new InvalidOperationException("Refund currency must be equal to payment currency.");
-        }
-
         ArgumentNullException.ThrowIfNull(amount);
 
         if (amount.Amount <= 0)
@@ -210,7 +204,13 @@ public sealed class Payment
             throw new ArgumentException("Refund amount must be greater than zero.", nameof(amount));
         }
 
-        if (amount.Amount > remainingAmountToRefund.Amount)
+        var alreadyRefunded = this._refunds
+            .Where(r => r.Status == RefundStatus.Succeeded)
+            .Sum(r => r.Amount.Amount);
+
+        var remainingAmount = this.Amount.Amount - alreadyRefunded;
+
+        if (amount.Amount > remainingAmount)
         {
             throw new InvalidOperationException("Refund amount cannot exceed remaining refundable amount.");
         }
@@ -229,7 +229,7 @@ public sealed class Payment
         return refund;
     }
 
-    public void CompleteRefund(Guid refundId, Money remainingAmountToRefund, DateTime? succeededAtUtc = null)
+    public void CompleteRefund(Guid refundId, DateTime? succeededAtUtc = null)
     {
         var refund = this._refunds.SingleOrDefault(r => r.Id == refundId);
 
@@ -244,16 +244,15 @@ public sealed class Payment
                 $"Refund must be in {RefundStatus.Requested} state to be completed.");
         }
 
-        if (this.Amount.Currency != remainingAmountToRefund.Currency)
-        {
-            throw new InvalidOperationException("Refund currency must be equal to payment currency.");
-        }
-
         refund.MarkSucceeded(succeededAtUtc);
+
+        var totalRefunded = this._refunds
+            .Where(r => r.Status == RefundStatus.Succeeded)
+            .Sum(r => r.Amount.Amount);
 
         this.UpdatedAtUtc = DateTime.UtcNow;
 
-        this.Status = remainingAmountToRefund.Amount <= 0
+        this.Status = totalRefunded >= this.Amount.Amount
             ? PaymentStatus.Refunded
             : PaymentStatus.PartiallyRefunded;
     }

@@ -3,7 +3,7 @@ namespace Presentation.Endpoints.Halls;
 using Application.Commands.Halls.CreateHall;
 using Application.Contracts.Halls;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Routes;
 using Shared.Contracts.Abstractions;
 

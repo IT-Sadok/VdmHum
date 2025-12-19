@@ -2,7 +2,7 @@ namespace Presentation.Endpoints.Showtimes;
 
 using Application.Commands.Showtimes.DeleteShowtime;
 using Extensions;
-using Infrastructure;
+using ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Routes;
 using Shared.Contracts.Abstractions;

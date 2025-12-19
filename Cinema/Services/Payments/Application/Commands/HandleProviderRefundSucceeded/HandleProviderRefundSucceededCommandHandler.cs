@@ -31,16 +31,12 @@ public sealed class HandleProviderRefundSucceededCommandHandler(
             return Result.Failure(CommonErrors.NotFound);
         }
 
-        var refundedAmount = payment.Refunds
-            .Where(r => r.Status == RefundStatus.Succeeded)
-            .Sum(r => r.Amount.Amount);
-
-        var remainingAmountToRefund = payment.Amount with
+        if (refund.Status is not RefundStatus.Requested)
         {
-            Amount = payment.Amount.Amount - refundedAmount
-        };
+            return Result.Failure(PaymentRefundErrors.AlreadyProcessed);
+        }
 
-        payment.CompleteRefund(refund.Id, remainingAmountToRefund, command.SucceededAtUtc);
+        payment.CompleteRefund(refund.Id, command.SucceededAtUtc);
 
         await unitOfWork.SaveChangesAsync(ct);
 

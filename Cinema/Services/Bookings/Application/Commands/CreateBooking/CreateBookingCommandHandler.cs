@@ -13,7 +13,8 @@ using Shared.Contracts.Core;
 
 public sealed class CreateBookingCommandHandler(
     IBookingRepository bookingRepository,
-    IShowtimeReadService showtimeReadService,
+    IMoviesClient moviesClient,
+    IPaymentsClient paymentsClient,
     IOptions<BookingOptions> bookingOptions,
     IUserContextService userContextService,
     IUnitOfWork unitOfWork)
@@ -25,12 +26,12 @@ public sealed class CreateBookingCommandHandler(
     {
         var userId = userContextService.Get().UserId!.Value;
 
-        var showtimeSnapshot = await showtimeReadService
+        var showtimeSnapshot = await moviesClient
             .GetShowtimeSnapshotAsync(command.ShowtimeId, ct);
 
         if (showtimeSnapshot is null)
         {
-            return Result.Failure<BookingResponseModel>(BookingErrors.ShowtimeNotFound);
+            return Result.Failure<BookingResponseModel>(BookingErrors.NotFound);
         }
 
         var seats = command.Seats.Distinct().ToArray();
@@ -56,6 +57,17 @@ public sealed class CreateBookingCommandHandler(
             reservationExpiresAtUtc: reservationExpiresAt);
 
         bookingRepository.Add(booking);
+        await unitOfWork.SaveChangesAsync(ct);
+
+        var paymentResult = await paymentsClient.CreatePaymentForBookingAsync(
+            bookingId: booking.Id,
+            amount: totalPrice.Amount,
+            currency: totalPrice.Currency,
+            description: $"Booking {booking.Id} for showtime {showtimeSnapshot.ShowtimeId}",
+            ct: ct);
+
+        booking.SetPayment(paymentResult.PaymentId);
+
         await unitOfWork.SaveChangesAsync(ct);
 
         return booking.ToResponse(includeTickets: false);
