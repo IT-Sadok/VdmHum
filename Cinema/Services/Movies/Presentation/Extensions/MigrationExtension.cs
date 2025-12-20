@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 public static class MigrationExtensions
 {
-    public static async Task ApplyMigrations(this IApplicationBuilder app)
+    public static async Task ApplyMigrationsAsync(this IApplicationBuilder app)
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
 

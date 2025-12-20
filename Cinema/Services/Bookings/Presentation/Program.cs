@@ -22,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    await app.ApplyMigrations();
+    await app.ApplyMigrationsAsync();
 }
 
 app.UseExceptionHandler();
