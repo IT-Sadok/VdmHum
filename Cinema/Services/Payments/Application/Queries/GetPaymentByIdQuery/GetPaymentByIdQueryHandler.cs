@@ -18,16 +18,11 @@ public sealed class GetPaymentByIdQueryHandler(
     {
         var userId = userContextService.GetUserContext().UserId!.Value;
 
-        var payment = await paymentRepository.GetByIdAsync(query.PaymentId, asNoTracking: true, ct);
+        var payment = await paymentRepository.GetByIdForUserAsync(query.PaymentId, userId, asNoTracking: true, ct);
 
         if (payment is null)
         {
             return Result.Failure<PaymentResponseModel>(CommonErrors.NotFound);
-        }
-
-        if (payment.UserId != userId)
-        {
-            return Result.Failure<PaymentResponseModel>(CommonErrors.Forbidden);
         }
 
         return payment.ToResponse();

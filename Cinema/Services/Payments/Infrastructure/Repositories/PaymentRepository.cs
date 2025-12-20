@@ -24,6 +24,24 @@ public class PaymentRepository(ApplicationDbContext dbContext) : IPaymentReposit
         return await query.FirstOrDefaultAsync(p => p.Id == id, ct);
     }
 
+    public async Task<Payment?> GetByIdForUserAsync(
+        Guid paymentId,
+        Guid userId,
+        bool asNoTracking,
+        CancellationToken ct)
+    {
+        IQueryable<Payment> query = dbContext
+            .Payments
+            .Include(p => p.Refunds);
+
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query.FirstOrDefaultAsync(p => p.Id == paymentId && p.UserId == userId, ct);
+    }
+
     public async Task<Payment?> GetByProviderPaymentIdAsync(
         string providerPaymentId,
         bool asNoTracking,
