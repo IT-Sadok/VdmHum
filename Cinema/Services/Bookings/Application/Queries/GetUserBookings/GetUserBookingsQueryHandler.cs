@@ -16,7 +16,7 @@ public sealed class GetUserBookingsQueryHandler(
         GetUserBookingsQuery query,
         CancellationToken ct)
     {
-        var userId = userContextService.Get().UserId!.Value;
+        var userId = userContextService.GetUserContext().UserId!.Value;
 
         var filter = query.PagedFilter.ModelFilter with { UserId = userId };
 

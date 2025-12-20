@@ -24,7 +24,7 @@ public sealed class CreateBookingCommandHandler(
         CreateBookingCommand command,
         CancellationToken ct)
     {
-        var userId = userContextService.Get().UserId!.Value;
+        var userId = userContextService.GetUserContext().UserId!.Value;
 
         var showtimeSnapshot = await moviesClient
             .GetShowtimeSnapshotAsync(command.ShowtimeId, ct);

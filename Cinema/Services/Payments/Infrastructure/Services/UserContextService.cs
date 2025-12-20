@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 public class UserContextService(IHttpContextAccessor httpContextAccessor)
     : IUserContextService
 {
-    public UserContextModel Get()
+    public UserContextModel GetUserContext()
     {
         var httpUser = httpContextAccessor.HttpContext?.User;
 

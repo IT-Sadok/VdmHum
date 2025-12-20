@@ -4,5 +4,5 @@ using Contracts;
 
 public interface IUserContextService
 {
-    UserContextModel Get();
+    UserContextModel GetUserContext();
 }

@@ -16,7 +16,7 @@ public sealed class GetPaymentByIdQueryHandler(
         GetPaymentByIdQuery query,
         CancellationToken ct)
     {
-        var userId = userContextService.Get().UserId!.Value;
+        var userId = userContextService.GetUserContext().UserId!.Value;
 
         var payment = await paymentRepository.GetByIdAsync(query.PaymentId, asNoTracking: true, ct);
 

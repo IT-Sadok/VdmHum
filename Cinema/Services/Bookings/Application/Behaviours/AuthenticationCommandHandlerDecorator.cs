@@ -21,7 +21,7 @@ public sealed class AuthenticationCommandHandlerDecorator<TCommand, TResult>(
             return await inner.HandleAsync(command, ct);
         }
 
-        var userContext = userContextService.Get();
+        var userContext = userContextService.GetUserContext();
 
         if (!userContext.IsAuthenticated || userContext.UserId is null)
         {
