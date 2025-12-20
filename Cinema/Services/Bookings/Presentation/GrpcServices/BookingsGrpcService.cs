@@ -3,6 +3,7 @@ namespace Presentation.GrpcServices;
 using Application.Commands.ProcessBookingPayment;
 using Application.Contracts.Bookings;
 using Bookings.Grpc;
+using Extensions;
 using Grpc.Core;
 using Shared.Contracts.Abstractions;
 
@@ -26,7 +27,7 @@ public sealed class BookingsGrpcService(IMediator mediator) : Bookings.BookingsB
 
         if (result.IsFailure)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, result.Error!.Description));
+            throw result.ToRpcException();
         }
 
         return new ProcessBookingPaymentResponse

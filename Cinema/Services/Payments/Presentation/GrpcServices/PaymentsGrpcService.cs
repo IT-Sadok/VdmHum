@@ -3,6 +3,7 @@ namespace Presentation.GrpcServices;
 using Application.Commands.CancelPayment;
 using Application.Commands.CreatePayment;
 using Application.Contracts.Payments;
+using Extensions;
 using Grpc.Core;
 using Payments.Grpc;
 using Shared.Contracts.Abstractions;
@@ -29,7 +30,7 @@ public sealed class PaymentsGrpcService(IMediator mediator) : Payments.PaymentsB
 
         if (result.IsFailure)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, result.Error!.Description));
+            throw result.ToRpcException();
         }
 
         return new CreatePaymentForBookingResponse
