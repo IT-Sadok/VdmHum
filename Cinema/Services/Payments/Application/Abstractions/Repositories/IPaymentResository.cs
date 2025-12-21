@@ -6,6 +6,12 @@ public interface IPaymentRepository
 {
     Task<Payment?> GetByIdAsync(Guid id, bool asNoTracking, CancellationToken ct);
 
+    Task<Payment?> GetByIdForUserAsync(
+        Guid paymentId,
+        Guid userId,
+        bool asNoTracking,
+        CancellationToken ct);
+
     Task<Payment?> GetByProviderPaymentIdAsync(
         string providerPaymentId,
         bool asNoTracking,

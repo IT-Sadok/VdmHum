@@ -24,7 +24,7 @@ public sealed class CreateBookingCommandHandler(
         CreateBookingCommand command,
         CancellationToken ct)
     {
-        var userId = userContextService.Get().UserId!.Value;
+        var userId = userContextService.GetUserContext().UserId!.Value;
 
         var showtimeSnapshot = await moviesClient
             .GetShowtimeSnapshotAsync(command.ShowtimeId, ct);
@@ -60,6 +60,7 @@ public sealed class CreateBookingCommandHandler(
         await unitOfWork.SaveChangesAsync(ct);
 
         var paymentResult = await paymentsClient.CreatePaymentForBookingAsync(
+            userId: userId,
             bookingId: booking.Id,
             amount: totalPrice.Amount,
             currency: totalPrice.Currency,

@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using Bookings.Grpc;
 using Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,9 @@ public static class DependencyInjection
         IConfiguration configuration) =>
         services
             .AddDatabase(configuration)
+            .AddGrpcClients(configuration)
             .AddRepositories()
+            .AddPaymentOptions(configuration)
             .AddAuthOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
@@ -37,6 +40,15 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddPaymentOptions(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<PaymentOptions>(configuration.GetSection("Payment"));
+
+        return services;
+    }
+
     private static IServiceCollection AddAuthOptions(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -46,11 +58,24 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddGrpcClients(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddGrpcClient<Bookings.BookingsClient>(options =>
+        {
+            options.Address = new Uri(configuration["Grpc:BookingsServiceUrl"]
+                                      ?? throw new InvalidOperationException());
+        });
+
+        return services;
+    }
+
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IPaymentRefundRepository, PaymentRefundRepository>();
+        services.AddScoped<IBookingsClient, BookingsGrpcClient>();
+        services.AddScoped<IUserContextService, UserContextService>();
         services.AddSingleton<IPaymentProviderClient, FakePaymentProviderClient>();
         services.Decorate<IPaymentProviderClient, RetryingPaymentProviderClient>();
 

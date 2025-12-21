@@ -18,7 +18,7 @@ public sealed class CancelPendingBookingCommandHandler(
         CancelPendingBookingCommand command,
         CancellationToken ct)
     {
-        var userId = userContextService.Get().UserId!.Value;
+        var userId = userContextService.GetUserContext().UserId!.Value;
 
         var booking = await bookingRepository.GetByIdAsync(command.BookingId, asNoTracking: false, ct);
 

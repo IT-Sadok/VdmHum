@@ -53,12 +53,12 @@ public static class DependencyInjection
     {
         services.AddGrpcClient<Movies.MoviesClient>(options =>
         {
-            options.Address = new Uri(configuration["Grpc:ShowtimeServiceUrl"]
+            options.Address = new Uri(configuration["Grpc:MoviesServiceUrl"]
                                       ?? throw new InvalidOperationException());
         });
         services.AddGrpcClient<Payments.PaymentsClient>(options =>
         {
-            options.Address = new Uri(configuration["Grpc:PaymentServiceUrl"]
+            options.Address = new Uri(configuration["Grpc:PaymentsServiceUrl"]
                                       ?? throw new InvalidOperationException());
         });
 

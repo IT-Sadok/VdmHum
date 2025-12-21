@@ -6,6 +6,7 @@ using Domain.Enums;
 public interface IPaymentsClient
 {
     Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
+        Guid userId,
         Guid bookingId,
         decimal amount,
         Currency currency,

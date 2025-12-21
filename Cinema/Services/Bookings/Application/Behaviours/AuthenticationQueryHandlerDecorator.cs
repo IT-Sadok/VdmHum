@@ -21,7 +21,7 @@ public sealed class AuthenticationQueryHandlerDecorator<TQuery, TResult>(
             return await inner.HandleAsync(query, ct);
         }
 
-        var userContext = userContextService.Get();
+        var userContext = userContextService.GetUserContext();
 
         if (!userContext.IsAuthenticated || userContext.UserId is null)
         {

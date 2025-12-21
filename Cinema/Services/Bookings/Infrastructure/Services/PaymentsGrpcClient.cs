@@ -10,6 +10,7 @@ public class PaymentsGrpcClient(Payments.PaymentsClient client)
     : IPaymentsClient
 {
     public async Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
+        Guid userId,
         Guid bookingId,
         decimal amount,
         Domain.Enums.Currency currency,
@@ -18,6 +19,7 @@ public class PaymentsGrpcClient(Payments.PaymentsClient client)
     {
         var request = new CreatePaymentForBookingRequest
         {
+            UserId = userId.ToString(),
             BookingId = bookingId.ToString(),
             Amount = Convert.ToDouble(amount, CultureInfo.InvariantCulture),
             Currency = (Currency)currency,
