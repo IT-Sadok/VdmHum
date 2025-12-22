@@ -82,7 +82,7 @@ public static class DependencyInjection
         services.AddScoped<IPaymentRefundRepository, PaymentRefundRepository>();
         services.AddScoped<IBookingsClient, BookingsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
-        services.AddSingleton<IPaymentProviderClient, FakePaymentProviderClient>();
+        services.AddScoped<IPaymentProviderClient, FakePaymentProviderClient>();
         services.Decorate<IPaymentProviderClient, RetryingPaymentProviderClient>();
 
         return services;
