@@ -18,4 +18,6 @@ public interface IBookingRepository
         Guid showtimeId,
         IReadOnlyCollection<int> seats,
         CancellationToken ct);
+
+    Task<IReadOnlyList<Booking>> GetExpiredReservationsAsync(DateTime utcNow, CancellationToken ct);
 }

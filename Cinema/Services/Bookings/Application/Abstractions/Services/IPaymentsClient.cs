@@ -2,10 +2,11 @@ namespace Application.Abstractions.Services;
 
 using Contracts.Payments;
 using Domain.Enums;
+using Shared.Contracts.Core;
 
 public interface IPaymentsClient
 {
-    Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
+    Task<Result<CreatePaymentForBookingResponse>> CreatePaymentForBookingAsync(
         Guid userId,
         Guid bookingId,
         decimal amount,
@@ -13,5 +14,5 @@ public interface IPaymentsClient
         string description,
         CancellationToken ct);
 
-    Task<CancelPaymentResponse> CancelPaymentAsync(Guid paymentId, CancellationToken ct);
+    Task<Result<CancelPaymentResponse>> CancelPaymentAsync(Guid paymentId, CancellationToken ct);
 }

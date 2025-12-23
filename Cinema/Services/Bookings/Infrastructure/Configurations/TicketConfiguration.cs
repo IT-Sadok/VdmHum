@@ -12,6 +12,9 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 
         builder.HasKey(t => t.Id);
 
+        builder.Property(t => t.Id)
+            .ValueGeneratedOnAdd();
+
         builder.Property(t => t.BookingId)
             .IsRequired();
 

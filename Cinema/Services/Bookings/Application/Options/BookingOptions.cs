@@ -2,5 +2,5 @@ namespace Application.Options;
 
 public sealed class BookingOptions
 {
-    public int ReservationDuration { get; init; } = 15;
+    public int ReservationDurationMinutes { get; init; } = 15;
 }

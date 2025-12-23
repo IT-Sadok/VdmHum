@@ -5,11 +5,11 @@ using ValueObjects;
 
 public sealed class Booking
 {
-    private readonly List<BookingSeat> _seats = null!;
+    private readonly List<BookingSeat> _seats;
 
-    private readonly List<Ticket> _tickets = null!;
+    private readonly List<Ticket> _tickets = [];
 
-    private readonly List<BookingRefund> _refunds = null!;
+    private readonly List<BookingRefund> _refunds = [];
 
     private Booking()
     {
@@ -32,8 +32,6 @@ public sealed class Booking
         this.CreatedAtUtc = createdAtUtc;
         this.ReservationExpiresAtUtc = reservationExpiresAtUtc;
         this.Status = BookingStatus.PendingPayment;
-        this._tickets = [];
-        this._refunds = [];
     }
 
     public Guid Id { get; private set; }

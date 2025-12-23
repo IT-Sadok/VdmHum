@@ -4,7 +4,10 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using BackgroundServices;
 using Database;
+using Messaging;
+using Messaging.Outbox;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,13 +28,23 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddGrpcClients(configuration)
             .AddRepositories()
+            .AddServices()
+            .AddMessaging()
+            .AddBackgroundServices()
+            .AddJsonSerializerOptions()
             .AddAuthOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var host = configuration.GetValue<string>("Db:Host");
+        var port = configuration.GetValue<int>("Db:Port");
+        var dbName = configuration.GetValue<string>("Db:Name");
+        var user = configuration.GetValue<string>("Db:User");
+        var pass = configuration.GetValue<string>("Db:Password");
+
+        var connectionString = $"Host={host};Port={port};Database={dbName};Username={user};Password={pass}";
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
@@ -69,9 +82,40 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
         services.AddScoped<IMoviesClient, MoviesGrpcClient>();
         services.AddScoped<IPaymentsClient, PaymentsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+        services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+    {
+        services.AddHostedService<OutboxProcessorBackgroundService>();
+
+        services.AddHostedService<PaymentsEventsConsumer>();
+        services.AddHostedService<ExpireReservationsBackgroundService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonSerializerOptions(this IServiceCollection services)
+    {
+        services.AddSingleton<EventJsonOptions>();
 
         return services;
     }

@@ -79,6 +79,14 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
         return !hasConflict;
     }
 
+    public async Task<IReadOnlyList<Booking>> GetExpiredReservationsAsync(DateTime utcNow, CancellationToken ct) =>
+        await dbContext
+            .Bookings
+            .Where(b =>
+                b.ReservationExpiresAtUtc < utcNow &&
+                b.Status == BookingStatus.PendingPayment)
+            .ToListAsync(ct);
+
     private IQueryable<BookingSeat> BuildConflictingSeatsQuery(
         Guid showtimeId,
         HashSet<int> requestedSeats,

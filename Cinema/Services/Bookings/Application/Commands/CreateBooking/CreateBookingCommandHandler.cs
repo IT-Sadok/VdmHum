@@ -47,7 +47,7 @@ public sealed class CreateBookingCommandHandler(
         var totalPrice = Money.From(command.TotalPrice, command.Currency);
 
         var now = DateTime.UtcNow;
-        var reservationExpiresAt = now.AddMinutes(bookingOptions.Value.ReservationDuration);
+        var reservationExpiresAt = now.AddMinutes(bookingOptions.Value.ReservationDurationMinutes);
 
         var booking = Booking.Create(
             userId: userId,
@@ -67,9 +67,15 @@ public sealed class CreateBookingCommandHandler(
             description: $"Booking {booking.Id} for showtime {showtimeSnapshot.ShowtimeId}",
             ct: ct);
 
-        booking.SetPayment(paymentResult.PaymentId);
-
-        await unitOfWork.SaveChangesAsync(ct);
+        if (paymentResult.IsSuccess)
+        {
+            booking.SetPayment(paymentResult.Value.PaymentId);
+            await unitOfWork.SaveChangesAsync(ct);
+        }
+        else
+        {
+            // TODO: maybe throw event that the payment was not created, for retry
+        }
 
         return booking.ToResponse(includeTickets: false);
     }

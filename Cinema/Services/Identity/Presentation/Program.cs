@@ -21,12 +21,12 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.SeedAdminAsync();
+    await app.ApplyMigrationsAsync();
 
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    await app.ApplyMigrationsAsync();
+    await app.SeedAdminAsync();
 }
 
 app.UseExceptionHandler();
