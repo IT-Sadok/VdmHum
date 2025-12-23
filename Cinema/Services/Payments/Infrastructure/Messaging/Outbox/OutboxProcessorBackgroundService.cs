@@ -44,6 +44,7 @@ public sealed class OutboxProcessorBackgroundService(
 
             await dbContext.SaveChangesAsync(ct);
 
+            // TODO: Move magic number to some config
             await Task.Delay(TimeSpan.FromSeconds(1), ct);
         }
     }

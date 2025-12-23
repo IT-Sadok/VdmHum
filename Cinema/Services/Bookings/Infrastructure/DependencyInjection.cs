@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using BackgroundServices;
 using Database;
 using Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,6 +96,7 @@ public static class DependencyInjection
     private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
     {
         services.AddHostedService<PaymentsEventsConsumer>();
+        services.AddHostedService<ExpireReservationsBackgroundService>();
 
         return services;
     }
