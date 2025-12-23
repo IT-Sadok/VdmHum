@@ -5,6 +5,7 @@ using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
 using Database;
+using Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,9 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddGrpcClients(configuration)
             .AddRepositories()
+            .AddServices()
+            .AddBackgroundServices()
+            .AddJsonSerializerOptions()
             .AddAuthOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
@@ -75,9 +79,29 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
         services.AddScoped<IMoviesClient, MoviesGrpcClient>();
         services.AddScoped<IPaymentsClient, PaymentsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+    {
+        services.AddHostedService<PaymentsEventsConsumer>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonSerializerOptions(this IServiceCollection services)
+    {
+        services.AddSingleton<EventJsonOptions>();
 
         return services;
     }
