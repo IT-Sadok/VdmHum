@@ -7,6 +7,7 @@ using Application.Options;
 using BackgroundServices;
 using Database;
 using Messaging;
+using Messaging.Outbox;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,7 @@ public static class DependencyInjection
             .AddGrpcClients(configuration)
             .AddRepositories()
             .AddServices()
+            .AddMessaging()
             .AddBackgroundServices()
             .AddJsonSerializerOptions()
             .AddAuthOptions(configuration)
@@ -93,8 +95,18 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+        services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
+
+        return services;
+    }
+
     private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
     {
+        services.AddHostedService<OutboxProcessorBackgroundService>();
+
         services.AddHostedService<PaymentsEventsConsumer>();
         services.AddHostedService<ExpireReservationsBackgroundService>();
 
