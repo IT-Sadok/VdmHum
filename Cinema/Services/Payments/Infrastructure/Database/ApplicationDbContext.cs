@@ -1,6 +1,7 @@
 namespace Infrastructure.Database;
 
 using Domain.Entities;
+using Messaging.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -9,6 +10,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<Payment> Payments => this.Set<Payment>();
 
     public DbSet<PaymentRefund> PaymentRefunds => this.Set<PaymentRefund>();
+
+    public DbSet<OutboxMessage> OutboxMessages => this.Set<OutboxMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
