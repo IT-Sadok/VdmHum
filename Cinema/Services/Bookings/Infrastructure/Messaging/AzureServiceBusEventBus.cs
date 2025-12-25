@@ -21,7 +21,7 @@ public sealed class AzureServiceBusEventBus : IEventBus
         var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType());
         var message = new ServiceBusMessage(body)
         {
-            Subject = @event.GetType().Name,
+            Subject = @event.EventType,
         };
 
         await this._sender.SendMessageAsync(message, ct);

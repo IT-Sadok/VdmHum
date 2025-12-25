@@ -16,7 +16,7 @@ public sealed class OutboxEventPublisher(
         {
             Id = @event.Id,
             OccurredOnUtc = @event.OccurredOnUtc,
-            Type = @event.GetType().AssemblyQualifiedName!,
+            Type = @event.EventType,
             Content = JsonSerializer.Serialize(@event, @event.GetType(), jsonOptions.Options),
         };
 

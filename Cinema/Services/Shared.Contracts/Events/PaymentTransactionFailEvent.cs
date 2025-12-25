@@ -6,4 +6,4 @@ public sealed record PaymentTransactionFailEvent(
     Guid PaymentId,
     Guid BookingId,
     Guid UserId
-) : Event;
+) : Event(EventTypes.PaymentTransactionFailed);

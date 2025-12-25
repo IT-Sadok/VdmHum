@@ -38,7 +38,7 @@ public sealed class PaymentsEventsConsumer : BackgroundService
 
     private async Task ProcessMessageAsync(ProcessMessageEventArgs args)
     {
-        if (args.Message.Subject == nameof(PaymentTransactionFailEvent))
+        if (args.Message.Subject == EventTypes.PaymentTransactionFailed)
         {
             var json = Encoding.UTF8.GetString(args.Message.Body);
             var @event = JsonSerializer.Deserialize<PaymentTransactionFailEvent>(json, this._jsonOptions.Options)!;

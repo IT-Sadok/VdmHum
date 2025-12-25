@@ -4,4 +4,5 @@ public interface IEvent
 {
     Guid Id { get; }
     DateTime OccurredOnUtc { get; }
+    string EventType { get; }
 }
