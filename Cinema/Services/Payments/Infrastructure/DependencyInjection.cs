@@ -30,8 +30,7 @@ public static class DependencyInjection
             .AddMessaging()
             .AddBackgroundServices()
             .AddJsonSerializerOptions()
-            .AddPaymentOptions(configuration)
-            .AddAuthOptions(configuration)
+            .AddOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
 
@@ -59,20 +58,13 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPaymentOptions(
+    private static IServiceCollection AddOptions(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.Configure<PaymentOptions>(configuration.GetSection("Payment"));
-
-        return services;
-    }
-
-    private static IServiceCollection AddAuthOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+        services.Configure<OutboxProcessorOptions>(configuration.GetSection("OutboxProcessor"));
 
         return services;
     }

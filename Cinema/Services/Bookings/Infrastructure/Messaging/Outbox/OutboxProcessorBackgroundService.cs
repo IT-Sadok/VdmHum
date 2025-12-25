@@ -1,18 +1,23 @@
 namespace Infrastructure.Messaging.Outbox;
 
 using System.Text.Json;
+using Application.Options;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Shared.Contracts.Abstractions;
 
 public sealed class OutboxProcessorBackgroundService(
     IEventBus eventBus,
     IServiceScopeFactory scopeFactory,
-    EventJsonOptions jsonOptions)
+    EventJsonOptions jsonOptions,
+    IOptions<OutboxProcessorOptions> outboxProcessorOptions)
     : BackgroundService
 {
+    private readonly OutboxProcessorOptions _outboxOptions = outboxProcessorOptions.Value;
+
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
@@ -22,7 +27,7 @@ public sealed class OutboxProcessorBackgroundService(
             var messages = await dbContext.OutboxMessages
                 .Where(m => m.ProcessedOnUtc == null)
                 .OrderBy(m => m.OccurredOnUtc)
-                .Take(100)
+                .Take(this._outboxOptions.BatchSize)
                 .ToListAsync(ct);
 
             foreach (var message in messages)
@@ -44,8 +49,7 @@ public sealed class OutboxProcessorBackgroundService(
 
             await dbContext.SaveChangesAsync(ct);
 
-            // TODO: Move magic number to some config
-            await Task.Delay(TimeSpan.FromSeconds(1), ct);
+            await Task.Delay(TimeSpan.FromSeconds(this._outboxOptions.DelaySeconds), ct);
         }
     }
 }

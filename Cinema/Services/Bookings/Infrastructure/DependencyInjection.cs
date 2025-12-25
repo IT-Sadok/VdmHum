@@ -32,7 +32,7 @@ public static class DependencyInjection
             .AddMessaging()
             .AddBackgroundServices()
             .AddJsonSerializerOptions()
-            .AddAuthOptions(configuration)
+            .AddOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
 
@@ -60,11 +60,13 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthOptions(
+    private static IServiceCollection AddOptions(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+        services.Configure<OutboxProcessorOptions>(configuration.GetSection("OutboxProcessor"));
+        services.Configure<ExpireReservationsOptions>(configuration.GetSection("ExpireReservations"));
 
         return services;
     }
