@@ -26,7 +26,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)

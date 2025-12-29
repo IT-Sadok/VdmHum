@@ -2,6 +2,9 @@ namespace Infrastructure.Services;
 
 using System.Globalization;
 using Application.Abstractions.Services;
+using Application.Errors;
+using Grpc.Core;
+using Shared.Contracts.Core;
 using Payments.Grpc;
 using CancelPaymentResponse = Application.Contracts.Payments.CancelPaymentResponse;
 using CreatePaymentForBookingResponse = Application.Contracts.Payments.CreatePaymentForBookingResponse;
@@ -9,7 +12,7 @@ using CreatePaymentForBookingResponse = Application.Contracts.Payments.CreatePay
 public class PaymentsGrpcClient(Payments.PaymentsClient client)
     : IPaymentsClient
 {
-    public async Task<CreatePaymentForBookingResponse> CreatePaymentForBookingAsync(
+    public async Task<Result<CreatePaymentForBookingResponse>> CreatePaymentForBookingAsync(
         Guid userId,
         Guid bookingId,
         decimal amount,
@@ -26,20 +29,38 @@ public class PaymentsGrpcClient(Payments.PaymentsClient client)
             Description = description,
         };
 
-        var response = await client.CreatePaymentForBookingAsync(request, cancellationToken: ct);
+        try
+        {
+            var response = await client.CreatePaymentForBookingAsync(request, cancellationToken: ct);
 
-        return new CreatePaymentForBookingResponse(Guid.Parse(response.PaymentId));
+            var dto = new CreatePaymentForBookingResponse(Guid.Parse(response.PaymentId));
+
+            return Result.Success(dto);
+        }
+        catch (RpcException e)
+        {
+            return Result.Failure<CreatePaymentForBookingResponse>(PaymentErrors.Unexpected(e));
+        }
     }
 
-    public async Task<CancelPaymentResponse> CancelPaymentAsync(Guid paymentId, CancellationToken ct)
+    public async Task<Result<CancelPaymentResponse>> CancelPaymentAsync(Guid paymentId, CancellationToken ct)
     {
         var request = new CancelPaymentRequest
         {
             PaymentId = paymentId.ToString(),
         };
 
-        var response = await client.CancelPaymentAsync(request, cancellationToken: ct);
+        try
+        {
+            var response = await client.CancelPaymentAsync(request, cancellationToken: ct);
 
-        return new CancelPaymentResponse(response.Canceled);
+            var dto = new CancelPaymentResponse(response.Canceled);
+
+            return Result.Success(dto);
+        }
+        catch (RpcException e)
+        {
+            return Result.Failure<CancelPaymentResponse>(PaymentErrors.Unexpected(e));
+        }
     }
 }

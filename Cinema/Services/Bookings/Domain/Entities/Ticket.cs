@@ -9,14 +9,12 @@ public sealed class Ticket
     }
 
     private Ticket(
-        Guid id,
         Guid bookingId,
         int seatNumber,
         string ticketNumber,
         string? qrCode,
         DateTime issuedAtUtc)
     {
-        this.Id = id;
         this.BookingId = bookingId;
         this.SeatNumber = seatNumber;
         this.TicketNumber = ticketNumber;
@@ -65,7 +63,6 @@ public sealed class Ticket
         var now = DateTime.UtcNow;
 
         return new Ticket(
-            id: Guid.CreateVersion7(),
             bookingId: bookingId,
             seatNumber: seatNumber,
             ticketNumber: ticketNumber,

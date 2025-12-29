@@ -4,7 +4,13 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using Azure.Messaging.ServiceBus;
+using BackgroundServices;
 using Database;
+using Grpc.Core;
+using Grpc.Net.Client.Configuration;
+using Messaging;
+using Messaging.Outbox;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,13 +31,17 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddGrpcClients(configuration)
             .AddRepositories()
-            .AddAuthOptions(configuration)
+            .AddServices()
+            .AddMessaging()
+            .AddBackgroundServices()
+            .AddJsonSerializerOptions()
+            .AddOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
@@ -40,11 +50,14 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthOptions(
+    private static IServiceCollection AddOptions(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+        services.Configure<OutboxProcessorOptions>(configuration.GetSection("OutboxProcessor"));
+        services.Configure<ExpireReservationsOptions>(configuration.GetSection("ExpireReservations"));
+        services.Configure<ServiceBusOptions>(configuration.GetSection("ServiceBus"));
 
         return services;
     }
@@ -60,6 +73,30 @@ public static class DependencyInjection
         {
             options.Address = new Uri(configuration["Grpc:PaymentsServiceUrl"]
                                       ?? throw new InvalidOperationException());
+        }).ConfigureChannel(o =>
+        {
+            o.ServiceConfig = new ServiceConfig
+            {
+                MethodConfigs =
+                {
+                    new MethodConfig
+                    {
+                        Names = { MethodName.Default },
+                        RetryPolicy = new RetryPolicy
+                        {
+                            MaxAttempts = 3,
+                            InitialBackoff = TimeSpan.FromMilliseconds(250),
+                            MaxBackoff = TimeSpan.FromSeconds(1),
+                            BackoffMultiplier = 2,
+                            RetryableStatusCodes =
+                            {
+                                StatusCode.Internal,
+                                StatusCode.DeadlineExceeded,
+                            },
+                        },
+                    },
+                },
+            };
         });
 
         return services;
@@ -69,9 +106,45 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
         services.AddScoped<IMoviesClient, MoviesGrpcClient>();
         services.AddScoped<IPaymentsClient, PaymentsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+        services.AddSingleton<ServiceBusClient>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<ServiceBusOptions>>().Value;
+            return new ServiceBusClient(options.ConnectionString);
+        });
+        services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+    {
+        services.AddHostedService<OutboxProcessorBackgroundService>();
+
+        services.AddHostedService<PaymentsEventsConsumer>();
+        services.AddHostedService<ExpireReservationsBackgroundService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonSerializerOptions(this IServiceCollection services)
+    {
+        services.AddSingleton<EventJsonOptions>();
 
         return services;
     }

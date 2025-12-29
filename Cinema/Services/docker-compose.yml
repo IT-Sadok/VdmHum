@@ -1,0 +1,107 @@
+services:
+
+  cinema-postgres:
+    image: postgres:latest
+    container_name: cinema-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 5433:5432
+    volumes:
+      - pg-data:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  identity-api:
+    build:
+      context: .
+      dockerfile: Identity/Presentation/Dockerfile
+    container_name: identity-api
+    depends_on:
+      cinema-postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${IDENTITY_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
+      Jwt__RefreshTokenName: ${JWT_REFRESH_TOKEN_NAME}
+      Jwt__AccessTokenLifetimeMinutes: ${JWT_ACCESS_TOKEN_LIFETIME_MINUTES}
+      Jwt__RefreshTokenLifetimeDays: ${JWT_REFRESH_TOKEN_LIFETIME_DAYS}
+      Jwt__SigningCertificatePassword: ${JWT_CERT_PASSWORD}
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - 7001:8080
+
+  movies-api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Movies/Presentation/Dockerfile
+    container_name: movies-api
+    depends_on:
+      cinema-postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${MOVIES_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - 7002:8080
+
+  bookings-api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Bookings/Presentation/Dockerfile
+    container_name: bookings-api
+    depends_on:
+      cinema-postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${BOOKINGS_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
+      Grpc__MoviesServiceUrl: "http://movies-api:8080"
+      Grpc__PaymentsServiceUrl: "http://payments-api:8080"
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - 7003:8080
+
+  payments-api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Payments/Presentation/Dockerfile
+    container_name: payments-api
+    depends_on:
+      cinema-postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${PAYMENTS_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
+      Grpc__BookingsServiceUrl: "http://bookings-api:8080"
+    volumes:
+      - ./certs:/app/certs:ro
+    ports:
+      - 7004:8080
+
+volumes:
+  pg-data:

@@ -4,8 +4,11 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using Azure.Messaging.ServiceBus;
 using Bookings.Grpc;
 using Database;
+using Messaging;
+using Messaging.Outbox;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,14 +27,17 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddGrpcClients(configuration)
             .AddRepositories()
-            .AddPaymentOptions(configuration)
-            .AddAuthOptions(configuration)
+            .AddServices()
+            .AddMessaging()
+            .AddBackgroundServices()
+            .AddJsonSerializerOptions()
+            .AddOptions(configuration)
             .AddAuthenticationInternal()
             .AddAuthorizationInternal();
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
@@ -40,20 +46,14 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPaymentOptions(
+    private static IServiceCollection AddOptions(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.Configure<PaymentOptions>(configuration.GetSection("Payment"));
-
-        return services;
-    }
-
-    private static IServiceCollection AddAuthOptions(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+        services.Configure<OutboxProcessorOptions>(configuration.GetSection("OutboxProcessor"));
+        services.Configure<ServiceBusOptions>(configuration.GetSection("ServiceBus"));
 
         return services;
     }
@@ -74,10 +74,43 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IPaymentRefundRepository, PaymentRefundRepository>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
         services.AddScoped<IBookingsClient, BookingsGrpcClient>();
         services.AddScoped<IUserContextService, UserContextService>();
-        services.AddSingleton<IPaymentProviderClient, FakePaymentProviderClient>();
+        services.AddScoped<IPaymentProviderClient, FakePaymentProviderClient>();
         services.Decorate<IPaymentProviderClient, RetryingPaymentProviderClient>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
+    {
+        services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+        services.AddSingleton<ServiceBusClient>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<ServiceBusOptions>>().Value;
+            return new ServiceBusClient(options.ConnectionString);
+        });
+        services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+    {
+        services.AddHostedService<OutboxProcessorBackgroundService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonSerializerOptions(this IServiceCollection services)
+    {
+        services.AddSingleton<EventJsonOptions>();
 
         return services;
     }
