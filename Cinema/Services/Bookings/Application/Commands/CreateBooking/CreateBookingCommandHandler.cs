@@ -4,6 +4,7 @@ using Abstractions.Repositories;
 using Abstractions.Services;
 using Contracts.Bookings;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.ValueObjects;
 using Errors;
 using Microsoft.Extensions.Options;
@@ -69,7 +70,7 @@ public sealed class CreateBookingCommandHandler(
 
         if (paymentResult.IsFailure)
         {
-            await bookingRepository.Remove(booking.Id, ct);
+            booking.CancelBySystem(BookingCancellationReason.PaymentNotCreated);
             await unitOfWork.SaveChangesAsync(ct);
             return Result.Failure<BookingResponseModel>(PaymentErrors.CreationFailed);
         }

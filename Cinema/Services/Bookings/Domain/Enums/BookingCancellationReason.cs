@@ -8,4 +8,5 @@ public enum BookingCancellationReason
     PaymentExpired = 3,
     ShowtimeCancelled = 4,
     AdminCancelled = 5,
+    PaymentNotCreated = 6,
 }

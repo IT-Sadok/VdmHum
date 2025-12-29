@@ -14,8 +14,6 @@ public interface IBookingRepository
 
     void Add(Booking booking);
 
-    Task Remove(Guid id, CancellationToken ct);
-
     Task<bool> AreSeatsAvailableAsync(
         Guid showtimeId,
         IReadOnlyCollection<int> seats,
