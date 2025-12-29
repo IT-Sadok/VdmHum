@@ -4,5 +4,5 @@ using Shared.Contracts.Abstractions;
 
 public interface IEventBus
 {
-    Task PublishAsync(IEvent @event, CancellationToken ct = default);
+    Task PublishAsync(string eventType, string jsonContent, CancellationToken ct = default);
 }

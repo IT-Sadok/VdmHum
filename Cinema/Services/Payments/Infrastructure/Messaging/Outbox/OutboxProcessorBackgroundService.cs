@@ -1,18 +1,15 @@
 namespace Infrastructure.Messaging.Outbox;
 
-using System.Text.Json;
 using Application.Options;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Shared.Contracts.Abstractions;
 
 public sealed class OutboxProcessorBackgroundService(
     IEventBus eventBus,
     IServiceScopeFactory scopeFactory,
-    EventJsonOptions jsonOptions,
     IOptions<OutboxProcessorOptions> outboxProcessorOptions)
     : BackgroundService
 {
@@ -34,10 +31,7 @@ public sealed class OutboxProcessorBackgroundService(
             {
                 try
                 {
-                    var type = Type.GetType(message.Type)!;
-                    var @event = (IEvent)JsonSerializer.Deserialize(message.Content, type, jsonOptions.Options)!;
-
-                    await eventBus.PublishAsync(@event, ct);
+                    await eventBus.PublishAsync(eventType: message.Type, jsonContent: message.Content, ct);
 
                     message.ProcessedOnUtc = DateTime.UtcNow;
                 }

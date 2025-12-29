@@ -3,11 +3,12 @@ namespace Infrastructure.Messaging;
 using System.Text;
 using System.Text.Json;
 using Application.Commands.SystemCancelBooking;
+using Application.Options;
 using Azure.Messaging.ServiceBus;
 using Domain.Enums;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Shared.Contracts.Abstractions;
 using Shared.Contracts.Events;
 
@@ -18,12 +19,17 @@ public sealed class PaymentsEventsConsumer : BackgroundService
     private readonly EventJsonOptions _jsonOptions;
 
     public PaymentsEventsConsumer(
-        IConfiguration config,
+        ServiceBusClient client,
+        IOptions<ServiceBusOptions> options,
         IServiceScopeFactory serviceScopeFactory,
         EventJsonOptions jsonOptions)
     {
-        var client = new ServiceBusClient(config.GetConnectionString("ServiceBus"));
-        this._processor = client.CreateProcessor("payments-events", new ServiceBusProcessorOptions());
+        var sbOptions = options.Value;
+
+        var topicName = sbOptions.Topics["Payments"];
+        var subscriptionName = sbOptions.Subscriptions["BookingsService"];
+
+        this._processor = client.CreateProcessor(topicName, subscriptionName);
         this._serviceScopeFactory = serviceScopeFactory;
         this._jsonOptions = jsonOptions;
     }

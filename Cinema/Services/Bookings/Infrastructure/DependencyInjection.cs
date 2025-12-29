@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Options;
+using Azure.Messaging.ServiceBus;
 using BackgroundServices;
 using Database;
 using Messaging;
@@ -67,6 +68,7 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
         services.Configure<OutboxProcessorOptions>(configuration.GetSection("OutboxProcessor"));
         services.Configure<ExpireReservationsOptions>(configuration.GetSection("ExpireReservations"));
+        services.Configure<ServiceBusOptions>(configuration.GetSection("ServiceBus"));
 
         return services;
     }
@@ -107,6 +109,11 @@ public static class DependencyInjection
     private static IServiceCollection AddMessaging(this IServiceCollection services)
     {
         services.AddScoped<IEventPublisher, OutboxEventPublisher>();
+        services.AddSingleton<ServiceBusClient>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<ServiceBusOptions>>().Value;
+            return new ServiceBusClient(options.ConnectionString);
+        });
         services.AddSingleton<IEventBus, AzureServiceBusEventBus>();
 
         return services;
