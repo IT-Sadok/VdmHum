@@ -7,6 +7,8 @@ using Application.Options;
 using Azure.Messaging.ServiceBus;
 using BackgroundServices;
 using Database;
+using Grpc.Core;
+using Grpc.Net.Client.Configuration;
 using Messaging;
 using Messaging.Outbox;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -84,6 +86,30 @@ public static class DependencyInjection
         {
             options.Address = new Uri(configuration["Grpc:PaymentsServiceUrl"]
                                       ?? throw new InvalidOperationException());
+        }).ConfigureChannel(o =>
+        {
+            o.ServiceConfig = new ServiceConfig
+            {
+                MethodConfigs =
+                {
+                    new MethodConfig
+                    {
+                        Names = { MethodName.Default },
+                        RetryPolicy = new RetryPolicy
+                        {
+                            MaxAttempts = 3,
+                            InitialBackoff = TimeSpan.FromMilliseconds(250),
+                            MaxBackoff = TimeSpan.FromSeconds(1),
+                            BackoffMultiplier = 2,
+                            RetryableStatusCodes =
+                            {
+                                StatusCode.Internal,
+                                StatusCode.DeadlineExceeded,
+                            },
+                        },
+                    },
+                },
+            };
         });
 
         return services;
