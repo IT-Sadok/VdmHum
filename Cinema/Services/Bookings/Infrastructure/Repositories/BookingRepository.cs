@@ -60,6 +60,18 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
     public void Add(Booking booking) =>
         dbContext.Bookings.Add(booking);
 
+    public async Task Remove(Guid id, CancellationToken ct)
+    {
+        var entity = await dbContext.Bookings.FirstOrDefaultAsync(b => b.Id == id, ct);
+
+        if (entity is null)
+        {
+            return;
+        }
+
+        dbContext.Bookings.Remove(entity);
+    }
+
     public async Task<bool> AreSeatsAvailableAsync(
         Guid showtimeId,
         IReadOnlyCollection<int> seats,
@@ -86,6 +98,7 @@ public class BookingRepository(ApplicationDbContext dbContext) : IBookingReposit
                 b.ReservationExpiresAtUtc < utcNow &&
                 b.Status == BookingStatus.PendingPayment)
             .ToListAsync(ct);
+
 
     private IQueryable<BookingSeat> BuildConflictingSeatsQuery(
         Guid showtimeId,

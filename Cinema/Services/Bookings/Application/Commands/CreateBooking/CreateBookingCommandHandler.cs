@@ -67,15 +67,15 @@ public sealed class CreateBookingCommandHandler(
             description: $"Booking {booking.Id} for showtime {showtimeSnapshot.ShowtimeId}",
             ct: ct);
 
-        if (paymentResult.IsSuccess)
+        if (paymentResult.IsFailure)
         {
-            booking.SetPayment(paymentResult.Value.PaymentId);
+            await bookingRepository.Remove(booking.Id, ct);
             await unitOfWork.SaveChangesAsync(ct);
+            return Result.Failure<BookingResponseModel>(PaymentErrors.CreationFailed);
         }
-        else
-        {
-            // TODO: maybe throw event that the payment was not created, for retry
-        }
+
+        booking.SetPayment(paymentResult.Value.PaymentId);
+        await unitOfWork.SaveChangesAsync(ct);
 
         return booking.ToResponse(includeTickets: false);
     }
