@@ -26,20 +26,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var template = configuration.GetConnectionString("DefaultConnection")!;
-
-        var host = configuration.GetValue<string>("Db:Host");
-        var port = configuration.GetValue<string>("Db:Port");
-        var dbName = configuration.GetValue<string>("Db:Name");
-        var user = configuration.GetValue<string>("Db:User");
-        var pass = configuration.GetValue<string>("Db:Password");
-
-        var connectionString = template
-            .Replace("{HOST}", host)
-            .Replace("{PORT}", port)
-            .Replace("{NAME}", dbName)
-            .Replace("{USER}", user)
-            .Replace("{PASSWORD}", pass);
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)

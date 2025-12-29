@@ -27,11 +27,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      Db__Host: cinema-postgres
-      Db__Port: ${POSTGRES_PORT}
-      Db__Name: ${IDENTITY_DB_NAME}
-      Db__User: ${POSTGRES_USER}
-      Db__Password: ${POSTGRES_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${IDENTITY_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       Jwt__Issuer: ${JWT_ISSUER}
       Jwt__Audience: ${JWT_AUDIENCE}
       Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
@@ -55,11 +51,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      Db__Host: cinema-postgres
-      Db__Port: ${POSTGRES_PORT}
-      Db__Name: ${MOVIES_DB_NAME}
-      Db__User: ${POSTGRES_USER}
-      Db__Password: ${POSTGRES_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${MOVIES_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       Jwt__Issuer: ${JWT_ISSUER}
       Jwt__Audience: ${JWT_AUDIENCE}
       Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
@@ -79,11 +71,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      Db__Host: cinema-postgres
-      Db__Port: ${POSTGRES_PORT}
-      Db__Name: ${BOOKINGS_DB_NAME}
-      Db__User: ${POSTGRES_USER}
-      Db__Password: ${POSTGRES_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${BOOKINGS_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       Jwt__Issuer: ${JWT_ISSUER}
       Jwt__Audience: ${JWT_AUDIENCE}
       Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
@@ -105,11 +93,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      Db__Host: cinema-postgres
-      Db__Port: ${POSTGRES_PORT}
-      Db__Name: ${PAYMENTS_DB_NAME}
-      Db__User: ${POSTGRES_USER}
-      Db__Password: ${POSTGRES_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=cinema-postgres;Port=${POSTGRES_PORT};Database=${PAYMENTS_DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       Jwt__Issuer: ${JWT_ISSUER}
       Jwt__Audience: ${JWT_AUDIENCE}
       Jwt__AccessTokenName: ${JWT_ACCESS_TOKEN_NAME}
